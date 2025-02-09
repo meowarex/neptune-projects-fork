@@ -1,0 +1,6 @@
+{
+  "name": "Copy Lyrics",
+  "description": "A working neptune plugin that allows the user to copy the lyrics of a song selecting it.",
+  "author": "itzzexcel@github",
+  "main": "./src/index.js"
+}

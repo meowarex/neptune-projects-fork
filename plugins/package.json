@@ -1,0 +1,15 @@
+{
+  "name": "neptune-plugin-template",
+  "description": "A neptune plugin monorepo template",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./build.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.13",
+    "neptune-types": "^1.0.0"
+  },
+  "dependencies": {
+    "react-hot-toast": "^2.5.1"
+  }
+}

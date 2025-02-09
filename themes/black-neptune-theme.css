@@ -1,0 +1,209 @@
+/*
+{
+    "name": "ShadowX Port",
+    "author": "@itzzexcel",
+    "description": "ShadowX Theme from Spicetify to TIDAL (17/Jan/2025)"
+}
+*/
+
+
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+:root {
+    --wave-color-solid-accent-fill: white;
+    --wave-color-solid-rainbow-yellow-fill: white;
+    --wave-color-solid-contrast-fill: white;
+    --wave-color-solid-base-brighter: black;
+    --wave-text-body-medium: white !important;
+    --track-vibrant-color: white !important;
+    --wave-color-opacity-contrast-fill-ultra-thin: #fffafa1a !important;
+    --wave-color-solid-rainbow-yellow-darkest: #fffafa1a !important;
+    --wave-color-solid-accent-dark: gray;
+}
+
+[class^="_wave-badge-color-max"] {
+    color: black !important;
+    background-color: var(--wave-color-solid-accent-fill);
+    border-radius: 3px;
+}
+
+[class^="sidebarWrapper"] {
+    border-right: rgb(25, 25, 25) 1px solid;
+}
+
+[class^="_wave-badge"] {
+    background-color: var(--wave-color-solid-accent-fill);
+    border-radius: 4px;
+    color: black;
+}
+
+[class^="progressBarWrapper"] {
+    color: var(--wave-color-solid-accent-fill) !important;
+}
+
+[class^="sidebarItem"]>span {
+    color: var(--wave-color-solid-accent-dark);
+}
+
+[class^="sidebarItem"]:hover span {
+    color: var(--wave-color-solid-contrast-fill);
+}
+
+[class^="sidebarItem"] [class^="active"]>span {
+    color: var(--wave-color-solid-accent-dark) !important;
+}
+
+[class^="active"] {
+    color: var(--wave-color-solid-accent-fill) !important;
+}
+
+[class^="ReactVirtualized__Grid"] {
+    border: 1px solid rgb(25, 25, 25);
+    border-radius: 10px;
+    margin: 5px;
+}
+
+[class^="ReactVirtualized__Grid__innerScrollContainer"] {
+    border: 1px solid rgba(0, 0, 0, 0);
+}
+
+[class^="button"]>span {
+    color: black;
+}
+
+[class^="explicitBadge"] {
+    color: var(--wave-color-solid-accent-fill);
+}
+
+[class^="viewAllButton"] {
+    border-radius: 4px;
+    display: grid;
+    place-items: center;
+}
+
+[class^="blur"],
+[class^="ellipse"],
+[class^="gradientMax"] {
+    display: none !important;
+}
+
+[class^="headerButtons"]>button {
+    background-color: var(--wave-color-solid-accent-fill) !important;
+    color: black;
+}
+
+[class^="container"]>[class^="navigationArrows"] {
+    color: black;
+    background-color: var(--wave-color-solid-accent-fill) !important;
+    border-radius: 4px;
+}
+
+[class^="buttons"]>button>span {
+    color: black !important;
+}
+
+[class^="container"]>button {
+    border: 0px none;
+}
+
+[class^="feedSidebarVStack"] {
+    background-color: #1a1a1a;
+}
+
+[class^="player"] {
+    width: calc(100% - 20px);
+    bottom: 10px;
+    left: 10px;
+    border: 1px solid rgb(25, 25, 25);
+    border-radius: 4px !important;
+    position: absolute !important;
+}
+
+[class^="tooltipContainer"]>button {
+    background-color: var(--wave-color-solid-accent-fill);
+    color: black;
+}
+
+[class^="tooltipContainer"]>button:hover {
+    background-color: lightgray !important;
+}
+
+[class^="tableRow"] {
+    color: rgb(170, 170, 170) !important;
+}
+
+[class^="tableRow"]:hover,
+[data-test-is-playing="true"] {
+    color: var(--wave-color-solid-accent-fill) !important;
+}
+
+[class^="actionList"] {
+    background-color: #1a1a1a;
+}
+
+button[data-test="request-fullscreen"],
+button[data-test="close-now-playing"],
+button[data-test="play-all"],
+button[data-test="shuffle-all"] {
+    color: black;
+    background-color: var(--wave-color-solid-accent-fill);
+    border-radius: 12px;
+}
+
+button[data-test="request-fullscreen"]:hover,
+button[data-test="close-now-playing"]:hover {
+    color: black;
+    background-color: lightgray !important;
+}
+
+.neptune-switch-checkbox:checked+.neptune-switch {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-test="navigation-arrows"]>button {
+    background-color: var(--wave-color-solid-accent-fill) !important;
+    color: black !important;
+    border-radius: 5px;
+}
+
+[data-test="navigation-arrows"]>button:disabled {
+    background-color: lightgray !important;
+    opacity: 1;
+}
+
+[class^="contextMenu"]>div, [data-test="main-layout-header"], [data-test="feed-sidebar"], [data-test="stream-metadata"] {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin);
+}
+
+[data-wave-color=textUrl] {
+    color: var(--wave-color-solid-accent-fill);
+}
+
+[class^="smallHeader"] {
+    margin-top: 7.5px;
+}
+
+[data-test="play-all"]>div>*, [data-test="shuffle-all"]>div>*, [data-test="play-all"], [data-test="shuffle-all"] {
+    color: var(--wave-color-solid-accent-fill) !important;
+    background-color: transparent !important;
+}
+
+[class^="__NEPTUNE_PAGE"], [data-test="main"] {
+    margin-top: 35px;
+}
+
+[data-test="button-desktop-release-notes"],
+[data-test="button-release-notes"] {
+    background-color: white;
+}
+
+[data-test="button-desktop-release-notes"]:hover,
+[data-test="button-release-notes"]:hover {
+    background-color: lightgray !important;
+    transition: none !important;
+}
