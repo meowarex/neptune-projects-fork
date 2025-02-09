@@ -1,3 +1,8 @@
+/*
+ * TODO: Check for the span to be part of the lyrics div.
+ *
+*/
+
 import toast, { Toaster } from 'react-hot-toast';
 
 const unlockSelection = `
