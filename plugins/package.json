@@ -6,10 +6,10 @@
     "build": "node ./build.js"
   },
   "devDependencies": {
-    "esbuild": "^0.18.13",
-    "neptune-types": "^1.0.0"
+    "esbuild": "^0.18.13"
   },
   "dependencies": {
-    "react-hot-toast": "^2.5.1"
+    "canvas-confetti": "^1.9.3",
+    "neptune-types": "^1.0.1"
   }
 }

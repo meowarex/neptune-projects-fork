@@ -6,8 +6,6 @@
 }
 */
 
-
-
 ::-webkit-scrollbar {
     display: none;
 }
@@ -22,6 +20,15 @@
     --wave-color-opacity-contrast-fill-ultra-thin: #fffafa1a !important;
     --wave-color-solid-rainbow-yellow-darkest: #fffafa1a !important;
     --wave-color-solid-accent-dark: gray;
+}
+
+[class^="followingButton"],
+[title="Unfollow"],
+[title="Follow"],
+[title="Unfollow"]>span,
+[title="Follow"]>span {
+    background-color: var(--wave-color-solid-rainbow-yellow-fill) !important;
+    color: var(--wave-color-solid-base-brighter);
 }
 
 [class^="_wave-badge-color-max"] {
@@ -61,13 +68,13 @@
 }
 
 [class^="ReactVirtualized__Grid"] {
-    border: 1px solid rgb(25, 25, 25);
     border-radius: 10px;
     margin: 5px;
 }
 
 [class^="ReactVirtualized__Grid__innerScrollContainer"] {
-    border: 1px solid rgba(0, 0, 0, 0);
+    border: none;
+    margin: 5px;
 }
 
 [class^="button"]>span {
@@ -90,7 +97,17 @@
     display: none !important;
 }
 
-[class^="headerButtons"]>button {
+[data-test="current-media-imagery"] {
+    border: 0 !important;
+    margin: none;
+}
+
+[class^="imageBorder"] {
+    display: none;
+}
+
+[class^="headerButtons"]>button,
+[data-test="toggle-picture-in-picture"] {
     background-color: var(--wave-color-solid-accent-fill) !important;
     color: black;
 }
@@ -109,8 +126,8 @@
     border: 0px none;
 }
 
-[class^="feedSidebarVStack"] {
-    background-color: #1a1a1a;
+[data-test="feed-sidebar"] {
+    margin-top: 10px;
 }
 
 [class^="player"] {
@@ -141,7 +158,11 @@
 }
 
 [class^="actionList"] {
-    background-color: #1a1a1a;
+    background-color: transparent;
+    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
+    margin: 5px;
+    border-radius: 5px;
+    padding: 10px;
 }
 
 button[data-test="request-fullscreen"],
@@ -174,10 +195,14 @@ button[data-test="close-now-playing"]:hover {
     opacity: 1;
 }
 
-[class^="contextMenu"]>div, [data-test="main-layout-header"], [data-test="feed-sidebar"], [data-test="stream-metadata"] {
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(15px);
-    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin);
+[class^="contextMenu"]>div,
+[data-test="main-layout-header"],
+[data-test="feed-sidebar"],
+[data-test="stream-metadata"],
+[class^="player"] {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
 }
 
 [data-wave-color=textUrl] {
@@ -188,12 +213,16 @@ button[data-test="close-now-playing"]:hover {
     margin-top: 7.5px;
 }
 
-[data-test="play-all"]>div>*, [data-test="shuffle-all"]>div>*, [data-test="play-all"], [data-test="shuffle-all"] {
+[data-test="play-all"]>div>*,
+[data-test="shuffle-all"]>div>*,
+[data-test="play-all"],
+[data-test="shuffle-all"] {
     color: var(--wave-color-solid-accent-fill) !important;
     background-color: transparent !important;
 }
 
-[class^="__NEPTUNE_PAGE"], [data-test="main"] {
+[class^="__NEPTUNE_PAGE"],
+[data-test="main"] {
     margin-top: 35px;
 }
 
@@ -206,4 +235,15 @@ button[data-test="close-now-playing"]:hover {
 [data-test="button-release-notes"]:hover {
     background-color: lightgray !important;
     transition: none !important;
+}
+
+#playQueueSidebar {
+    top: 50px !important;
+    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin);
+    margin: 2px;
+    margin-right: -5px !important;
+}
+
+[class^="bottomGradient"] {
+    visibility: hidden;
 }
