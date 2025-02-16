@@ -1,8 +1,4 @@
-/*
-TODO: Check for the span to be part of the lyrics div.
-*/
-
-require("./tracer")
+require("./tracer");
 import { Tracer } from "./tracer";
 
 const trace = Tracer("[Copy Lyrics]");
@@ -11,12 +7,11 @@ const unlockSelection = `
 [class^="lyricsText"]>div>span {
     user-select: text;
     cursor: text;
-    
 }
 
 ::selection {
-    background:rgb(0, 0, 0);
-    color:rgb(255, 255, 255);
+    background: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
 }
 `;
 
@@ -29,19 +24,20 @@ function ApplyCSS(style) {
         styleElement.appendChild(document.createTextNode(style));
 
     document.head.appendChild(styleElement);
+    return styleElement;
 }
+
 function SetClipboard(text) {
     const textarea = document.createElement('textarea');
     textarea.value = text;
-    textarea.style.position = 'fixed'; // Avoid scrolling to the bottom
+    textarea.style.position = 'fixed'; // Avoid scrolling to bottom
     document.body.appendChild(textarea);
     textarea.select();
 
     try {
         const success = document.execCommand('copy');
-        if (!success) 
+        if (!success)
             throw new Error('Failed to copy text.');
-        
     } catch (err) {
         trace.msg.err(err);
     } finally {
@@ -49,23 +45,35 @@ function SetClipboard(text) {
     }
 }
 
-ApplyCSS(unlockSelection);
+const styleElement = ApplyCSS(unlockSelection);
 
 let isSelecting = false;
 
-document.addEventListener('mousedown', function() {
+const onMouseDown = function () {
     isSelecting = true;
-});
+};
 
-document.addEventListener('mouseup', function (event) {
+const onMouseUp = function (event) {
     if (isSelecting) {
         const selection = window.getSelection();
         if (selection.toString().length > 0) {
             const selectedSpans = [];
-            const ranges = selection.getRangeAt(0);
-            const container = ranges.commonAncestorContainer;
-            
-            // Get all spans within the selection
+            const range = selection.getRangeAt(0);
+            let container = range.commonAncestorContainer;
+
+            // If the container is NOT and element and a document, try to adjust it.
+            if (
+                container.nodeType !== Node.ELEMENT_NODE &&
+                container.nodeType !== Node.DOCUMENT_NODE
+            ) {
+                let text_ = selection.toString().trim();
+                SetClipboard(text_);
+                trace.msg.log("Copied to clipboard!");
+
+                return;
+            }
+
+            // Get all the spans inside the container.
             const spans = container.getElementsByTagName('span');
             for (let span of spans) {
                 if (selection.containsNode(span, true)) {
@@ -73,7 +81,7 @@ document.addEventListener('mouseup', function (event) {
                 }
             }
 
-            // Concatenate text from selected spans
+            // Concat the text of the selected spans.
             let text = '';
             selectedSpans.forEach(span => {
                 text += span.textContent + '\n';
@@ -91,13 +99,16 @@ document.addEventListener('mouseup', function (event) {
         }
         isSelecting = false;
     }
-});
+};
+
+document.addEventListener('mousedown', onMouseDown);
+document.addEventListener('mouseup', onMouseUp);
 
 export function onUnload() {
     if (styleElement && styleElement.parentNode) {
         styleElement.parentNode.removeChild(styleElement);
     }
-    
+
     document.removeEventListener('mousedown', onMouseDown);
     document.removeEventListener('mouseup', onMouseUp);
 }
