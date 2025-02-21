@@ -244,6 +244,44 @@ button[data-test="close-now-playing"]:hover {
     margin-right: -5px !important;
 }
 
+[data-test="now-playing-track-title"] {
+    text-shadow: 0 0 5px #fff, 0 0 30px #fff;
+}
+
 [class^="bottomGradient"] {
     visibility: hidden;
+}
+
+[aria-label="Show credits"] {
+    top: calc(var(--headerHeight) + 80px);
+}
+
+[data-current] {
+    transition: text-shadow 0.7s ease-in-out, text-shadow 0.7s ease-in-out;
+}
+
+[data-current="true"] {
+    text-shadow: 0 0 5px #fff, 0 0 20px #fff;
+    transition-duration: 0.7s;
+}
+
+[data-current="false"] {
+    text-shadow: 0 0 0px transparent, 0 0 0px transparent;
+    transition-duration: 0.25s;
+    color: var(--wave-color-solid-accent-dark);
+}
+
+[class^="lyricsContainer"]>div>div>span {
+    margin-bottom: 2rem;
+    opacity: 1;
+    font-family: -apple-system-headline, BlinkMacSystemFont, sans-serif;
+    font-weight: bolder;
+}
+
+[class^="lyricsProvider"] {
+    visibility: hidden;
+}
+
+[class^="syncButton"] {
+    margin-bottom: 10px;
 }
