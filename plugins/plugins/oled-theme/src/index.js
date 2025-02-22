@@ -54,5 +54,4 @@ intercept("playbackControls/MEDIA_PRODUCT_TRANSITION", onTrackChanged);
 
 export function onUnload() {
     CleanUpCSS();
-    // trace.msg.log("Exiting...");
 }
