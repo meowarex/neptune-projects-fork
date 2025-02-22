@@ -1,0 +1,6 @@
+{
+  "name": "OLED Theme",
+  "description": "A working theme. ong.",
+  "author": "itzzexcel@github",
+  "main": "./src/index.js"
+}
