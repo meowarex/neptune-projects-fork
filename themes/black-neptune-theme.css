@@ -257,8 +257,7 @@ button[data-test="close-now-playing"]:hover {
 }
 
 [data-current] {
-    transition: text-shadow 0.7s ease-in-out, text-shadow 0.7s ease-in-out;
-    transition: padding 0.7s;
+    transition: text-shadow 0.7s ease-in-out, text-shadow 0.7s ease-in-out padding 0.7s ease-in-out;
 }
 
 [data-current="true"] {
