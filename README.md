@@ -7,15 +7,15 @@ This repository a repository containing my Neptune (TIDAL Modded Client) project
 - [ShadowX Theme](#spicetifys-shadowx-port-full-black-theme)
 
 
-### Copy Lyrics
+### Copy Lyrics **(load as a PLUGIN)**
 A plugin that allows the user copy the lyrics only selecting it.
 ```
 https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/copy-lyrics/dist/
 ```
 <hr>
 
-### Spicetify's ShadowX Port (Full-black theme)
+### OLED Theme **(load as a PLUGIN)**
 ```
-https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/themes/black-neptune-theme.css
+https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/oled-theme/dist/
 ```
 <hr>
