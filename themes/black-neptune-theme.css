@@ -245,7 +245,7 @@ button[data-test="close-now-playing"]:hover {
 }
 
 [data-test="now-playing-track-title"] {
-    text-shadow: 0 0 5px #fff, 0 0 30px #fff;
+    text-shadow: 0 0 1px #fff, 0 0 30px #fff;
 }
 
 [class^="bottomGradient"] {
@@ -258,10 +258,12 @@ button[data-test="close-now-playing"]:hover {
 
 [data-current] {
     transition: text-shadow 0.7s ease-in-out, text-shadow 0.7s ease-in-out;
+    transition: padding 0.7s;
 }
 
 [data-current="true"] {
-    text-shadow: 0 0 5px #fff, 0 0 20px #fff;
+    text-shadow: 0 0 2px #fff, 0 0 20px #fff;
+    padding-left: 15px;
     transition-duration: 0.7s;
 }
 
