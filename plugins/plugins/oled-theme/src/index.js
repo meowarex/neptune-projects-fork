@@ -78,7 +78,7 @@ const onTrackChanged = function ([track]) {
         centerImg.style.height = '150vh';
         centerImg.style.objectFit = 'cover';
         centerImg.style.zIndex = '-1';
-        centerImg.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(2)';
+        centerImg.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(1)';
         centerImg.style.animation = 'spin 35s linear infinite';
         nowPlayingContainerElement.appendChild(centerImg);
         
@@ -93,7 +93,7 @@ const onTrackChanged = function ([track]) {
         centerImg2.style.height = '150vh';
         centerImg2.style.objectFit = 'cover';
         centerImg2.style.zIndex = '-1';
-        centerImg2.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(2)';
+        centerImg2.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(1)';
         centerImg2.style.animation = 'spin 35s linear infinite';
         nowPlayingContainerElement.appendChild(centerImg2);
 
