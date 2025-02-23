@@ -1,6 +1,6 @@
 require("./tracer")
 import { Tracer } from "./tracer";
-import { intercept, store } from "@neptune"
+import { intercept, store, utils } from "@neptune"
 
 const trace = Tracer("[OLED Theme]");
 const themeUrl = "https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/themes/black-neptune-theme.css";
@@ -42,16 +42,100 @@ async function HttpGet(url) {
 (async () => {
     style = await HttpGet(themeUrl);
     styleElement = ApplyCSS(style);
-    // trace.msg.log("CSS Applied!");
 })();
 
-function onTrackChanged([track]) {
-    /* How to get the album cover URL 💔💔💔 */
+const onTrackChanged = function ([track]) {
+    // Tu amor tan liminal, tu amor tan liminal
+    // - Ghouljaboy, 2021
+
+    let albumImageElement = document.querySelector('figure[class*="albumImage"] > div > div > div > img');
+    let albumImageSrc;
+
+    if (albumImageElement) {
+        albumImageSrc = albumImageElement.src;
+
+        // Set res to 1280x1280
+        albumImageSrc = albumImageSrc.replace(/\d+x\d+/, '1280x1280');
+        albumImageElement.src = albumImageSrc;
+    }
+
+    // Setting background to the *="nowPlayingContainer" element
+    let nowPlayingContainerElement = document.querySelector('[class*="nowPlayingContainer"]');
+    if (nowPlayingContainerElement && albumImageSrc) {
+        // Remove existing corner images if they exist
+        const existingImages = nowPlayingContainerElement.querySelectorAll('.corner-image');
+        existingImages.forEach(img => img.remove());
+
+        // Create and append center image
+        const centerImg = document.createElement('img');
+        centerImg.src = albumImageSrc;
+        centerImg.className = 'corner-image';
+        centerImg.style.position = 'absolute';
+        centerImg.style.left = '50%';
+        centerImg.style.top = '50%';
+        centerImg.style.transform = 'translate(-50%, -50%)';
+        centerImg.style.width = '75vw';
+        centerImg.style.height = '150vh';
+        centerImg.style.objectFit = 'cover';
+        centerImg.style.zIndex = '-1';
+        centerImg.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(2)';
+        centerImg.style.animation = 'spin 35s linear infinite';
+        nowPlayingContainerElement.appendChild(centerImg);
+        
+        const centerImg2 = document.createElement('img');
+        centerImg2.src = albumImageSrc;
+        centerImg2.className = 'corner-image';
+        centerImg2.style.position = 'absolute';
+        centerImg2.style.left = '50%';
+        centerImg2.style.top = '50%';
+        centerImg2.style.transform = 'translate(-50%, -50%)';
+        centerImg2.style.width = '75vw';
+        centerImg2.style.height = '150vh';
+        centerImg2.style.objectFit = 'cover';
+        centerImg2.style.zIndex = '-1';
+        centerImg2.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(2)';
+        centerImg2.style.animation = 'spin 35s linear infinite';
+        nowPlayingContainerElement.appendChild(centerImg2);
+
+        // Add keyframe animation if it doesn't exist
+        if (!document.querySelector('#spinAnimation')) {
+            const styleSheet = document.createElement('style');
+            styleSheet.id = 'spinAnimation';
+            styleSheet.textContent = `
+                @keyframes spin {
+                    from { transform: translate(-50%, -50%) rotate(0deg); }
+                    to { transform: translate(-50%, -50%) rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        }
+    }
 }
 
-intercept("playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION", onTrackChanged);
-intercept("playbackControls/MEDIA_PRODUCT_TRANSITION", onTrackChanged);
+// const onTrackPaused = function ([track]) {
+//     [...document.getElementsByClassName("corner-image")].forEach((element) => {
+//         element.style.animation = "spin 50s linear infinite";
+//     });
+// }
+
+// const onTrackResumed = function ([track]) {
+//     [...document.getElementsByClassName("corner-image")].forEach((element) => {
+//         element.style.animation = "spin 20s linear infinite";
+//     });
+// }
+
+const unOnTrackChanged1 = intercept("playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION", onTrackChanged);
+const unOnTrackChanged2 =  intercept("playbackControls/MEDIA_PRODUCT_TRANSITION", onTrackChanged);
+// const unOnTrackPaused1 = intercept("playbackControls/STOP", onTrackPaused);
+// const unOnTrackPaused2 = intercept("playbackControls/PAUSE", onTrackPaused);
+// const unOnTrackResumed = intercept("playbackControls/PLAY", onTrackResumed);
+
 
 export function onUnload() {
     CleanUpCSS();
+    unOnTrackChanged1();
+    unOnTrackChanged2();
+    // unOnTrackPaused1();
+    // unOnTrackPaused2();
+    // unOnTrackResumed();
 }

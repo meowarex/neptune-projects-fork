@@ -2,6 +2,13 @@
 
 This repository a repository containing my Neptune (TIDAL Modded Client) projects.
 
+<hr>
+
+### Credits to [Inrixia](https://github.com/inrixia) for some of the libraries/files used in this repository.
+- tracer.js (tracer.ts)
+- Get the cover URL method
+<hr>
+
 ## Index:
 - [Copy Lyrics](#copy-lyrics)
 - [OLED Theme](#oled-theme)

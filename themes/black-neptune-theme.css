@@ -19,7 +19,7 @@
     --track-vibrant-color: white !important;
     --wave-color-opacity-contrast-fill-ultra-thin: #fffafa1a !important;
     --wave-color-solid-rainbow-yellow-darkest: #fffafa1a !important;
-    --wave-color-solid-accent-dark: gray;
+    --wave-color-solid-accent-dark: rgb(128, 128, 128);
 }
 
 [class^="followingButton"],
@@ -262,14 +262,22 @@ button[data-test="close-now-playing"]:hover {
 
 [data-current="true"] {
     text-shadow: 0 0 2px #fff, 0 0 20px #fff;
-    padding-left: 15px;
+    padding-left: 20px;
     transition-duration: 0.7s;
 }
 
 [data-current="false"] {
     text-shadow: 0 0 0px transparent, 0 0 0px transparent;
     transition-duration: 0.25s;
-    color: var(--wave-color-solid-accent-dark);
+    color: rgba(128, 128, 128, 0.4);
+    
+}
+
+[data-current="false"]:hover {
+    text-shadow: 0 0 2px lightgray, 0 0 20px lightgray;
+    color: lightgray;
+    padding-left: 20px;
+    transition-duration: 0.7s;
 }
 
 [class^="lyricsContainer"]>div>div>span {
@@ -277,6 +285,7 @@ button[data-test="close-now-playing"]:hover {
     opacity: 1;
     font-family: -apple-system-headline, BlinkMacSystemFont, sans-serif;
     font-weight: bolder;
+    font-size: 38px !important;
 }
 
 [class^="lyricsProvider"] {
