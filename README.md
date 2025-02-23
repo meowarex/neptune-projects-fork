@@ -20,6 +20,7 @@ A plugin that allows the user copy the lyrics only selecting it.
 ```
 https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/copy-lyrics/dist/
 ```
+https://github.com/user-attachments/assets/02fe7e28-94ee-4f90-a7e6-223044d680b5
 <hr>
 
 ### OLED Theme
@@ -27,4 +28,5 @@ https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plu
 ```
 https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/oled-theme/dist/
 ```
+https://github.com/user-attachments/assets/15192950-1c4b-44d6-8e42-34ae5d7d1980
 <hr>
