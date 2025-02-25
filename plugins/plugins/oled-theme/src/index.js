@@ -9,7 +9,9 @@ let style;
 let styleElement;
 const titleObserver = new MutationObserver((mutations) => {
     mutations.forEach(() => {
-        onTrackChanged();
+        setTimeout(() => {
+            onTrackChanged();
+        }, 1500);
     });
 });
 
