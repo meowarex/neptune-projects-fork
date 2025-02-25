@@ -1,0 +1,6 @@
+{
+  "name": "Clean lyrics",
+  "description": "Apple-like version of your full-screen tracks.",
+  "author": "itzzexcel@github",
+  "main": "./src/index.js"
+}
