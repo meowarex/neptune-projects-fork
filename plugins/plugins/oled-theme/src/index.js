@@ -44,9 +44,16 @@ async function HttpGet(url) {
     styleElement = ApplyCSS(style);
 })();
 
-const onTrackChanged = function ([track]) {
+const onTrackChanged = function (method = 0) {
     // Tu amor tan liminal, tu amor tan liminal
     // - Ghouljaboy, 2021
+
+    if (method === 1) {
+        setTimeout(() => {
+            onTrackChanged();
+            return;
+        }, 2000);
+    }
 
     let albumImageElement = document.querySelector('figure[class*="albumImage"] > div > div > div > img');
     let albumImageSrc;
@@ -112,6 +119,12 @@ const onTrackChanged = function ([track]) {
     }
 }
 
+const cleanUpDynamicArt = function () {
+    [...document.getElementsByClassName("corner-image")].forEach((element) => {
+        element.remove();
+    });
+}
+
 // const onTrackPaused = function ([track]) {
 //     [...document.getElementsByClassName("corner-image")].forEach((element) => {
 //         element.style.animation = "spin 50s linear infinite";
@@ -126,6 +139,9 @@ const onTrackChanged = function ([track]) {
 
 const unOnTrackChanged1 = intercept("playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION", onTrackChanged);
 const unOnTrackChanged2 =  intercept("playbackControls/MEDIA_PRODUCT_TRANSITION", onTrackChanged);
+const unOnTrackChanged3 = intercept("playbackControls/SEEK", onTrackChanged);
+const unOnTrackChanged4 = intercept("playbackControls/SET_PLAYBACK_STATE", onTrackChanged);
+const unOnTrackChanged5 = intercept("playbackControls/TIME_UPDATE", onTrackChanged);
 // const unOnTrackPaused1 = intercept("playbackControls/STOP", onTrackPaused);
 // const unOnTrackPaused2 = intercept("playbackControls/PAUSE", onTrackPaused);
 // const unOnTrackResumed = intercept("playbackControls/PLAY", onTrackResumed);
@@ -135,6 +151,10 @@ export function onUnload() {
     CleanUpCSS();
     unOnTrackChanged1();
     unOnTrackChanged2();
+    unOnTrackChanged3();
+    unOnTrackChanged4();
+    unOnTrackChanged5();
+    cleanUpDynamicArt();
     // unOnTrackPaused1();
     // unOnTrackPaused2();
     // unOnTrackResumed();
