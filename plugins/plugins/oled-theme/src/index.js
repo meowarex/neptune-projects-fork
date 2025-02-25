@@ -157,7 +157,7 @@ const PLAYBACK_EVENTS = [
     "playbackControls/SEEK",
     "playbackControls/SET_PLAYBACK_STATE",
     "playbackControls/TIME_UPDATE",
-    "playbackControls/"
+    // "playbackControls/"
 ];
 
 const unsubscribeFunctions = PLAYBACK_EVENTS.map(event => 
