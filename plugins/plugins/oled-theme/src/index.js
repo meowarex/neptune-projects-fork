@@ -7,20 +7,14 @@ const themeUrl = "https://raw.githubusercontent.com/ItzzExcel/neptune-projects/r
 
 let style;
 let styleElement;
-const titleObserver = new MutationObserver((mutations) => {
-    mutations.forEach(() => {
-        setTimeout(() => {
-            onTrackChanged();
-        }, 1500);
-    });
-});
 
 function observeTrackTitle() {
-    const trackTitleElement = document.querySelector('span[data-test="now-playing-track-title"]');
+    const trackTitleElement = document.querySelector('div[class*="textContainer--"] > a > span');
     if (trackTitleElement) {
-        titleObserver.observe(trackTitleElement, {
-            characterData: true,
-            childList: true
+        trackTitleElement.addEventListener('DOMSubtreeModified', () => {
+            setTimeout(() => {
+                onTrackChanged();
+            }, 300);
         });
     }
 }
@@ -162,15 +156,20 @@ const PLAYBACK_EVENTS = [
     // "playbackControls/"
 ];
 
+observeTrackTitle();
+
 const unsubscribeFunctions = PLAYBACK_EVENTS.map(event => 
     intercept(event, onTrackChanged)
 );
 
-observeTrackTitle();
 
 export function onUnload() {
     CleanUpCSS();
     unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     cleanUpDynamicArt();
-    titleObserver.disconnect();
+    
+    const trackTitleElement = document.querySelector('div[class*="textContainer--"] > a > span');
+    if (trackTitleElement) {
+        trackTitleElement.removeEventListener('DOMSubtreeModified', onTrackChanged);
+    }
 }
