@@ -7,6 +7,21 @@ const themeUrl = "https://raw.githubusercontent.com/ItzzExcel/neptune-projects/r
 
 let style;
 let styleElement;
+const titleObserver = new MutationObserver((mutations) => {
+    mutations.forEach(() => {
+        onTrackChanged();
+    });
+});
+
+function observeTrackTitle() {
+    const trackTitleElement = document.querySelector('span[data-test="now-playing-track-title"]');
+    if (trackTitleElement) {
+        titleObserver.observe(trackTitleElement, {
+            characterData: true,
+            childList: true
+        });
+    }
+}
 
 function ApplyCSS(style) {
     const styleElement = document.createElement("style");
@@ -136,26 +151,24 @@ const cleanUpDynamicArt = function () {
 //         element.style.animation = "spin 20s linear infinite";
 //     });
 // }
+const PLAYBACK_EVENTS = [
+    "playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION",
+    "playbackControls/MEDIA_PRODUCT_TRANSITION",
+    "playbackControls/SEEK",
+    "playbackControls/SET_PLAYBACK_STATE",
+    "playbackControls/TIME_UPDATE",
+    "playbackControls/"
+];
 
-const unOnTrackChanged1 = intercept("playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION", onTrackChanged);
-const unOnTrackChanged2 =  intercept("playbackControls/MEDIA_PRODUCT_TRANSITION", onTrackChanged);
-const unOnTrackChanged3 = intercept("playbackControls/SEEK", onTrackChanged);
-const unOnTrackChanged4 = intercept("playbackControls/SET_PLAYBACK_STATE", onTrackChanged);
-const unOnTrackChanged5 = intercept("playbackControls/TIME_UPDATE", onTrackChanged);
-// const unOnTrackPaused1 = intercept("playbackControls/STOP", onTrackPaused);
-// const unOnTrackPaused2 = intercept("playbackControls/PAUSE", onTrackPaused);
-// const unOnTrackResumed = intercept("playbackControls/PLAY", onTrackResumed);
+const unsubscribeFunctions = PLAYBACK_EVENTS.map(event => 
+    intercept(event, onTrackChanged)
+);
 
+observeTrackTitle();
 
 export function onUnload() {
     CleanUpCSS();
-    unOnTrackChanged1();
-    unOnTrackChanged2();
-    unOnTrackChanged3();
-    unOnTrackChanged4();
-    unOnTrackChanged5();
+    unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     cleanUpDynamicArt();
-    // unOnTrackPaused1();
-    // unOnTrackPaused2();
-    // unOnTrackResumed();
+    titleObserver.disconnect();
 }
