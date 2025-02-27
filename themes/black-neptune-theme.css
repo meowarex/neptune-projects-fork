@@ -179,6 +179,11 @@
     color: var(--wave-color-solid-accent-fill) !important;
 }
 
+[class^="tableRow"],
+[data-test-is-playing="false"] {
+    color: rgba(255, 255, 255, 0.45);
+}
+
 [class*="coverColumn"] {
     padding-left: 5px !important;
 }
