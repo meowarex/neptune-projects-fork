@@ -1,0 +1,6 @@
+{
+  "name": "Clean View",
+  "description": "Make your \"Now Playing View\" clean wherever you want.",
+  "author": "itzzexcel@github",
+  "main": "./src/index.js"
+}
