@@ -151,13 +151,14 @@
     border: 0px none;
 }
 
+
 [data-test="feed-sidebar"] {
     margin-top: 10px;
 }
 
 [class^="player"] {
     width: calc(100% - 20px);
-    bottom: 20px;
+    bottom: 15px;
     left: 10px;
     border: 1px solid rgb(25, 25, 25);
     border-radius: 4px !important;
@@ -220,7 +221,6 @@ button[data-test="close-now-playing"]:hover {
     opacity: 1;
 }
 
-[class^="contextMenu"]>div,
 [data-test="main-layout-header"],
 [data-test="feed-sidebar"],
 [data-test="stream-metadata"],
@@ -228,6 +228,12 @@ button[data-test="close-now-playing"]:hover {
     background-color: rgba(0, 0, 0, 0.8) !important;
     backdrop-filter: blur(10px);
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
+}
+
+
+[class^="contextMenu"] {
+    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
+    background-color: rgba(0, 0, 0) !important;
 }
 
 [data-wave-color=textUrl] {
@@ -266,7 +272,9 @@ button[data-test="close-now-playing"]:hover {
     top: 50px !important;
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin);
     margin: 2px;
-    margin-right: -5px !important;
+    margin-right: -14px !important;
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: blur(10px);
 }
 
 [data-test="now-playing-track-title"] {
