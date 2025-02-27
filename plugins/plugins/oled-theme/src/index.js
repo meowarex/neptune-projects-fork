@@ -162,8 +162,7 @@ const cleanUpDynamicArt = function () {
 // }
 const PLAYBACK_EVENTS = [
     "playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION",
-    "playbackControls/MEDIA_PRODUCT_TRANSITION",
-    "playbackControls/PLAY"
+    "playbackControls/MEDIA_PRODUCT_TRANSITION"
 ];
 
 observeTrackTitle();
