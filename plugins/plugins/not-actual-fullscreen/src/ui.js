@@ -27,7 +27,7 @@ export function NewPlayerButton(callback, icon, customIndex = 1) {
     
         buttonElementList.push(button);
         return button;
-    }, 2000);
+    }, 1000);
 }
 
 export function CleanupButtons() {
