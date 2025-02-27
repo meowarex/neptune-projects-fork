@@ -174,12 +174,12 @@
     background-color: lightgray !important;
 }
 
-[class^="tableRow"]:hover,
+[class^="tableRow"]:hover > *,
 [data-test-is-playing="true"] > * {
     color: var(--wave-color-solid-accent-fill) !important;
 }
 
-[class^="tableRow"],
+[class^="tableRow"] > *,
 [data-test-is-playing="false"] > * {
     color: lightgray !important;
 }
