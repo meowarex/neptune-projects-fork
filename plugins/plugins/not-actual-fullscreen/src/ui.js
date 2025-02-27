@@ -1,31 +1,33 @@
 var buttonElementList = [];
 
 export function NewPlayerButton(callback, icon, customIndex = 1) {
-    let iconHolder = document.querySelector("[class*=\"moreContainer\"");
+    setTimeout(() => {
+        let iconHolder = document.querySelector("[class*=\"moreContainer\"");
 
-    let button = document.createElement("button");
-    button.style.width = "32px";
-    button.style.height = "32px";
-    button.style.border = "none";
-    button.classList.add("xcl_customButton");
+        let button = document.createElement("button");
+        button.style.width = "32px";
+        button.style.height = "32px";
+        button.style.border = "none";
+        button.classList.add("xcl_customButton");
+        
+        let buttonIcon = document.createElement("img");
+        buttonIcon.src = icon;
+        buttonIcon.style.width = "100%";
+        buttonIcon.style.height = "100%";
+        button.onclick = callback;
     
-    let buttonIcon = document.createElement("img");
-    buttonIcon.src = icon;
-    buttonIcon.style.width = "100%";
-    buttonIcon.style.height = "100%";
-    button.onclick = callback;
-
-    button.appendChild(buttonIcon);
+        button.appendChild(buttonIcon);
+        
+        const children = Array.from(iconHolder.children);
+        if (customIndex <= children.length) {
+            iconHolder.insertBefore(button, children[customIndex - 1]);
+        } else {
+            iconHolder.appendChild(button);
+        }
     
-    const children = Array.from(iconHolder.children);
-    if (customIndex <= children.length) {
-        iconHolder.insertBefore(button, children[customIndex - 1]);
-    } else {
-        iconHolder.appendChild(button);
-    }
-
-    buttonElementList.push(button);
-    return button;
+        buttonElementList.push(button);
+        return button;
+    }, 2000);
 }
 
 export function CleanupButtons() {

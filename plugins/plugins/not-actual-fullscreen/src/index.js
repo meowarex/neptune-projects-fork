@@ -188,6 +188,8 @@ observeTrackTitle();
 observeTrackTitle();
 observeTrackTitle();
 
+onTrackChanged(1);
+
 function CleanUpCSS() {
     if (styleElement && styleElement.parentNode) {
         styleElement.parentNode.removeChild(styleElement);
