@@ -192,6 +192,10 @@ function CleanUpCSS() {
     if (styleElement && styleElement.parentNode) {
         styleElement.parentNode.removeChild(styleElement);
     }
+
+    if (appliedStyle && appliedStyle.parentNode) {
+        appliedStyle.parentNode.removeChild(appliedStyle);
+    }
 }
 
 export function onUnload() {
