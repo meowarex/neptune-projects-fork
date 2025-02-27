@@ -341,3 +341,26 @@ button[data-test="close-now-playing"]:hover {
 [class^="subMenu--"] {
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
 }
+
+[class*="lyricsText--"] > span[class*="active--"] {
+    text-shadow: 0 0 2px #fff, 0 0 20px #fff;
+    padding-left: 20px;
+    transition-duration: 0.7s;
+    font-size: 60px;
+}
+
+[class*="lyricsText--"] > span {
+    text-shadow: 0 0 0px transparent, 0 0 0px transparent;
+    transition-duration: 0.25s;
+    color: rgba(128, 128, 128, 0.4);
+    font-size: 45px;
+}
+
+[class*="lyricsText--"] > span:hover {
+    text-shadow: 0 0 2px lightgray, 0 0 20px lightgray;
+    color: lightgray;
+    padding-left: 20px;
+    transition-duration: 0.7s;
+}
+
+/* TODO: ADD INTERLUDE SUPPORT FOR THE THREE DOTS */
