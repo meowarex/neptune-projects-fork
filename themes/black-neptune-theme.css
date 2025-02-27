@@ -185,10 +185,8 @@
 
 [class^="actionList"] {
     background-color: transparent;
-    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
-    margin: 5px;
+    margin: 0px;
     border-radius: 5px;
-    padding: 10px;
 }
 
 button[data-test="request-fullscreen"],
@@ -327,6 +325,10 @@ button[data-test="close-now-playing"]:hover {
 
 [class^="syncButton"] {
     margin-bottom: 10px;
+}
+
+[data-test="settings-page"] {
+    padding-bottom: 60px !important;
 }
 
 [data-test="query-suggestions"], [data-test="recent-searches-container"] {
