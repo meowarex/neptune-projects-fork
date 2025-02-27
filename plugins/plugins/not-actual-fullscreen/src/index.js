@@ -196,6 +196,7 @@ function CleanUpCSS() {
 
 export function onUnload() {
     CleanUpCSS();
+    ui.CleanupButtons();
     unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     cleanUpDynamicArt();
 
