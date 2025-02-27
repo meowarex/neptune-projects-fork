@@ -9,10 +9,11 @@ let style;
 let styleElement;
 
 function observeTrackTitle() {
-    const trackTitleElement = document.querySelector('div[class*="textContainer--"] > a > span');
+    const trackTitleElement = document.querySelector('[class^="trackTitleContainer"]');
     if (trackTitleElement) {
         trackTitleElement.addEventListener('DOMSubtreeModified', () => {
             setTimeout(() => {
+                // console.log("Track changed: " + trackTitleElement.querySelector("span").innerHTML + "\n")
                 onTrackChanged();
             }, 300);
         });
@@ -99,7 +100,7 @@ const onTrackChanged = function (method = 0) {
         centerImg.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(1)';
         centerImg.style.animation = 'spin 35s linear infinite';
         nowPlayingContainerElement.appendChild(centerImg);
-        
+
         const centerImg2 = document.createElement('img');
         centerImg2.src = albumImageSrc;
         centerImg2.className = 'corner-image';
@@ -128,13 +129,25 @@ const onTrackChanged = function (method = 0) {
             document.head.appendChild(styleSheet);
         }
     }
-}
+};
+
+// const spinElement = function(elementToSpin) {
+//     elementToSpin.style.animation = "spin 35s linear infinite";
+// };
+
+// const resumeSpinAnimation = function(elementToResume) {
+//     elementToResume.style.animationPlayState = "running";
+// };
+
+// const pauseSpinAnimation = function(elementToPause) {
+//     elementToPause.style.animationPlayState = "paused";
+// };
 
 const cleanUpDynamicArt = function () {
     [...document.getElementsByClassName("corner-image")].forEach((element) => {
         element.remove();
     });
-}
+};
 
 // const onTrackPaused = function ([track]) {
 //     [...document.getElementsByClassName("corner-image")].forEach((element) => {
@@ -150,16 +163,18 @@ const cleanUpDynamicArt = function () {
 const PLAYBACK_EVENTS = [
     "playbackControls/PREFILL_MEDIA_PRODUCT_TRANSITION",
     "playbackControls/MEDIA_PRODUCT_TRANSITION",
-    "playbackControls/SEEK",
-    "playbackControls/SET_PLAYBACK_STATE",
-    "playbackControls/TIME_UPDATE",
-    // "playbackControls/"
+    "playbackControls/PLAY"
 ];
 
 observeTrackTitle();
+observeTrackTitle();
+observeTrackTitle();
+observeTrackTitle();
 
-const unsubscribeFunctions = PLAYBACK_EVENTS.map(event => 
-    intercept(event, onTrackChanged)
+const unsubscribeFunctions = PLAYBACK_EVENTS.map(event =>
+    intercept(event, () => {
+        onTrackChanged(1);
+    })
 );
 
 
@@ -167,8 +182,8 @@ export function onUnload() {
     CleanUpCSS();
     unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     cleanUpDynamicArt();
-    
-    const trackTitleElement = document.querySelector('div[class*="textContainer--"] > a > span');
+
+    const trackTitleElement = document.querySelector('div[class^="trackTitleContainer"]');
     if (trackTitleElement) {
         trackTitleElement.removeEventListener('DOMSubtreeModified', onTrackChanged);
     }
