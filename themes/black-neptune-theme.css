@@ -274,57 +274,9 @@ button[data-test="close-now-playing"]:hover {
     backdrop-filter: blur(10px);
 }
 
-[data-test="now-playing-track-title"] {
-    text-shadow: 0 0 1px #fff, 0 0 30px #fff;
-}
-
 [class^="bottomGradient"] {
     visibility: hidden;
 }
-
-[aria-label="Show credits"] {
-    top: calc(var(--headerHeight) + 80px);
-}
-
-[data-current] {
-    transition: text-shadow 0.7s ease-in-out, text-shadow 0.7s ease-in-out padding 0.7s ease-in-out;
-}
-
-[data-current="true"] {
-    text-shadow: 0 0 2px #fff, 0 0 20px #fff;
-    padding-left: 20px;
-    transition-duration: 0.7s;
-}
-
-[data-current="false"] {
-    text-shadow: 0 0 0px transparent, 0 0 0px transparent;
-    transition-duration: 0.25s;
-    color: rgba(128, 128, 128, 0.4);
-}
-
-[data-current="false"]:hover {
-    text-shadow: 0 0 2px lightgray, 0 0 20px lightgray;
-    color: lightgray;
-    padding-left: 20px;
-    transition-duration: 0.7s;
-}
-
-[class^="lyricsContainer"]>div>div>span {
-    margin-bottom: 2rem;
-    opacity: 1;
-    font-family: "AbyssFont", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-weight: 700;
-    font-size: 43px !important;
-}
-
-[class^="lyricsProvider"] {
-    visibility: hidden;
-}
-
-[class^="syncButton"] {
-    margin-bottom: 10px;
-}
-
 [data-test="settings-page"] {
     padding-bottom: 60px !important;
 }
@@ -342,26 +294,3 @@ button[data-test="close-now-playing"]:hover {
 [class^="subMenu--"] {
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
 }
-
-[class*="lyricsText--"]>span[class*="active--"] {
-    text-shadow: 0 0 2px #fff, 0 0 20px #fff;
-    padding-left: 20px;
-    transition-duration: 0.7s;
-    font-size: 60px;
-}
-
-[class*="lyricsText--"]>span {
-    text-shadow: 0 0 0px transparent, 0 0 0px transparent;
-    transition-duration: 0.25s;
-    color: rgba(128, 128, 128, 0.4);
-    font-size: 45px;
-}
-
-[class*="lyricsText--"]>span:hover {
-    text-shadow: 0 0 2px lightgray, 0 0 20px lightgray;
-    color: lightgray;
-    padding-left: 20px;
-    transition-duration: 0.7s;
-}
-
-/* TODO: ADD INTERLUDE SUPPORT FOR THE THREE DOTS */

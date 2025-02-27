@@ -1,6 +1,6 @@
 {
   "name": "Clean View",
-  "description": "Make your \"Now Playing View\" clean wherever you want.",
+  "description": "Make your \"Now Playing View\" clean wherever you want, heavily based in beautiful-lyrics from @surfbryce!.",
   "author": "itzzexcel@github",
   "main": "./src/index.js"
 }

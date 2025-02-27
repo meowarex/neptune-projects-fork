@@ -1,6 +1,7 @@
 require("./tracer");
 import { Tracer } from "./tracer";
 import * as ui from "./ui";
+import { intercept, store, utils } from "@neptune"
 
 const trace = Tracer("[Clean View]");
 
@@ -67,7 +68,7 @@ const toggleCleanButton = ui.NewPlayerButton(() => {
 , 2);
 
 // STYLES FOR THE LYRICS
-const themeUrl = "https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/src/separated-lyrics.css";
+const themeUrl = "https://raw.githubusercontent.com/itzzexcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/src/separated-lyrics.css";
 
 var style;
 var styleElement;
