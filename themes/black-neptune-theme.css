@@ -328,3 +328,8 @@ button[data-test="close-now-playing"]:hover {
 [class^="syncButton"] {
     margin-bottom: 10px;
 }
+
+[data-test="query-suggestions"], [data-test="recent-searches-container"] {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+}
