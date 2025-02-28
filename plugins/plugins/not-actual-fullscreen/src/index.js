@@ -28,9 +28,12 @@ const styles = `
     padding-left: 6%;
 }
 
-[class*="bar--"] {
+[class^="bar--"] {
     background-color: transparent;
-    margin-top: -20px;
+}
+
+[class^="bar--"]>* {
+    opacity: 0;
 }
 `;
 
