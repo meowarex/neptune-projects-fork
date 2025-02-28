@@ -21,9 +21,12 @@ var C=Object.defineProperty;var k=Object.getOwnPropertyDescriptor;var R=Object.g
     padding-left: 6%;
 }
 
-[class*="bar--"] {
+[class^="bar--"] {
     background-color: transparent;
-    margin-top: -20px;
+}
+
+[class^="bar--"]>* {
+    opacity: 0;
 }
 `;function N(e){let t=document.createElement("style");return t.type="text/css",t.styleSheet?t.styleSheet.cssText=e:t.appendChild(document.createTextNode(e)),document.head.appendChild(t),t}async function F(e){try{let t=await fetch(e);if(!t.ok)throw new Error(`HTTP error! status: ${t.status}`);return await t.text()}catch(t){return U.msg.err(`Failed to fetch URL: ${t.message}`),null}}var x=!1,c,Z=w(()=>{x?c&&c.remove():c=N($),x=!x},"https://cdn.discordapp.com/attachments/1286571643807731783/1344515636675612712/image.png?ex=67c13143&is=67bfdfc3&hm=1573e29efdf882292922736e5ae2df6a87b7ad316add6fc498eee8ce799fb8e4&",2),H="https://raw.githubusercontent.com/itzzexcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/src/separated-lyrics.css",I,p;(async()=>(I=await F(H),p=N(I)))();function h(){let e=document.querySelector('[class^="trackTitleContainer"]');e&&e.addEventListener("DOMSubtreeModified",()=>{setTimeout(()=>{f()},300)})}var f=function(e=0){e===1&&setTimeout(()=>{f()},2e3);let t=document.querySelector('figure[class*="albumImage"] > div > div > div > img'),s;t&&(s=t.src,s=s.replace(/\d+x\d+/,"1280x1280"),t.src=s);let a=document.querySelector('[class*="nowPlayingContainer"]');if(a&&s){a.querySelectorAll(".corner-image").forEach(i=>i.remove());let r=document.createElement("img");r.src=s,r.className="corner-image",r.style.position="absolute",r.style.left="50%",r.style.top="50%",r.style.transform="translate(-50%, -50%)",r.style.width="75vw",r.style.height="150vh",r.style.objectFit="cover",r.style.zIndex="-1",r.style.filter="blur(100px) brightness(0.6) contrast(1.2) saturate(1)",r.style.animation="spin 35s linear infinite",a.appendChild(r);let o=document.createElement("img");if(o.src=s,o.className="corner-image",o.style.position="absolute",o.style.left="50%",o.style.top="50%",o.style.transform="translate(-50%, -50%)",o.style.width="75vw",o.style.height="150vh",o.style.objectFit="cover",o.style.zIndex="-1",o.style.filter="blur(100px) brightness(0.6) contrast(1.2) saturate(1)",o.style.animation="spin 35s linear infinite",a.appendChild(o),!document.querySelector("#spinAnimation")){let i=document.createElement("style");i.id="spinAnimation",i.textContent=`
                 @keyframes spin {
