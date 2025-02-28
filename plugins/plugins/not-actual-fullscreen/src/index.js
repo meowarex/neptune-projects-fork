@@ -27,6 +27,11 @@ const styles = `
 [class*="nowPlayingContainer"] {
     padding-left: 6%;
 }
+
+[class*="bar--"] {
+    background-color: transparent;
+    margin-top: -20px;
+}
 `;
 
 function ApplyCSS(style) {
