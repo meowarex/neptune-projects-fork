@@ -11,11 +11,11 @@ const styles = `
     transition: opacity 0.3s ease-in-out;
 }
 
-[class*="imageContainer"] {
+[class*="_imageContainer"] {
     margin-top: 140px;
 }
 
-[data-test="footer-player"]:hover, [class*="tabItems"]:hover {
+[data-test="footer-player"]:hover, [class*="_tabItems"]:hover {
     opacity: 1 !important;
 }
 
@@ -24,15 +24,15 @@ const styles = `
     margin: -40px;
 }
 
-[class*="nowPlayingContainer"] {
+[class*="_nowPlayingContainer"] {
     padding-left: 6%;
 }
 
-[class^="bar--"] {
+[class^="_bar"] {
     background-color: transparent;
 }
 
-[class^="bar--"]>* {
+[class^="_bar"]>* {
     opacity: 0;
 }
 `;
@@ -88,7 +88,7 @@ var styleElement;
 
 
 function observeTrackTitle() {
-    const trackTitleElement = document.querySelector('[class^="trackTitleContainer"]');
+    const trackTitleElement = document.querySelector('[class^="_trackTitleContainer"]');
     if (trackTitleElement) {
         trackTitleElement.addEventListener('DOMSubtreeModified', () => {
             setTimeout(() => {
@@ -110,7 +110,7 @@ const onTrackChanged = function (method = 0) {
         }, 2000);
     }
 
-    let albumImageElement = document.querySelector('figure[class*="albumImage"] > div > div > div > img');
+    let albumImageElement = document.querySelector('figure[class*="_albumImage"] > div > div > div > img');
     let albumImageSrc;
 
     if (albumImageElement) {
@@ -122,7 +122,7 @@ const onTrackChanged = function (method = 0) {
     }
 
     // Setting background to the *="nowPlayingContainer" element
-    let nowPlayingContainerElement = document.querySelector('[class*="nowPlayingContainer"]');
+    let nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]');
     if (nowPlayingContainerElement && albumImageSrc) {
         // Remove existing corner images if they exist
         const existingImages = nowPlayingContainerElement.querySelectorAll('.corner-image');
@@ -214,7 +214,7 @@ export function onUnload() {
     unsubscribeFunctions.forEach(unsubscribe => unsubscribe());
     cleanUpDynamicArt();
 
-    const trackTitleElement = document.querySelector('div[class^="trackTitleContainer"]');
+    const trackTitleElement = document.querySelector('div[class^="_trackTitleContainer"]');
     if (trackTitleElement) {
         trackTitleElement.removeEventListener('DOMSubtreeModified', onTrackChanged);
     }
