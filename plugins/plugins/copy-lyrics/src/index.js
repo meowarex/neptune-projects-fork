@@ -4,7 +4,7 @@ import { Tracer } from "./tracer";
 const trace = Tracer("[Copy Lyrics]");
 
 const unlockSelection = `
-[class^="lyricsText"]>div>span {
+[class^="_lyricsText"]>div>span {
     user-select: text;
     cursor: text;
 }
