@@ -2,7 +2,7 @@ var buttonElementList = [];
 
 export function NewPlayerButton(callback, icon, customIndex = 1) {
     setTimeout(() => {
-        let iconHolder = document.querySelector("[class*=\"moreContainer\"");
+        let iconHolder = document.querySelector("[class*=\"_moreContainer\"");
 
         let button = document.createElement("button");
         button.style.width = "32px";

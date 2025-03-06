@@ -51,6 +51,7 @@
 [title="Unfollow"],
 [title="Follow"],
 [title="Unfollow"]>span,
+
 [title="Follow"]>span {
     background-color: var(--wave-color-solid-rainbow-yellow-fill) !important;
     color: var(--wave-color-solid-base-brighter);
@@ -62,7 +63,7 @@
     border-radius: 3px;
 }
 
-[class^="sidebarWrapper"] {
+[data-test="main-layout-sidebar-wrapper"] {
     border-right: rgb(25, 25, 25) 1px solid;
 }
 
@@ -76,15 +77,15 @@
     color: var(--wave-color-solid-accent-fill) !important;
 }
 
-[class^="sidebarItem"]>span {
+[class^="_sidebarItem"]>span {
     color: var(--wave-color-solid-accent-dark);
 }
 
-[class^="sidebarItem"]:hover span {
+[class^="_sidebarItem"]:hover span {
     color: var(--wave-color-solid-contrast-fill);
 }
 
-[class^="sidebarItem"] [class^="active"]>span {
+[class^="_sidebarItem"] [class^="active"]>span {
     color: var(--wave-color-solid-accent-dark) !important;
 }
 
@@ -131,7 +132,8 @@
     display: none;
 }
 
-[class^="headerButtons"]>button,
+[class^="_headerButtons"]>button,
+[class^="_headerButtons"]>button>span,
 [data-test="toggle-picture-in-picture"] {
     background-color: var(--wave-color-solid-accent-fill) !important;
     color: black;
@@ -143,7 +145,7 @@
     border-radius: 4px;
 }
 
-[class^="buttons"]>button>span {
+[class^="_buttons"]>button>span {
     color: black !important;
 }
 
@@ -156,7 +158,7 @@
     margin-top: 10px;
 }
 
-[class^="player"] {
+[data-test="footer-player"] {
     width: calc(100% - 20px);
     bottom: 10px;
     left: 10px;
@@ -165,12 +167,12 @@
     position: absolute !important;
 }
 
-[class^="tooltipContainer"]>button {
+[class^="_tooltipContainer"]>button {
     background-color: var(--wave-color-solid-accent-fill);
     color: black;
 }
 
-[class^="tooltipContainer"]>button:hover {
+[class^="_tooltipContainer"]>button:hover {
     background-color: lightgray !important;
 }
 
@@ -227,7 +229,7 @@ button[data-test="close-now-playing"]:hover {
 [data-test="main-layout-header"],
 [data-test="feed-sidebar"],
 [data-test="stream-metadata"],
-[class^="player"] {
+[data-test="footer-player"] {
     background-color: rgba(0, 0, 0, 0.8) !important;
     backdrop-filter: blur(10px);
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
@@ -274,7 +276,7 @@ button[data-test="close-now-playing"]:hover {
     backdrop-filter: blur(10px);
 }
 
-[class^="bottomGradient"] {
+[class^="_bottomGradient"] {
     visibility: hidden;
 }
 [data-test="settings-page"] {
@@ -288,9 +290,5 @@ button[data-test="close-now-playing"]:hover {
 }
 
 [data-test="contextmenu"] {
-    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
-}
-
-[class^="subMenu--"] {
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
 }
