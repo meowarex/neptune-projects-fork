@@ -30,3 +30,10 @@ https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plu
 ```
 https://github.com/user-attachments/assets/15192950-1c4b-44d6-8e42-34ae5d7d1980
 <hr>
+
+### Clean Lyrics (Not fullscreen) 
+**(load it as a plugin)**
+
+```
+https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/dist/
+```
