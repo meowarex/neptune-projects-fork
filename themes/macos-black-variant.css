@@ -14,7 +14,8 @@
     --wave-color-solid-accent-fill: white;
     --wave-color-solid-rainbow-yellow-fill: white;
     --wave-color-solid-contrast-fill: white;
-    --wave-color-solid-base-brighter: black;
+    --wave-color-solid-base-fill: rgb(25, 25, 25);
+    --wave-color-solid-base-brighter: var(--wave-color-solid-base-fill);
     --wave-text-body-medium: white !important;
     --track-vibrant-color: white !important;
     --wave-color-opacity-contrast-fill-ultra-thin: #fffafa1a !important;
@@ -63,7 +64,7 @@
 }
 
 [data-test="main-layout-sidebar-wrapper"] {
-    border-right: rgb(25, 25, 25) 1px solid;
+    border-right: var(--wave-color-opacity-contrast-fill-ultra-thin) 1px solid;
 }
 
 [class^="_wave-badge"] {
@@ -78,10 +79,6 @@
 
 [class^="_sidebarItem"]>span {
     color: var(--wave-color-solid-accent-dark);
-}
-
-[data-test="main-layout-header"] {
-    border-left: 0 !important;
 }
 
 [class^="_sidebarItem"]:hover span {
@@ -102,7 +99,7 @@
 }
 
 [data-test="media-table"]>div>div>div {
-    border: 1px solid rgb(25, 25, 25) !important;
+    border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
 }
 
 [class^="ReactVirtualized__Grid__innerScrollContainer"] {
@@ -154,7 +151,6 @@
     border: 0px none;
 }
 
-
 [data-test="feed-sidebar"] {
     margin-top: 10px;
 }
@@ -163,7 +159,7 @@
     width: calc(100% - 20px);
     bottom: 10px;
     left: 10px;
-    border: 1px solid rgb(25, 25, 25);
+    border: 1px solid var(--wave-color-solid-base-fill);
     border-radius: 4px !important;
     position: absolute !important;
 }
@@ -231,9 +227,13 @@ button[data-test="close-now-playing"]:hover {
 [data-test="feed-sidebar"],
 [data-test="stream-metadata"],
 [data-test="footer-player"] {
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: rgba(25, 25, 25, 0.8) !important;
     backdrop-filter: blur(10px);
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
+}
+
+[data-test="main-layout-header"] {
+    border-left: 0 !important;
 }
 
 [data-wave-color=textUrl] {
@@ -273,20 +273,21 @@ button[data-test="close-now-playing"]:hover {
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin);
     margin: 2px;
     margin-right: -14px !important;
-    background-color: rgba(0, 0, 0, 0.8) !important;
+    background-color: rgba(25, 25, 25, 0.8) !important;
     backdrop-filter: blur(10px);
 }
 
 [class^="_bottomGradient"] {
     visibility: hidden;
 }
+
 [data-test="settings-page"] {
     padding-bottom: 60px !important;
 }
 
 [data-test="query-suggestions"],
 [data-test="recent-searches-container"] {
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(25, 25, 25, 0.6);
     backdrop-filter: blur(10px);
 }
 
