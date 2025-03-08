@@ -137,12 +137,6 @@
     color: black;
 }
 
-[class^="_container"]>[class^="_navigationArrows"] {
-    color: black;
-    background-color: var(--wave-color-solid-accent-fill) !important;
-    border-radius: 4px;
-}
-
 [class^="_buttons"]>button>span {
     color: black !important;
 }
@@ -213,13 +207,14 @@ button[data-test="close-now-playing"]:hover {
 }
 
 [data-test="navigation-arrows"]>button {
-    background-color: var(--wave-color-solid-accent-fill) !important;
-    color: black !important;
-    border-radius: 5px;
+    color: whreite;
+    background-color: rgb(50, 50, 50) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 4px;
 }
 
 [data-test="navigation-arrows"]>button:disabled {
-    background-color: lightgray !important;
+    background-color: rgb(40, 40, 40) !important;
     opacity: 1;
 }
 
