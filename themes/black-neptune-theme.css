@@ -280,6 +280,7 @@ button[data-test="close-now-playing"]:hover {
 [class^="_bottomGradient"] {
     visibility: hidden;
 }
+
 [data-test="settings-page"] {
     padding-bottom: 60px !important;
 }
@@ -292,4 +293,9 @@ button[data-test="close-now-playing"]:hover {
 
 [data-test="contextmenu"] {
     border: 1px solid var(--wave-color-opacity-contrast-fill-ultra-thin) !important;
+}
+
+[class^="_dataContainer_"]::before {
+    background-image: var(--img);
+    filter: blur(10px) brightness(0.4);
 }
