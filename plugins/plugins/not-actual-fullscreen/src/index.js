@@ -72,8 +72,7 @@ const toggleCleanButton = ui.NewPlayerButton(() => {
         appliedStyle = ApplyCSS(styles);
     }
     isCleanView = !isCleanView;
-}, "https://cdn.discordapp.com/attachments/1286571643807731783/1344515636675612712/image.png?ex=67c13143&is=67bfdfc3&hm=1573e29efdf882292922736e5ae2df6a87b7ad316add6fc498eee8ce799fb8e4&"
-, 2);
+}, "https://lexploits.top/favicon.ico", 2);
 
 // STYLES FOR THE LYRICS
 const themeUrl = "https://raw.githubusercontent.com/itzzexcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/src/separated-lyrics.css";

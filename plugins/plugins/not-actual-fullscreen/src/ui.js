@@ -5,8 +5,7 @@ export function NewPlayerButton(callback, icon, customIndex = 1) {
         let iconHolder = document.querySelector("[class*=\"_moreContainer\"");
 
         let button = document.createElement("button");
-        button.style.width = "32px";
-        button.style.height = "32px";
+        button.style.width = "40px";
         button.style.border = "none";
         button.classList.add("xcl_customButton");
         
