@@ -155,7 +155,7 @@ const onTrackChanged = function (method = 0) {
         centerImg2.style.objectFit = 'cover';
         centerImg2.style.zIndex = '-1';
         centerImg2.style.filter = 'blur(100px) brightness(0.6) contrast(1.2) saturate(1)';
-        centerImg2.style.animation = 'spin 35s linear infinite';
+        centerImg2.style.animation = 'spin 20s linear infinite';
         nowPlayingContainerElement.appendChild(centerImg2);
 
         // Add keyframe animation if it doesn't exist
