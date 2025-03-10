@@ -118,6 +118,16 @@ const onTrackChanged = function (method = 0) {
         // Set res to 1280x1280
         albumImageSrc = albumImageSrc.replace(/\d+x\d+/, '1280x1280');
         albumImageElement.src = albumImageSrc;
+    } else if (albumImageElement = document.querySelector('figure[class*="_albumImage"] > div > div > div > video')) {
+        albumImageSrc = albumImageElement.getAttribute("poster");
+
+        // Set res to 1280x1280
+        albumImageSrc = albumImageSrc.replace(/\d+x\d+/, '1280x1280');
+        albumImageElement.src = albumImageSrc;
+    } else {
+        cleanUpDynamicArt();
+        console.log("Couldn't get album art");
+        
     }
 
     // Setting background to the *="nowPlayingContainer" element
