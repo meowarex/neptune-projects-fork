@@ -113,6 +113,21 @@ const onMouseUp = function (event) {
     }
 };
 
+const onClickHooked = function (event) {
+    if (!isSelecting) return;
+
+    const target = event.target;
+    if (target.tagName.toLowerCase() === "span" && target.hasAttribute("data-current")) {
+        // Prevent default behavior and stop event propagation
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        return false;
+    }
+};
+
+// Add event listener with capture phase to intercept events before they reach other handlers
+document.addEventListener("click", onClickHooked, true);
 document.addEventListener("mousedown", onMouseDown);
 document.addEventListener("mouseup", onMouseUp);
 
@@ -121,6 +136,8 @@ export function onUnload() {
         styleElement.parentNode.removeChild(styleElement);
     }
 
+    // Remove event listeners
+    document.removeEventListener("click", onClickHooked, true);
     document.removeEventListener("mousedown", onMouseDown);
     document.removeEventListener("mouseup", onMouseUp);
 }
