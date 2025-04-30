@@ -149,7 +149,7 @@ const onTrackChanged = function (method = 0) {
         centerImg.style.height = '150vh';
         centerImg.style.objectFit = 'cover';
         centerImg.style.zIndex = '-1';
-        centerImg.style.filter = 'blur(100px) brightness(0.5) contrast(1.2) saturate(1)';
+        centerImg.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
         centerImg.style.animation = 'spin 35s linear infinite';
         centerImg.style.animationDelay = '5s';  // Add a 5-second delay
         nowPlayingContainerElement.appendChild(centerImg);
@@ -165,7 +165,7 @@ const onTrackChanged = function (method = 0) {
         centerImg2.style.height = '150vh';
         centerImg2.style.objectFit = 'cover';
         centerImg2.style.zIndex = '-1';
-        centerImg2.style.filter = 'blur(100px) brightness(0.5) contrast(1.2) saturate(1)';
+        centerImg2.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
         centerImg2.style.animation = 'spin 35s linear infinite';
         nowPlayingContainerElement.appendChild(centerImg2);
 
