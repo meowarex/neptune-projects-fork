@@ -169,28 +169,28 @@ const toggleCleanView = function(): void {
     } else {
         appliedStyle = ApplyCSS(styles);
         // Debug: Log bottom-left buttons to help identify selectors
-        debugBottomLeftButtons();
+        //debugBottomLeftButtons();
     }
     isCleanView = !isCleanView;
     updateButtonStates();
 };
 
-const debugBottomLeftButtons = function(): void {
-    setTimeout(() => {
-        const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]');
-        if (nowPlayingContainer) {
-            const buttons = nowPlayingContainer.querySelectorAll('button');
-            trace.msg.log(`Found ${buttons.length} buttons in now playing container:`);
-            buttons.forEach((button, index) => {
-                const classes = button.className;
-                const dataTest = button.getAttribute('data-test');
-                const title = button.getAttribute('title');
-                const ariaLabel = button.getAttribute('aria-label');
-                trace.msg.log(`Button ${index}: classes="${classes}", data-test="${dataTest}", title="${title}", aria-label="${ariaLabel}"`);
-            });
-        }
-    }, 1000);
-};
+// const debugBottomLeftButtons = function(): void {
+//     setTimeout(() => {
+//         const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]');
+//         if (nowPlayingContainer) {
+//             const buttons = nowPlayingContainer.querySelectorAll('button');
+//             //trace.msg.log(`Found ${buttons.length} buttons in now playing container:`);
+//             buttons.forEach((button, index) => {
+//                 const classes = button.className;
+//                 const dataTest = button.getAttribute('data-test');
+//                 const title = button.getAttribute('title');
+//                 const ariaLabel = button.getAttribute('aria-label');
+//                 //trace.msg.log(`Button ${index}: classes="${classes}", data-test="${dataTest}", title="${title}", aria-label="${ariaLabel}"`);
+//             });
+//         }
+//     }, 1000);
+// };
 
 const createHideUIButton = function(): void {
     setTimeout(() => {
@@ -247,7 +247,7 @@ const createHideUIButton = function(): void {
         // Insert after the fullscreen button
         buttonContainer.insertBefore(hideUIButton, fullscreenButton.nextSibling);
         
-        trace.msg.log("Hide UI button added next to fullscreen button");
+        //trace.msg.log("Hide UI button added next to fullscreen button");
         updateButtonStates();
     }, 1000);
 };
@@ -305,7 +305,7 @@ const createUnhideUIButton = function(): void {
         // Append to body instead of a specific container
         document.body.appendChild(unhideUIButton);
         
-        trace.msg.log("Unhide UI button added to bottom-left above player bar");
+        //trace.msg.log("Unhide UI button added to bottom-left above player bar");
         updateButtonStates();
     }, 1500); // Slight delay after hide button
 };
