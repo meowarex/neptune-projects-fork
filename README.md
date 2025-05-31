@@ -41,9 +41,16 @@ Allows users to copy song lyrics by selecting them directly in the interface.
 # Install dependencies
 pnpm install
 
-# Build all plugins
+# Build & Serve all plugins
 pnpm run watch
 ```
+
+### Installing Plugins in TidalLuna
+1. Open TidalLuna after Building & Serving
+2. Navigate to Luna Settings (Top right of Tidal)
+3. Click "Plugin Store" Tab
+4. Click Install on the Plugins at the top Labeled with "[Dev]"
+5. Enjoy <3
 
 ## Development
 
