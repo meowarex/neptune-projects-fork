@@ -1,21 +1,60 @@
-# OLED Theme Luna Plugin
+# Luna Plugins Collection
 
-This is a port of the OLED Theme plugin from Neptune to Luna framework.
+A collection of Luna plugins for Tidal, ported from Neptune framework.
 
-## Description
+## Plugins
 
-A working theme plugin that applies a dark OLED-friendly theme to Tidal Luna.
+### 🎨 OLED Theme Luna
+**Location:** `plugins/oled-theme-luna/`
 
-## Features
+A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
 
+**Features:**
 - Applies a dark, OLED-optimized theme
 - Fetches the latest theme CSS from the GitHub repository
+- Reduces battery consumption on OLED displays
+- Modern, sleek dark interface
+
+### 🎵 Clean View Luna  
+**Location:** `plugins/clean-view-luna/`
+
+Makes your "Play Queue" clean and immersive with dynamic visual effects.
+
+**Features:**
+- Dynamic album art backgrounds with blur and rotation effects
+- Glowing Animated Lyrics with clean scrolling
+
+### 📋 Copy Lyrics Luna
+**Location:** `plugins/copy-lyrics-luna/`
+
+Allows users to copy song lyrics by selecting them directly in the interface.
+
+**Features:**
+- Enables text selection on lyrics
+- Automatic clipboard copying of selected lyrics
+- Smart lyric span detection
 
 ## Installation
 
-1. Build the plugin using `pnpm run build` in the Luna plugin root
-2. Install the generated `luna.oled-theme.mjs` file in Luna
-3. ~~Or install directly from the URL: `https://your-repository/releases/download/latest/luna.oled-theme`~~
+### Building All Plugins
+```bash
+# Install dependencies
+pnpm install
+
+# Build all plugins
+pnpm run watch
+```
+
+## Development
+
+This project is made for:
+- **TidalLuna** - Modern plugin framework for Tidal | Inrixia
+
+## GitHub Actions
+
+- **Automated builds** on every push
+- **Release automation** for distributing plugins
+- **Artifact uploads** for easy plugin distribution
 
 ## Author
 
@@ -23,4 +62,4 @@ A working theme plugin that applies a dark OLED-friendly theme to Tidal Luna.
 
 ## Credits
 
-Original Neptune version by itzzexcel. Ported to Luna framework following the Luna plugin template structure by meowarex with help from Inrixia <3 
+Original Neptune versions by itzzexcel. Ported to Luna framework following the Luna plugin template structure by meowarex with help from Inrixia <3 
