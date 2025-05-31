@@ -50,8 +50,12 @@ pnpm install
 # Build & Serve all plugins
 pnpm run watch
 ```
-
-### Installing Plugins in TidalLuna
+### Installing from URL
+1. Open TidalLuna after Building & Serving
+2. Navigate to Luna Settings (Top right of Tidal)
+3. Click "Plugin Store" Tab
+4. Paste in the "Install from URL" Bar https://github.com/meowarex/neptune-projects-fork/releases/download/latest/store.json
+### Installing Plugins in TidalLuna from Files
 1. Open TidalLuna after Building & Serving
 2. Navigate to Luna Settings (Top right of Tidal)
 3. Click "Plugin Store" Tab
