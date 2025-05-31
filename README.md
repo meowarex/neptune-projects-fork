@@ -12,7 +12,7 @@ A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
 **Features:**
 - Applies a dark, OLED-optimized theme
 - Fetches the latest theme CSS from the GitHub repository
-- Reduces battery consumption on OLED displays
+- Reduces battery consumption on OLED displays.. i guess <3
 - Modern, sleek dark interface
 
 ### 🎵 Clean View Luna  
