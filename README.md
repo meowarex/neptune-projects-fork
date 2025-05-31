@@ -1,39 +1,72 @@
-# Excel's Neptune Projects
+# Luna Plugins Collection
 
-This repository a repository containing my Neptune (TIDAL Modded Client) projects.
+A collection of Luna plugins for Tidal, ported from Neptune framework.
 
-<hr>
+## Plugins
 
-### Credits to [Inrixia](https://github.com/inrixia) for some of the libraries/files used in this repository.
-- tracer.js (tracer.ts)
-- Get the cover URL method
-<hr>
+### 🎨 OLED Theme Luna
+**Location:** `plugins/oled-theme-luna/`
 
-## Index:
-- [Copy Lyrics](#copy-lyrics)
-- [OLED Theme](#oled-theme)
+A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
 
+**Features:**
+- Applies a dark, OLED-optimized theme
+- Fetches the latest theme CSS from the GitHub repository
+- Reduces battery consumption on OLED displays.. i guess <3
+- Modern, sleek dark interface
 
-### Copy Lyrics
-**(load it as a PLUGIN)**
-A plugin that allows the user copy the lyrics only selecting it.
+### 🎵 Clean View Luna  
+**Location:** `plugins/clean-view-luna/`
+
+Makes your "Play Queue" clean and immersive with dynamic visual effects.
+
+**Features:**
+- Dynamic album art backgrounds with blur and rotation effects
+- Glowing Animated Lyrics with clean scrolling
+
+### 📋 Copy Lyrics Luna
+**Location:** `plugins/copy-lyrics-luna/`
+
+Allows users to copy song lyrics by selecting them directly in the interface.
+
+**Features:**
+- Enables text selection on lyrics
+- Automatic clipboard copying of selected lyrics
+- Smart lyric span detection
+
+## Installation
+
+### Building All Plugins
+```bash
+# Install dependencies
+pnpm install
+
+# Build & Serve all plugins
+pnpm run watch
 ```
-https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/copy-lyrics/dist/
-```
-https://github.com/user-attachments/assets/02fe7e28-94ee-4f90-a7e6-223044d680b5
-<hr>
 
-### OLED Theme
-**(load it as a PLUGIN)**
-```
-https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/oled-theme/dist/
-```
-https://github.com/user-attachments/assets/15192950-1c4b-44d6-8e42-34ae5d7d1980
-<hr>
+### Installing Plugins in TidalLuna
+1. Open TidalLuna after Building & Serving
+2. Navigate to Luna Settings (Top right of Tidal)
+3. Click "Plugin Store" Tab
+4. Click Install on the Plugins at the top Labeled with "[Dev]"
+5. Enjoy <3
 
-### Clean Lyrics (Not fullscreen) 
-**(load it as a plugin)**
+## Development
 
-```
-https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/dist/
-```
+This project is made for:
+- **TidalLuna** - Modern plugin framework for Tidal | Inrixia
+
+## GitHub Actions
+
+- **Automated builds** on every push
+- **Release automation** for distributing plugins
+- **Artifact uploads** for easy plugin distribution
+
+## Author
+
+- **itzzexcel** - [GitHub](https://github.com/ItzzExcel)
+
+## Credits
+
+Original Neptune versions by itzzexcel. Ported to Luna framework following the Luna plugin template structure by meowarex with help from Inrixia <3 

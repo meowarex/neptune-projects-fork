@@ -1,0 +1,11 @@
+{
+	"name": "@itzzexcel/oled-theme",
+	"description": "A working theme, ong.",
+	"author": {
+		"name": "itzzexcel",
+		"url": "https://github.com/ItzzExcel",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/ItzzExcel"
+	},
+	"main": "./src/index.ts",
+	"type": "module"
+} 

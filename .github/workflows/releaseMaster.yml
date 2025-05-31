@@ -1,0 +1,32 @@
+name: "[master] Release"
+
+on:
+ push:
+  paths-ignore:
+   - "**/*.md"
+   - ".vscode/**"
+
+jobs:
+ Build:
+  uses: ./.github/workflows/build.yml
+
+ Release:
+  name: Release latest on GitHub
+  needs: Build
+  runs-on: ubuntu-latest
+
+  steps:
+   - name: Download All Artifacts
+     uses: actions/download-artifact@v4
+     with:
+      name: luna-artifacts
+      path: ./dist/
+
+   - name: Publish latest release on GitHub
+     uses: marvinpinto/action-automatic-releases@latest
+     with:
+      repo_token: ${{ secrets.GITHUB_TOKEN }}
+      automatic_release_tag: latest
+      prerelease: false
+      title: Latest Release
+      files: ./dist/**
