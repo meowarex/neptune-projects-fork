@@ -168,7 +168,7 @@ const onTrackChanged = function (method: number = 0): void {
     // Only update if the image source has actually changed
     if (albumImageSrc && albumImageSrc !== currentTrackSrc) {
         currentTrackSrc = albumImageSrc;
-        trace.msg.log(`Track changed, updating background: ${albumImageSrc}`);
+        //trace.msg.log(`Track changed, updating background: ${albumImageSrc}`);
         
         // Setting background to the *="nowPlayingContainer" element
         const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
