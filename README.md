@@ -38,6 +38,12 @@ Allows users to copy song lyrics by selecting them directly in the interface.
 
 ### Building All Plugins
 ```bash
+# Git Clone the Repo
+git clone https://github.com/meowarex/neptune-projects-fork
+
+# Change Folder to the Repo
+cd neptune-projects-fork
+
 # Install dependencies
 pnpm install
 

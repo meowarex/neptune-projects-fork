@@ -60,6 +60,7 @@ async function HttpGet(url: string): Promise<string | null> {
 
 var isCleanView = false;
 var appliedStyle: HTMLStyleElement | null = null;
+var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
 
 const toggleCleanButton = function(callback: () => void, icon: string, customIndex: number = 2): void {
     setTimeout(() => {
@@ -89,21 +90,48 @@ const toggleCleanButton = function(callback: () => void, icon: string, customInd
 };
 
 function observeTrackTitle(): void {
+    // Observe track title changes
     const trackTitleElement = document.querySelector('[class^="_trackTitleContainer"]');
     if (trackTitleElement) {
-        const observer = new MutationObserver(() => {
+        const titleObserver = new MutationObserver(() => {
             setTimeout(() => {
                 onTrackChanged();
             }, 300);
         });
         
-        observer.observe(trackTitleElement, {
+        titleObserver.observe(trackTitleElement, {
             childList: true,
             subtree: true
         });
         
-        unloads.add(() => observer.disconnect());
+        unloads.add(() => titleObserver.disconnect());
     }
+
+    // Also observe the album image container for changes
+    const albumImageContainer = document.querySelector('figure[class*="_albumImage"]');
+    if (albumImageContainer) {
+        const imageObserver = new MutationObserver(() => {
+            setTimeout(() => {
+                onTrackChanged();
+            }, 100); // Slightly longer delay for image loading
+        });
+        
+        imageObserver.observe(albumImageContainer, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['src', 'poster']
+        });
+        
+        unloads.add(() => imageObserver.disconnect());
+    }
+
+    // Set up a periodic check as fallback
+    const periodicCheck = setInterval(() => {
+        onTrackChanged();
+    }, 100); // Check every 3 seconds
+    
+    unloads.add(() => clearInterval(periodicCheck));
 }
 
 const onTrackChanged = function (method: number = 0): void {
@@ -132,61 +160,67 @@ const onTrackChanged = function (method: number = 0): void {
             }
         } else {
             cleanUpDynamicArt();
-            console.log("Couldn't get album art");
+            trace.msg.log("Couldn't get album art");
             return;
         }
     }
 
-    // Setting background to the *="nowPlayingContainer" element
-    const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
-    if (nowPlayingContainerElement && albumImageSrc) {
-        // Remove existing corner images if they exist
-        const existingImages = nowPlayingContainerElement.querySelectorAll('.corner-image');
-        existingImages.forEach(img => img.remove());
+    // Only update if the image source has actually changed
+    if (albumImageSrc && albumImageSrc !== currentTrackSrc) {
+        currentTrackSrc = albumImageSrc;
+        trace.msg.log(`Track changed, updating background: ${albumImageSrc}`);
+        
+        // Setting background to the *="nowPlayingContainer" element
+        const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
+        if (nowPlayingContainerElement) {
+            // Remove existing corner images if they exist
+            const existingImages = nowPlayingContainerElement.querySelectorAll('.corner-image');
+            existingImages.forEach(img => img.remove());
 
-        // Create and append center image
-        const centerImg = document.createElement('img');
-        centerImg.src = albumImageSrc;
-        centerImg.className = 'corner-image';
-        centerImg.style.position = 'absolute';
-        centerImg.style.left = '50%';
-        centerImg.style.top = '50%';
-        centerImg.style.transform = 'translate(-50%, -50%)';
-        centerImg.style.width = '75vw';
-        centerImg.style.height = '150vh';
-        centerImg.style.objectFit = 'cover';
-        centerImg.style.zIndex = '-1';
-        centerImg.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
-        centerImg.style.animation = 'spin 35s linear infinite';
-        centerImg.style.animationDelay = '5s';  // Add a 5-second delay
-        nowPlayingContainerElement.appendChild(centerImg);
+            // Create and append center image
+            const centerImg = document.createElement('img');
+            centerImg.src = albumImageSrc;
+            centerImg.className = 'corner-image';
+            centerImg.style.position = 'absolute';
+            centerImg.style.left = '50%';
+            centerImg.style.top = '50%';
+            centerImg.style.transform = 'translate(-50%, -50%)';
+            centerImg.style.width = '75vw';
+            centerImg.style.height = '150vh';
+            centerImg.style.objectFit = 'cover';
+            centerImg.style.zIndex = '-1';
+            centerImg.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
+            centerImg.style.animation = 'spin 35s linear infinite';
+            centerImg.style.animationDelay = '5s';  // Add a 5-second delay
+            nowPlayingContainerElement.appendChild(centerImg);
 
-        const centerImg2 = document.createElement('img');
-        centerImg2.src = albumImageSrc;
-        centerImg2.className = 'corner-image';
-        centerImg2.style.position = 'absolute';
-        centerImg2.style.left = '50%';
-        centerImg2.style.top = '50%';
-        centerImg2.style.transform = 'translate(-50%, -50%)';
-        centerImg2.style.width = '75vw';
-        centerImg2.style.height = '150vh';
-        centerImg2.style.objectFit = 'cover';
-        centerImg2.style.zIndex = '-1';
-        centerImg2.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
-        centerImg2.style.animation = 'spin 35s linear infinite';
-        nowPlayingContainerElement.appendChild(centerImg2);
+            const centerImg2 = document.createElement('img');
+            centerImg2.src = albumImageSrc;
+            centerImg2.className = 'corner-image';
+            centerImg2.style.position = 'absolute';
+            centerImg2.style.left = '50%';
+            centerImg2.style.top = '50%';
+            centerImg2.style.transform = 'translate(-50%, -50%)';
+            centerImg2.style.width = '75vw';
+            centerImg2.style.height = '150vh';
+            centerImg2.style.objectFit = 'cover';
+            centerImg2.style.zIndex = '-1';
+            centerImg2.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
+            centerImg2.style.animation = 'spin 35s linear infinite';
+            nowPlayingContainerElement.appendChild(centerImg2);
 
-        // Add keyframe animation if it doesn't exist
-        if (!document.querySelector('#spinAnimation')) {
-            const styleSheet = document.createElement('style');
-            styleSheet.id = 'spinAnimation';
-            styleSheet.textContent = `
-                @keyframes spin {
-                    from { transform: translate(-50%, -50%) rotate(0deg); }
-                    to { transform: translate(-50%, -50%) rotate(360deg); }
-                }
-            `;
-            document.head.appendChild(styleSheet);
+            // Add keyframe animation if it doesn't exist
+            if (!document.querySelector('#spinAnimation')) {
+                const styleSheet = document.createElement('style');
+                styleSheet.id = 'spinAnimation';
+                styleSheet.textContent = `
+                    @keyframes spin {
+                        from { transform: translate(-50%, -50%) rotate(0deg); }
+                        to { transform: translate(-50%, -50%) rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(styleSheet);
+            }
         }
     }
 };
@@ -196,6 +230,7 @@ const cleanUpDynamicArt = function (): void {
     Array.from(cornerImages).forEach((element) => {
         element.remove();
     });
+    currentTrackSrc = null; // Reset current track source
 };
 
 // STYLES FOR THE LYRICS - Added Top-level async since Luna plugins are modules <3
