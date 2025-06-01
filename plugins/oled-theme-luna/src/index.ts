@@ -26,10 +26,69 @@ const applyThemeStyles = function(): void {
     
     // Remove SeekBar coloring if Quality Color Matched Seek Bar is enabled
     if (settings.qualityColorMatchedSeekBar) {
-        modifiedStyle = originalStyle.replace(/\[class\^="_progressBarWrapper"\]\s*\{[^}]*\}/g, '');
+        modifiedStyle = modifiedStyle.replace(/\[class\^="_progressBarWrapper"\]\s*\{[^}]*\}/g, '');
         trace.msg.log("OLED theme applied with SeekBar coloring removed");
     } else {
         trace.msg.log("OLED theme applied with original SeekBar coloring");
+    }
+    
+    // Remove button styling if OLED Friendly Buttons is enabled
+    if (settings.oledFriendlyButtons) {
+        // First, let's debug what we're working with
+        const originalRuleCount = (modifiedStyle.match(/\{[^}]*\}/g) || []).length;
+        trace.msg.log(`Original CSS has ${originalRuleCount} rules`);
+        
+        // Split CSS into individual rules and filter out button-related ones
+        const cssRules = modifiedStyle.split('}').filter(rule => rule.trim());
+        const filteredRules = cssRules.filter(rule => {
+            const lowerRule = rule.toLowerCase();
+            
+            // Check if this rule might affect buttons
+            const isButtonRule = 
+                // Direct button selectors
+                lowerRule.includes('button') ||
+                lowerRule.includes('[role="button"]') ||
+                lowerRule.includes('[type="button"]') ||
+                lowerRule.includes('[type="submit"]') ||
+                lowerRule.includes('[type="reset"]') ||
+                // Class-based button selectors
+                lowerRule.includes('btn') ||
+                lowerRule.includes('_button') ||
+                lowerRule.includes('-button') ||
+                lowerRule.includes('button-') ||
+                lowerRule.includes('button_') ||
+                // Common button-related classes
+                lowerRule.includes('clickable') ||
+                lowerRule.includes('action') ||
+                lowerRule.includes('control') ||
+                lowerRule.includes('icon') ||
+                // Data attributes that might be buttons
+                lowerRule.includes('data-test') && lowerRule.includes('button') ||
+                lowerRule.includes('aria-label') && lowerRule.includes('button') ||
+                // Button states
+                lowerRule.includes(':hover') && (lowerRule.includes('button') || lowerRule.includes('btn')) ||
+                lowerRule.includes(':focus') && (lowerRule.includes('button') || lowerRule.includes('btn')) ||
+                lowerRule.includes(':active') && (lowerRule.includes('button') || lowerRule.includes('btn')) ||
+                // Cursor pointer (often used on buttons)
+                lowerRule.includes('cursor') && lowerRule.includes('pointer') ||
+                // Any class containing button-like patterns
+                /\[class[^=]*=["'][^"']*button/i.test(rule) ||
+                /\[class[^=]*=["'][^"']*btn/i.test(rule) ||
+                /\[class[^=]*=["'][^"']*click/i.test(rule) ||
+                /\[class[^=]*=["'][^"']*action/i.test(rule) ||
+                /\[class[^=]*=["'][^"']*control/i.test(rule);
+            
+            // Return true to keep the rule (i.e., if it's NOT a button rule)
+            return !isButtonRule;
+        });
+        
+        modifiedStyle = filteredRules.join('} ') + (filteredRules.length > 0 ? '}' : '');
+        
+        const filteredRuleCount = (modifiedStyle.match(/\{[^}]*\}/g) || []).length;
+        const removedRuleCount = originalRuleCount - filteredRuleCount;
+        trace.msg.log(`OLED Friendly Buttons enabled: Removed ${removedRuleCount} button-related CSS rules, ${filteredRuleCount} rules remaining`);
+    } else {
+        trace.msg.log("OLED Friendly Buttons disabled: Button styling preserved from original theme");
     }
     
     appliedStyleElement = document.createElement("style");
