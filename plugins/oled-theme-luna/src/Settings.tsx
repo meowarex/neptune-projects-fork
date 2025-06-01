@@ -15,7 +15,7 @@ export const Settings = () => {
 		<LunaSettings>
 			<LunaSwitchSetting
 				title="Quality Color Matched Seek Bar"
-				desc="Apply Tidals Default color styling for the seek bar for color mathcing with song quality"
+				desc="Apply Tidals Default color styling for the seek bar for color matching with song quality"
 				checked={qualityColorMatchedSeekBar}
 				onChange={(_, checked) => {
 					console.log("Quality Color Matched Seek Bar:", checked ? "enabled" : "disabled");
