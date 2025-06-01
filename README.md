@@ -39,7 +39,7 @@ Allows users to copy song lyrics by selecting them directly in the interface.
 ### Building All Plugins
 ```bash
 # Git Clone the Repo
-git clone https://github.com/meowarex/neptune-projects-fork
+git clone https://github.com/meowarex/tidalluna-plugins
 
 # Change Folder to the Repo
 cd neptune-projects-fork
@@ -54,7 +54,7 @@ pnpm run watch
 1. Open TidalLuna after Building & Serving
 2. Navigate to Luna Settings (Top right of Tidal)
 3. Click "Plugin Store" Tab
-4. Paste in the "Install from URL" Bar `https://github.com/meowarex/neptune-projects-fork/releases/download/latest/store.json`
+4. Paste in the "Install from URL" Bar `https://github.com/meowarex/tidalluna-plugins/releases/download/latest/store.json`
 ### Installing Plugins in TidalLuna from Files
 1. Open TidalLuna after Building & Serving
 2. Navigate to Luna Settings (Top right of Tidal)
@@ -73,7 +73,7 @@ This project is made for:
 - **Release automation** for distributing plugins
 - **Artifact uploads** for easy plugin distribution
 
-## Author
+## Based On <3
 
 - **itzzexcel** - [GitHub](https://github.com/ItzzExcel)
 

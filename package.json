@@ -1,6 +1,6 @@
 {
-	"name": "@itzzexcel/oled-theme",
-	"description": "A working theme, ong.",
+	"name": "@meowarex/TidalLuna-Plugins",
+	"description": "A Collection of Plugins for TidalLuna",
 	"type": "module",
 	"scripts": {
 		"watch": "concurrently \"pnpm:build --watch\" pnpm:serve",
