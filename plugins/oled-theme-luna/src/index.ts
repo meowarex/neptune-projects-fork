@@ -27,16 +27,11 @@ const applyThemeStyles = function(): void {
     // Remove SeekBar coloring if Quality Color Matched Seek Bar is enabled
     if (settings.qualityColorMatchedSeekBar) {
         modifiedStyle = modifiedStyle.replace(/\[class\^="_progressBarWrapper"\]\s*\{[^}]*\}/g, '');
-        trace.msg.log("OLED theme applied with SeekBar coloring removed");
-    } else {
-        trace.msg.log("OLED theme applied with original SeekBar coloring");
     }
     
     // Remove button styling if OLED Friendly Buttons is enabled
     if (settings.oledFriendlyButtons) {
-        // First, let's debug what we're working with
         const originalRuleCount = (modifiedStyle.match(/\{[^}]*\}/g) || []).length;
-        trace.msg.log(`Original CSS has ${originalRuleCount} rules`);
         
         // Split CSS into individual rules and filter out button-related ones
         const cssRules = modifiedStyle.split('}').filter(rule => rule.trim());
@@ -83,12 +78,6 @@ const applyThemeStyles = function(): void {
         });
         
         modifiedStyle = filteredRules.join('} ') + (filteredRules.length > 0 ? '}' : '');
-        
-        const filteredRuleCount = (modifiedStyle.match(/\{[^}]*\}/g) || []).length;
-        const removedRuleCount = originalRuleCount - filteredRuleCount;
-        trace.msg.log(`OLED Friendly Buttons enabled: Removed ${removedRuleCount} button-related CSS rules, ${filteredRuleCount} rules remaining`);
-    } else {
-        trace.msg.log("OLED Friendly Buttons disabled: Button styling preserved from original theme");
     }
     
     appliedStyleElement = document.createElement("style");
