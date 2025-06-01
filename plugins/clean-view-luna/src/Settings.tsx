@@ -3,7 +3,7 @@ import { LunaSettings, LunaSwitchSetting } from "@luna/ui";
 import React from "react";
 
 export const settings = await ReactiveStore.getPluginStorage("CleanView", {
-	hideUIEnabled: false,
+	hideUIEnabled: true,
 	playerBarVisible: true,
 });
 
