@@ -1,10 +1,10 @@
 {
-	"name": "@itzzexcel/clean-view",
-	"description": "Make your \"Now Playing View\" clean wherever you want, heavily based in beautiful-lyrics from @surfbryce!.",
+	"name": "@meowarex/clean-view",
+	"description": "Make your \"Now Playing View\" allot cleaner, heavily based in beautiful-lyrics from @surfbryce!.",
 	"author": {
-		"name": "itzzexcel",
-		"url": "https://github.com/ItzzExcel",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/ItzzExcel"
+		"name": "meowarex",
+		"url": "https://github.com/meowarex",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/meowarex"
 	},
 	"main": "./src/index.ts",
 	"type": "module"

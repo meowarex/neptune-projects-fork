@@ -1,10 +1,10 @@
 {
-	"name": "@itzzexcel/copy-lyrics",
-	"description": "A working neptune plugin that allows the user to copy the lyrics of a song selecting it.",
+	"name": "@meowarex/copy-lyrics",
+	"description": "A working TidalLuna plugin that allows the user to copy the lyrics of a song by selecting it.",
 	"author": {
-		"name": "itzzexcel",
-		"url": "https://github.com/ItzzExcel",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/ItzzExcel"
+		"name": "meowarex",
+		"url": "https://github.com/meowarex",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/meowarex"
 	},
 	"main": "./src/index.ts",
 	"type": "module"

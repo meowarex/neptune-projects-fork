@@ -1,10 +1,10 @@
 {
-	"name": "@itzzexcel/oled-theme",
-	"description": "A working theme, ong.",
+	"name": "@meowarex/oled-theme",
+	"description": "A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.",
 	"author": {
-		"name": "itzzexcel",
-		"url": "https://github.com/ItzzExcel",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/ItzzExcel"
+		"name": "meowarex",
+		"url": "https://github.com/meowarex",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/meowarex"
 	},
 	"main": "./src/index.ts",
 	"type": "module"
