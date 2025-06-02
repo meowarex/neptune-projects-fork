@@ -6,6 +6,7 @@ import { settings, Settings } from "./Settings";
 import baseStyles from "file://styles.css?minify";
 import separatedLyrics from "file://separated-lyrics.css?minify";
 import playerBarHidden from "file://player-bar-hidden.css?minify";
+import lyricsGlow from "file://lyrics-glow.css?minify";
 
 export const { trace } = Tracer("[Clean View]");
 export { Settings };
@@ -17,6 +18,10 @@ export const unloads = new Set<LunaUnload>();
 const lyricsStyleTag = new StyleTag("CleanView-lyrics", unloads);
 const baseStyleTag = new StyleTag("CleanView-base", unloads);
 const playerBarStyleTag = new StyleTag("CleanView-player-bar", unloads);
+const lyricsGlowStyleTag = new StyleTag("CleanView-lyrics-glow", unloads);
+
+// Apply lyrics glow styles immediately and keep them always active
+lyricsGlowStyleTag.css = lyricsGlow;
 
 var isCleanView = false;
 var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates

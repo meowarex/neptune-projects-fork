@@ -1,3 +1,29 @@
+/* Font imports for lyrics */
+@font-face {
+    font-family: "AbyssFont";
+    font-weight: 400;
+    src: url("https://excel.lexploits.top/extra/tidal/LyricsRegular.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "AbyssFont";
+    font-weight: 500;
+    src: url("https://excel.lexploits.top/extra/tidal/LyricsMedium.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "AbyssFont";
+    font-weight: 600;
+    src: url("https://excel.lexploits.top/extra/tidal/LyricsSemibold.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "AbyssFont";
+    font-weight: 700;
+    src: url("https://excel.lexploits.top/extra/tidal/LyricsBold.woff2") format("woff2");
+}
+
+/* Tab and container visibility */
 [class*="tabItems"] {
     opacity: 0 !important;
     transition: opacity 0.3s ease-in-out;
@@ -16,6 +42,81 @@
     margin: -40px;
 }
 
+/* Hide bottom gradient */
+[class^="_bottomGradient"] {
+    visibility: hidden;
+}
+
+/* Credits button positioning */
+[aria-label="Show credits"] {
+    top: calc(var(--headerHeight) + 80px);
+}
+
+/* Hide lyrics provider */
+[class^="_lyricsProvider"] {
+    visibility: hidden;
+}
+
+/* Sync button margin */
+[class^="_syncButton"] {
+    margin-bottom: 10px;
+}
+
+/* Smooth scrolling for lyrics */
+[class^="_lyricsContainer"] {
+    scroll-behavior: smooth;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Clean view specific styles */
+[class*="_lyricsText"] > div {
+    padding: 0 !important;
+    background-color: transparent !important;
+    transition: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+[class*="_lyricsText"] > div:hover {
+    background-color: transparent !important;
+}
+
+/* Ensure lyrics don't get cut off */
+[class^="_lyricsContainer"] {
+    padding-bottom: 200px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Remove any hover effects on lyrics container */
+[class^="_lyricsContainer"] > div > div {
+    background-color: transparent !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+}
+
+[class^="_lyricsContainer"] > div > div:hover {
+    background-color: transparent !important;
+}
+
+/* Ensure lyrics text has proper spacing */
+[class*="_lyricsText"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
 /* Lyrics text styling */
 [class^="_lyricsText"] {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -29,11 +130,6 @@
 [class^="_lyricsText"] > div > span[data-current="true"] {
     font-weight: 600;
     transform: scale(1.05);
-}
-
-/* Smooth scrolling for lyrics */
-[class^="_lyricsContainer"] {
-    scroll-behavior: smooth;
 }
 
 /* Enhanced lyrics visibility */
