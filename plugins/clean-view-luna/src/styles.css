@@ -1,0 +1,124 @@
+[class*="tabItems"] {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-in-out;
+}
+
+[class*="_imageContainer"] {
+    margin-top: 40px !important;
+}
+
+[class*="_tabItems"]:hover {
+    opacity: 1 !important;
+}
+
+[data-test="header-container"] {
+    opacity: 0;
+    margin: -40px;
+}
+
+/* Only prevent specific text elements in player bar from being affected by margin adjustments */
+[data-test="footer-player"] [class*="_trackTitle"],
+[data-test="footer-player"] [class*="_artistName"],
+[data-test="footer-player"] [class*="_trackInfo"],
+[data-test="footer-player"] [class*="_trackContainer"] {
+    margin-top: 0 !important;
+    transform: none !important;
+}
+
+[class*="_nowPlayingContainer"] {
+    padding-left: 6%;
+    padding-top: 20px !important;
+}
+
+/* Move main content areas up */
+[class*="_trackTitleContainer"],
+[class*="_artistContainer"],
+[class*="_albumContainer"] {
+    margin-top: -20px !important;
+}
+
+/* Move album art and lyrics content up */
+[class*="_lyricsContainer"],
+[class*="_mediaContainer"] {
+    margin-top: -30px !important;
+}
+
+/* Move play queue content up to fill button space */
+[class*="_playQueueContainer"],
+[class*="_queueContainer"],
+[data-test="play-queue"],
+#playQueueSidebar {
+    margin-top: -40px !important;
+    padding-top: 10px !important;
+}
+
+/* Move play queue list content up - more aggressive */
+[class*="_playQueueList"],
+[class*="_queueList"],
+[class*="_trackList"] {
+    margin-top: -60px !important;
+    padding-top: 0px !important;
+}
+
+/* Target specific play queue elements more aggressively */
+#playQueueSidebar > div,
+#playQueueSidebar > div > div {
+    margin-top: -40px !important;
+    padding-top: 0px !important;
+}
+
+/* Override any existing padding in queue content area */
+[class*="_queueContent"],
+[class*="_playQueueContent"] {
+    margin-top: -50px !important;
+    padding-top: 20px !important;
+}
+
+[class^="_bar"] {
+    background-color: transparent;
+}
+
+[class^="_bar"]>* {
+    opacity: 0;
+}
+
+/* Hide bottom left controls completely - no hover reveal */
+[data-test="add-to-playlist"],
+[data-test="remove-from-playlist"], 
+[data-test="like-toggle"],
+[data-test="dislike-toggle"],
+[data-test="favorite-toggle"],
+[data-test="heart-button"],
+[data-test="playlist-add"],
+[class*="_trackActions"],
+[class*="_bottomLeftControls"],
+[class*="_actionButtons"],
+[class*="_favoriteButton"],
+[class*="_addToPlaylist"],
+[class*="_lowerLeft"],
+[class*="_bottomActions"],
+[class*="_mediaControls"] > div:first-child,
+button[title*="Add to"],
+button[title*="Remove from"],
+button[title*="Like"],
+button[title*="Favorite"],
+button[title*="Heart"],
+button[aria-label*="Add to"],
+button[aria-label*="Remove from"],
+button[aria-label*="Like"],
+button[aria-label*="Favorite"],
+button[aria-label*="Heart"],
+/* Target buttons in bottom left area specifically */
+[class*="_nowPlayingContainer"] button[class*="_button"]:not(.unhide-ui-button),
+[class*="_nowPlayingContainer"] [class*="_iconButton"]:not(.unhide-ui-button),
+/* Additional catch-all for bottom left area buttons */
+[class*="_nowPlayingContainer"] > div > div:first-child button:not(.unhide-ui-button),
+[class*="_nowPlayingContainer"] > div:first-child button:not(.unhide-ui-button) {
+    display: none !important;
+}
+
+/* Keep the Unhide button always visible with special styling */
+.unhide-ui-button {
+    opacity: 1 !important;
+    display: flex !important;
+} 

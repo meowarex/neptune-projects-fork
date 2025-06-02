@@ -1,7 +1,9 @@
-name: "[master] Release"
+name: "[main] Release"
 
 on:
  push:
+  branches:
+   - main
   paths-ignore:
    - "**/*.md"
    - ".vscode/**"

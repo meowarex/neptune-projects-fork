@@ -5,11 +5,13 @@ import React from "react";
 export const settings = await ReactiveStore.getPluginStorage("OLEDTheme", {
 	qualityColorMatchedSeekBar: true,
 	oledFriendlyButtons: true,
+	lightMode: false,
 });
 
 export const Settings = () => {
 	const [qualityColorMatchedSeekBar, setQualityColorMatchedSeekBar] = React.useState(settings.qualityColorMatchedSeekBar);
 	const [oledFriendlyButtons, setOledFriendlyButtons] = React.useState(settings.oledFriendlyButtons);
+	const [lightMode, setLightMode] = React.useState(settings.lightMode);
 	
 	return (
 		<LunaSettings>
@@ -33,6 +35,19 @@ export const Settings = () => {
 				onChange={(_, checked) => {
 					console.log("OLED Friendly Buttons:", checked ? "enabled" : "disabled");
 					setOledFriendlyButtons((settings.oledFriendlyButtons = checked));
+					// Update styles immediately when setting changes
+					if ((window as any).updateOLEDThemeStyles) {
+						(window as any).updateOLEDThemeStyles();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Light Mode | Experimental"
+				desc="Use the light theme instead of the dark theme. This is experimental and may not work as expected."
+				checked={lightMode}
+				onChange={(_, checked) => {
+					console.log("Light Mode:", checked ? "enabled" : "disabled");
+					setLightMode((settings.lightMode = checked));
 					// Update styles immediately when setting changes
 					if ((window as any).updateOLEDThemeStyles) {
 						(window as any).updateOLEDThemeStyles();
