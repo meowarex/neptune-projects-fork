@@ -4,8 +4,8 @@
 	"author": {
 		"name": "meowarex",
 		"url": "https://github.com/meowarex",
-		"avatarUrl": "https://avatars.githubusercontent.com/u/meowarex"
+		"avatarUrl": "https://avatars.githubusercontent.com/u/90243579"
 	},
 	"main": "./src/index.ts",
 	"type": "module"
-} 
+}
