@@ -60,10 +60,10 @@ const toggleCleanView = function(): void {
         // Apply clean view styles
         updateCleanViewStyles();
     } else {
-        // Clear all clean view styles
-        lyricsStyleTag.css = undefined;
-        baseStyleTag.css = undefined;
-        playerBarStyleTag.css = undefined;
+        // Remove all clean view styles
+        lyricsStyleTag.remove();
+        baseStyleTag.remove();
+        playerBarStyleTag.remove();
     }
     updateButtonStates();
 };
