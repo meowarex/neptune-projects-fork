@@ -1,0 +1,48 @@
+[class*="tabItems"] {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-in-out;
+}
+
+[class*="_imageContainer"] {
+    margin-top: 40px !important;
+}
+
+[class*="_tabItems"]:hover {
+    opacity: 1 !important;
+}
+
+[data-test="header-container"] {
+    opacity: 0;
+    margin: -40px;
+}
+
+/* Lyrics text styling */
+[class^="_lyricsText"] {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+}
+
+[class^="_lyricsText"] > div > span {
+    transition: all 0.3s ease;
+}
+
+[class^="_lyricsText"] > div > span[data-current="true"] {
+    font-weight: 600;
+    transform: scale(1.05);
+}
+
+/* Smooth scrolling for lyrics */
+[class^="_lyricsContainer"] {
+    scroll-behavior: smooth;
+}
+
+/* Enhanced lyrics visibility */
+[class^="_lyricsText"] > div {
+    padding: 8px 0;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+[class^="_lyricsText"] > div:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+} 

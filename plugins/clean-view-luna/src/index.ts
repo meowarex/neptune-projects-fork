@@ -1,8 +1,11 @@
 import { LunaUnload, Tracer, ftch } from "@luna/core";
+import { StyleTag } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
-// Import CSS directly using Luna's file:// syntax
-import styles from "file://styles.css?minify";
+// Import CSS files directly using Luna's file:// syntax
+import baseStyles from "file://styles.css?minify";
+import separatedLyrics from "file://separated-lyrics.css?minify";
+import playerBarHidden from "file://player-bar-hidden.css?minify";
 
 export const { trace } = Tracer("[Clean View]");
 export { Settings };
@@ -10,28 +13,12 @@ export { Settings };
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
-const themeUrl = "https://raw.githubusercontent.com/itzzexcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/src/separated-lyrics.css";
-
-function ApplyCSS(style: string): HTMLStyleElement {
-    const styleElement = document.createElement("style");
-    styleElement.type = "text/css";
-    styleElement.textContent = style;
-    document.head.appendChild(styleElement);
-    return styleElement;
-}
-
-async function HttpGet(url: string): Promise<string | null> {
-    try {
-        const content = await ftch.text(url);
-        return content;
-    } catch (error) {
-        trace.msg.err(`Failed to fetch URL: ${error instanceof Error ? error.message : String(error)}`);
-        return null;
-    }
-}
+// StyleTag instances for different CSS modules
+const lyricsStyleTag = new StyleTag("CleanView-lyrics", unloads);
+const baseStyleTag = new StyleTag("CleanView-base", unloads);
+const playerBarStyleTag = new StyleTag("CleanView-player-bar", unloads);
 
 var isCleanView = false;
-var appliedStyle: HTMLStyleElement | null = null;
 var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
 
 const updateButtonStates = function(): void {
@@ -46,41 +33,19 @@ const updateButtonStates = function(): void {
     }
 };
 
-// Function to get dynamic styles including player bar visibility
-const getDynamicStyles = function(): string {
-    let dynamicStyles = styles;
-    
-    // Add player bar hiding with hover reveal if setting is disabled
-    if (!settings.playerBarVisible) {
-        dynamicStyles += `
-/* Hide player bar when setting is disabled, but show on hover */
-[data-test="footer-player"] {
-    opacity: 0 !important;
-    transition: opacity 0.3s ease-in-out !important;
-    pointer-events: auto !important;
-}
-
-[data-test="footer-player"]:hover {
-    opacity: 1 !important;
-}
-
-/* Also show player bar when hovering over the bottom area */
-body:has([data-test="footer-player"]:hover) [data-test="footer-player"],
-body [data-test="footer-player"]:hover {
-    opacity: 1 !important;
-}
-`;
-    }
-    
-    return dynamicStyles;
-};
-
 // Function to update styles when settings change
 const updateCleanViewStyles = function(): void {
-    if (isCleanView && appliedStyle) {
-        // Remove old styles and apply new ones with updated settings
-        appliedStyle.remove();
-        appliedStyle = ApplyCSS(getDynamicStyles());
+    if (isCleanView) {
+        // Apply all clean view styles
+        lyricsStyleTag.css = separatedLyrics;
+        baseStyleTag.css = baseStyles;
+        
+        // Apply player bar styles based on setting
+        if (!settings.playerBarVisible) {
+            playerBarStyleTag.css = playerBarHidden;
+        } else {
+            playerBarStyleTag.css = undefined;
+        }
     }
 };
 
@@ -88,36 +53,20 @@ const updateCleanViewStyles = function(): void {
 (window as any).updateCleanViewStyles = updateCleanViewStyles;
 
 const toggleCleanView = function(): void {
-    if (isCleanView) {
-        if (appliedStyle) {
-            appliedStyle.remove();
-            appliedStyle = null;
-        }
-    } else {
-        appliedStyle = ApplyCSS(getDynamicStyles());
-        // Debug: Log bottom-left buttons to help identify selectors
-        //debugBottomLeftButtons();
-    }
+    // Toggle the state first
     isCleanView = !isCleanView;
+    
+    if (isCleanView) {
+        // Apply clean view styles
+        updateCleanViewStyles();
+    } else {
+        // Remove all clean view styles
+        lyricsStyleTag.remove();
+        baseStyleTag.remove();
+        playerBarStyleTag.remove();
+    }
     updateButtonStates();
 };
-
-// const debugBottomLeftButtons = function(): void {
-//     setTimeout(() => {
-//         const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]');
-//         if (nowPlayingContainer) {
-//             const buttons = nowPlayingContainer.querySelectorAll('button');
-//             //trace.msg.log(`Found ${buttons.length} buttons in now playing container:`);
-//             buttons.forEach((button, index) => {
-//                 const classes = button.className;
-//                 const dataTest = button.getAttribute('data-test');
-//                 const title = button.getAttribute('title');
-//                 const ariaLabel = button.getAttribute('aria-label');
-//                 //trace.msg.log(`Button ${index}: classes="${classes}", data-test="${dataTest}", title="${title}", aria-label="${ariaLabel}"`);
-//             });
-//         }
-//     }, 1000);
-// };
 
 const createHideUIButton = function(): void {
     setTimeout(() => {
@@ -412,10 +361,6 @@ const cleanUpDynamicArt = function (): void {
     currentTrackSrc = null; // Reset current track source
 };
 
-// STYLES FOR THE LYRICS - Added Top-level async since Luna plugins are modules <3
-const style = await HttpGet(themeUrl);
-const styleElement = style ? ApplyCSS(style) : null;
-
 // Initialize the button creation and observers
 observeForButtons();
 observeTrackTitle();
@@ -423,14 +368,6 @@ onTrackChanged(1);
 
 // Add cleanup to unloads
 unloads.add(() => {
-    if (styleElement && styleElement.parentNode) {
-        styleElement.parentNode.removeChild(styleElement);
-    }
-
-    if (appliedStyle && appliedStyle.parentNode) {
-        appliedStyle.parentNode.removeChild(appliedStyle);
-    }
-
     cleanUpDynamicArt();
 
     // Clean up our custom buttons
