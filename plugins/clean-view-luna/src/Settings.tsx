@@ -10,7 +10,7 @@ export const settings = await ReactiveStore.getPluginStorage("CleanView", {
 export const Settings = () => {
 	const [hideUIEnabled, setHideUIEnabled] = React.useState(settings.hideUIEnabled);
 	const [playerBarVisible, setPlayerBarVisible] = React.useState(settings.playerBarVisible);
-	
+
 	return (
 		<LunaSettings>
 			<LunaSwitchSetting
@@ -37,4 +37,4 @@ export const Settings = () => {
 			/>
 		</LunaSettings>
 	);
-}; 
+};

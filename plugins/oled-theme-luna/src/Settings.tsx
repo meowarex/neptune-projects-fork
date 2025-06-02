@@ -10,7 +10,7 @@ export const settings = await ReactiveStore.getPluginStorage("OLEDTheme", {
 export const Settings = () => {
 	const [qualityColorMatchedSeekBar, setQualityColorMatchedSeekBar] = React.useState(settings.qualityColorMatchedSeekBar);
 	const [oledFriendlyButtons, setOledFriendlyButtons] = React.useState(settings.oledFriendlyButtons);
-	
+
 	return (
 		<LunaSettings>
 			<LunaSwitchSetting
@@ -41,4 +41,4 @@ export const Settings = () => {
 			/>
 		</LunaSettings>
 	);
-}; 
+};
