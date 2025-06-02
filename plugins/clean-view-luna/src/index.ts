@@ -20,8 +20,10 @@ const baseStyleTag = new StyleTag("CleanView-base", unloads);
 const playerBarStyleTag = new StyleTag("CleanView-player-bar", unloads);
 const lyricsGlowStyleTag = new StyleTag("CleanView-lyrics-glow", unloads);
 
-// Apply lyrics glow styles immediately and keep them always active
-lyricsGlowStyleTag.css = lyricsGlow;
+// Apply lyrics glow styles if enabled
+if (settings.lyricsGlowEnabled) {
+    lyricsGlowStyleTag.css = lyricsGlow;
+}
 
 var isCleanView = false;
 var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
@@ -49,7 +51,19 @@ const updateCleanViewStyles = function(): void {
         if (!settings.playerBarVisible) {
             playerBarStyleTag.css = playerBarHidden;
         } else {
-            playerBarStyleTag.css = undefined;
+            playerBarStyleTag.remove();
+        }
+    }
+
+    // Update lyrics glow based on setting
+    const lyricsContainer = document.querySelector('[class^="_lyricsContainer"]');
+    if (lyricsContainer) {
+        if (settings.lyricsGlowEnabled) {
+            lyricsContainer.classList.remove('lyrics-glow-disabled');
+            lyricsGlowStyleTag.css = lyricsGlow;
+        } else {
+            lyricsContainer.classList.add('lyrics-glow-disabled');
+            lyricsGlowStyleTag.remove();
         }
     }
 };
@@ -267,6 +281,27 @@ function observeForButtons(): void {
     unloads.add(() => observer.disconnect());
 }
 
+// Also observe for lyrics container changes to apply the setting
+function observeLyricsContainer(): void {
+    const observer = new MutationObserver(() => {
+        const lyricsContainer = document.querySelector('[class^="_lyricsContainer"]');
+        if (lyricsContainer) {
+            if (settings.lyricsGlowEnabled) {
+                lyricsContainer.classList.remove('lyrics-glow-disabled');
+            } else {
+                lyricsContainer.classList.add('lyrics-glow-disabled');
+            }
+        }
+    });
+    
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    unloads.add(() => observer.disconnect());
+}
+
 const onTrackChanged = function (method: number = 0): void {
     if (method === 1) {
         setTimeout(() => {
@@ -369,6 +404,7 @@ const cleanUpDynamicArt = function (): void {
 // Initialize the button creation and observers
 observeForButtons();
 observeTrackTitle();
+observeLyricsContainer();
 onTrackChanged(1);
 
 // Add cleanup to unloads
