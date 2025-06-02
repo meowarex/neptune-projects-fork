@@ -1,22 +1,12 @@
 import { LunaUnload, Tracer } from "@luna/core";
 
-export const { trace } = Tracer("[Copy Lyrics]");
+// Import CSS directly using Luna's file:// syntax
+import unlockSelection from "file://styles.css?minify";
 
+export const { trace } = Tracer("[Copy Lyrics]");
 
 // clean up resources
 export const unloads = new Set<LunaUnload>();
-
-const unlockSelection = `
-[class^="_lyricsText"]>div>span {
-    user-select: text;
-    cursor: text;
-}
-
-::selection {
-    background: rgb(0, 0, 0);
-    color: rgb(255, 255, 255);
-}
-`;
 
 function ApplyCSS(style: string): HTMLStyleElement {
     const styleElement = document.createElement("style");

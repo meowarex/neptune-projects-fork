@@ -1,21 +1,20 @@
-import { LunaUnload, Tracer, ftch } from "@luna/core";
+import { LunaUnload, Tracer } from "@luna/core";
 import { settings, Settings } from "./Settings";
+
+// Import CSS directly using Luna's file:// syntax.. Took me a while to figure out this existed
+import originalStyle from "file://theme.css?minify";
 
 export const { trace } = Tracer("[OLED Theme]");
 export { Settings };
-
-const themeUrl = "https://raw.githubusercontent.com/ItzzExcel/neptune-projects/refs/heads/main/themes/black-neptune-theme.css";
 
 // called when plugin is unloaded.
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
-let originalStyle: string | null = null;
 let appliedStyleElement: HTMLStyleElement | null = null;
 
 // Function to apply theme styles based on current settings
 const applyThemeStyles = function(): void {
-    if (!originalStyle) return;
     
     // Remove existing style element if it exists
     if (appliedStyleElement && appliedStyleElement.parentNode) {
@@ -73,7 +72,7 @@ const applyThemeStyles = function(): void {
                 /\[class[^=]*=["'][^"']*action/i.test(rule) ||
                 /\[class[^=]*=["'][^"']*control/i.test(rule);
             
-            // Return true to keep the rule (i.e., if it's NOT a button rule)
+            // Return true to keep the rule if it's NOT a button rule
             return !isButtonRule;
         });
         
@@ -89,20 +88,12 @@ const applyThemeStyles = function(): void {
 // Make this function available globally so Settings can call it
 (window as any).updateOLEDThemeStyles = applyThemeStyles;
 
-// Added Top-level async since Luna plugins are modules <3
-originalStyle = await ftch.text(themeUrl).catch((error: Error) => {
-    trace.msg.err(`Failed to fetch theme CSS: ${error.message}`);
-    return null;
-});
+// Apply the OLED theme
+applyThemeStyles();
 
-// Apply the OLED theme if CSS was fetched successfully
-if (originalStyle) {
-    applyThemeStyles();
-    
-    // Add cleanup to unloads
-    unloads.add(() => {
-        if (appliedStyleElement && appliedStyleElement.parentNode) {
-            appliedStyleElement.parentNode.removeChild(appliedStyleElement);
-        }
-    });
-} 
+// Add cleanup to unloads
+unloads.add(() => {
+    if (appliedStyleElement && appliedStyleElement.parentNode) {
+        appliedStyleElement.parentNode.removeChild(appliedStyleElement);
+    }
+}); 
