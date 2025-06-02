@@ -1,4 +1,5 @@
 import { LunaUnload, Tracer } from "@luna/core";
+import { StyleTag } from "@luna/lib";
 
 // Import CSS directly using Luna's file:// syntax
 import unlockSelection from "file://styles.css?minify";
@@ -8,13 +9,8 @@ export const { trace } = Tracer("[Copy Lyrics]");
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
-function ApplyCSS(style: string): HTMLStyleElement {
-    const styleElement = document.createElement("style");
-    styleElement.type = "text/css";
-    styleElement.textContent = style;
-    document.head.appendChild(styleElement);
-    return styleElement;
-}
+// StyleTag for lyrics selection styling
+const lyricsStyleTag = new StyleTag("Copy-Lyrics", unloads, unlockSelection);
 
 function SetClipboard(text: string): void {
     const textarea = document.createElement("textarea");
@@ -32,8 +28,6 @@ function SetClipboard(text: string): void {
         document.body.removeChild(textarea);
     }
 }
-
-const styleElement = ApplyCSS(unlockSelection);
 
 let isSelecting = false;
 
@@ -117,10 +111,6 @@ document.addEventListener("mouseup", onMouseUp);
 
 // Add cleanup to unloads
 unloads.add(() => {
-    if (styleElement.parentNode) {
-        styleElement.parentNode.removeChild(styleElement);
-    }
-
     // Remove event listeners
     document.removeEventListener("click", onClickHooked, true);
     document.removeEventListener("mousedown", onMouseDown);

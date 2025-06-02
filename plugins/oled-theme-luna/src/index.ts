@@ -1,4 +1,5 @@
 import { LunaUnload, Tracer } from "@luna/core";
+import { StyleTag } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
 // Import CSS files directly using Luna's file:// syntax
@@ -13,16 +14,11 @@ export { Settings };
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
-let appliedStyleElement: HTMLStyleElement | null = null;
+// StyleTag instance for theme management
+const themeStyleTag = new StyleTag("OLED-Theme", unloads);
 
 // Function to apply theme styles based on current settings
 const applyThemeStyles = function(): void {
-    
-    // Remove existing style element if it exists
-    if (appliedStyleElement && appliedStyleElement.parentNode) {
-        appliedStyleElement.parentNode.removeChild(appliedStyleElement);
-    }
-    
     // Choose the appropriate CSS file based on settings
     let selectedStyle: string;
     
@@ -39,21 +35,12 @@ const applyThemeStyles = function(): void {
         selectedStyle = selectedStyle.replace(/\[class\^="_progressBarWrapper"\]\s*\{[^}]*\}/g, '');
     }
     
-    appliedStyleElement = document.createElement("style");
-    appliedStyleElement.type = "text/css";
-    appliedStyleElement.textContent = selectedStyle;
-    document.head.appendChild(appliedStyleElement);
+    // Apply the selected theme using StyleTag
+    themeStyleTag.css = selectedStyle;
 };
 
 // Make this function available globally so Settings can call it
 (window as any).updateOLEDThemeStyles = applyThemeStyles;
 
-// Apply the OLED theme
-applyThemeStyles();
-
-// Add cleanup to unloads
-unloads.add(() => {
-    if (appliedStyleElement && appliedStyleElement.parentNode) {
-        appliedStyleElement.parentNode.removeChild(appliedStyleElement);
-    }
-}); 
+// Apply the OLED theme initially
+applyThemeStyles(); 

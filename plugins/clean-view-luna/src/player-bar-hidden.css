@@ -1,0 +1,16 @@
+/* Hide player bar when setting is disabled, but show on hover */
+[data-test="footer-player"] {
+    opacity: 0 !important;
+    transition: opacity 0.3s ease-in-out !important;
+    pointer-events: auto !important;
+}
+
+[data-test="footer-player"]:hover {
+    opacity: 1 !important;
+}
+
+/* Also show player bar when hovering over the bottom area */
+body:has([data-test="footer-player"]:hover) [data-test="footer-player"],
+body [data-test="footer-player"]:hover {
+    opacity: 1 !important;
+} 
