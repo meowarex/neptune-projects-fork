@@ -53,16 +53,18 @@ const updateCleanViewStyles = function(): void {
 (window as any).updateCleanViewStyles = updateCleanViewStyles;
 
 const toggleCleanView = function(): void {
+    // Toggle the state first
+    isCleanView = !isCleanView;
+    
     if (isCleanView) {
+        // Apply clean view styles
+        updateCleanViewStyles();
+    } else {
         // Remove all clean view styles
         lyricsStyleTag.css = undefined;
         baseStyleTag.css = undefined;
         playerBarStyleTag.css = undefined;
-    } else {
-        // Apply clean view styles
-        updateCleanViewStyles();
     }
-    isCleanView = !isCleanView;
     updateButtonStates();
 };
 
