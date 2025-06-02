@@ -2,8 +2,9 @@ import { LunaUnload, Tracer } from "@luna/core";
 import { settings, Settings } from "./Settings";
 
 // Import CSS files directly using Luna's file:// syntax
-import fullTheme from "file://dark-theme.css?minify";
+import darkTheme from "file://dark-theme.css?minify";
 import oledFriendlyTheme from "file://oled-friendly.css?minify";
+import lightTheme from "file://light-theme.css?minify";
 
 export const { trace } = Tracer("[OLED Theme]");
 export { Settings };
@@ -22,8 +23,16 @@ const applyThemeStyles = function(): void {
         appliedStyleElement.parentNode.removeChild(appliedStyleElement);
     }
     
-    // Choose the appropriate CSS file based on OLED Friendly Buttons setting
-    let selectedStyle = settings.oledFriendlyButtons ? oledFriendlyTheme : fullTheme;
+    // Choose the appropriate CSS file based on settings
+    let selectedStyle: string;
+    
+    if (settings.lightMode) {
+        // Light mode always uses the full light theme (OLED friendly doesn't apply to light theme)
+        selectedStyle = lightTheme;
+    } else {
+        // Dark mode - choose between full dark theme or OLED friendly version
+        selectedStyle = settings.oledFriendlyButtons ? oledFriendlyTheme : darkTheme;
+    }
     
     // Remove SeekBar coloring if Quality Color Matched Seek Bar is enabled
     if (settings.qualityColorMatchedSeekBar) {
