@@ -5,14 +5,29 @@ import React from "react";
 export const settings = await ReactiveStore.getPluginStorage("CleanView", {
 	hideUIEnabled: true,
 	playerBarVisible: true,
+	lyricsGlowEnabled: true,
 });
 
 export const Settings = () => {
 	const [hideUIEnabled, setHideUIEnabled] = React.useState(settings.hideUIEnabled);
 	const [playerBarVisible, setPlayerBarVisible] = React.useState(settings.playerBarVisible);
+	const [lyricsGlowEnabled, setLyricsGlowEnabled] = React.useState(settings.lyricsGlowEnabled);
 	
 	return (
 		<LunaSettings>
+			<LunaSwitchSetting
+				title="Lyrics Glow Effect"
+				desc="Enable glowing effect for lyrics & Font Stytling Changes"
+				checked={lyricsGlowEnabled}
+				onChange={(_, checked) => {
+					console.log("Lyrics Glow Effect:", checked ? "enabled" : "disabled");
+					setLyricsGlowEnabled((settings.lyricsGlowEnabled = checked));
+					// Update styles immediately when setting changes
+					if ((window as any).updateCleanViewStyles) {
+						(window as any).updateCleanViewStyles();
+					}
+				}}
+			/>
 			<LunaSwitchSetting
 				title="Hide UI Feature"
 				desc="Enable hide/unhide UI functionality with toggle buttons"
