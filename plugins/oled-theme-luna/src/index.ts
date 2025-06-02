@@ -1,25 +1,21 @@
 import { LunaUnload, Tracer } from "@luna/core";
+import { StyleTag } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
 // Import CSS directly using Luna's file:// syntax.. Took me a while to figure out this existed
 import originalStyle from "file://theme.css?minify";
 
-export const { trace } = Tracer("[OLED Theme]");
+export const { trace, errSignal } = Tracer("[OLED Theme]");
 export { Settings };
 
 // called when plugin is unloaded.
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
-let appliedStyleElement: HTMLStyleElement | null = null;
+const styleTag = new StyleTag("OLEDTheme", unloads);
 
 // Function to apply theme styles based on current settings
 const applyThemeStyles = function (): void {
-	// Remove existing style element if it exists
-	if (appliedStyleElement && appliedStyleElement.parentNode) {
-		appliedStyleElement.parentNode.removeChild(appliedStyleElement);
-	}
-
 	let modifiedStyle = originalStyle;
 
 	// Remove SeekBar coloring if Quality Color Matched Seek Bar is enabled
@@ -78,10 +74,7 @@ const applyThemeStyles = function (): void {
 		modifiedStyle = filteredRules.join("} ") + (filteredRules.length > 0 ? "}" : "");
 	}
 
-	appliedStyleElement = document.createElement("style");
-	appliedStyleElement.type = "text/css";
-	appliedStyleElement.textContent = modifiedStyle;
-	document.head.appendChild(appliedStyleElement);
+	styleTag.css = modifiedStyle;
 };
 
 // Make this function available globally so Settings can call it
@@ -89,10 +82,3 @@ const applyThemeStyles = function (): void {
 
 // Apply the OLED theme
 applyThemeStyles();
-
-// Add cleanup to unloads
-unloads.add(() => {
-	if (appliedStyleElement && appliedStyleElement.parentNode) {
-		appliedStyleElement.parentNode.removeChild(appliedStyleElement);
-	}
-});

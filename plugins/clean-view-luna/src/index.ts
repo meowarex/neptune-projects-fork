@@ -1,38 +1,22 @@
-import { ftch, LunaUnload, Tracer } from "@luna/core";
+import { LunaUnload, Tracer } from "@luna/core";
+import { StyleTag } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
 // Import CSS directly using Luna's file:// syntax
+import lyricsStyles from "file://separated-lyrics.css?minify";
 import styles from "file://styles.css?minify";
 
-export const { trace } = Tracer("[Clean View]");
+export const { trace, errSignal } = Tracer("[Clean View]");
 export { Settings };
 
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
-const themeUrl =
-	"https://raw.githubusercontent.com/itzzexcel/neptune-projects/refs/heads/main/plugins/plugins/not-actual-fullscreen/src/separated-lyrics.css";
-
-function ApplyCSS(style: string): HTMLStyleElement {
-	const styleElement = document.createElement("style");
-	styleElement.type = "text/css";
-	styleElement.textContent = style;
-	document.head.appendChild(styleElement);
-	return styleElement;
-}
-
-async function HttpGet(url: string): Promise<string | null> {
-	try {
-		const content = await ftch.text(url);
-		return content;
-	} catch (error) {
-		trace.msg.err(`Failed to fetch URL: ${error instanceof Error ? error.message : String(error)}`);
-		return null;
-	}
-}
+// STYLES FOR THE LYRICS
+new StyleTag("CleanView-lyrics", unloads, lyricsStyles);
+const cleanViewStyle = new StyleTag("CleanView", unloads);
 
 var isCleanView = false;
-var appliedStyle: HTMLStyleElement | null = null;
 var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
 
 const updateButtonStates = function (): void {
@@ -54,23 +38,23 @@ const getDynamicStyles = function (): string {
 	// Add player bar hiding with hover reveal if setting is disabled
 	if (!settings.playerBarVisible) {
 		dynamicStyles += `
-/* Hide player bar when setting is disabled, but show on hover */
-[data-test="footer-player"] {
-    opacity: 0 !important;
-    transition: opacity 0.3s ease-in-out !important;
-    pointer-events: auto !important;
-}
+			/* Hide player bar when setting is disabled, but show on hover */
+			[data-test="footer-player"] {
+				opacity: 0 !important;
+				transition: opacity 0.3s ease-in-out !important;
+				pointer-events: auto !important;
+			}
 
-[data-test="footer-player"]:hover {
-    opacity: 1 !important;
-}
+			[data-test="footer-player"]:hover {
+				opacity: 1 !important;
+			}
 
-/* Also show player bar when hovering over the bottom area */
-body:has([data-test="footer-player"]:hover) [data-test="footer-player"],
-body [data-test="footer-player"]:hover {
-    opacity: 1 !important;
-}
-`;
+			/* Also show player bar when hovering over the bottom area */
+			body:has([data-test="footer-player"]:hover) [data-test="footer-player"],
+			body [data-test="footer-player"]:hover {
+				opacity: 1 !important;
+			}
+		`;
 	}
 
 	return dynamicStyles;
@@ -78,11 +62,7 @@ body [data-test="footer-player"]:hover {
 
 // Function to update styles when settings change
 const updateCleanViewStyles = function (): void {
-	if (isCleanView && appliedStyle) {
-		// Remove old styles and apply new ones with updated settings
-		appliedStyle.remove();
-		appliedStyle = ApplyCSS(getDynamicStyles());
-	}
+	if (isCleanView) cleanViewStyle.css = getDynamicStyles();
 };
 
 // Make this function available globally so Settings can call it
@@ -90,12 +70,9 @@ const updateCleanViewStyles = function (): void {
 
 const toggleCleanView = function (): void {
 	if (isCleanView) {
-		if (appliedStyle) {
-			appliedStyle.remove();
-			appliedStyle = null;
-		}
+		cleanViewStyle.remove();
 	} else {
-		appliedStyle = ApplyCSS(getDynamicStyles());
+		cleanViewStyle.css = getDynamicStyles();
 		// Debug: Log bottom-left buttons to help identify selectors
 		//debugBottomLeftButtons();
 	}
@@ -413,10 +390,6 @@ const cleanUpDynamicArt = function (): void {
 	currentTrackSrc = null; // Reset current track source
 };
 
-// STYLES FOR THE LYRICS - Added Top-level async since Luna plugins are modules <3
-const style = await HttpGet(themeUrl);
-const styleElement = style ? ApplyCSS(style) : null;
-
 // Initialize the button creation and observers
 observeForButtons();
 observeTrackTitle();
@@ -424,14 +397,6 @@ onTrackChanged(1);
 
 // Add cleanup to unloads
 unloads.add(() => {
-	if (styleElement && styleElement.parentNode) {
-		styleElement.parentNode.removeChild(styleElement);
-	}
-
-	if (appliedStyle && appliedStyle.parentNode) {
-		appliedStyle.parentNode.removeChild(appliedStyle);
-	}
-
 	cleanUpDynamicArt();
 
 	// Clean up our custom buttons

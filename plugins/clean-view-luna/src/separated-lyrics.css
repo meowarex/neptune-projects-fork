@@ -1,0 +1,98 @@
+/* TODO: ADD INTERLUDE SUPPORT FOR THE THREE DOTS */
+/* Credits to https://github.com/surfbryce for the fonts */
+@font-face {
+	font-family: "AbyssFont";
+	font-weight: 400;
+	src: url("https://excel.lexploits.top/extra/tidal/LyricsRegular.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "AbyssFont";
+	font-weight: 500;
+	src: url("https://excel.lexploits.top/extra/tidal/LyricsMedium.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "AbyssFont";
+	font-weight: 600;
+	src: url("https://excel.lexploits.top/extra/tidal/LyricsSemibold.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "AbyssFont";
+	font-weight: 700;
+	src: url("https://excel.lexploits.top/extra/tidal/LyricsBold.woff2") format("woff2");
+}
+
+[class*="_lyricsText"] > span[class*="_active"] {
+	text-shadow: 0 0 2px #fff, 0 0 20px #fff;
+	padding-left: 20px;
+	transition-duration: 0.7s;
+	font-size: 60px;
+}
+
+[class*="_lyricsText"] > span {
+	text-shadow: 0 0 0px transparent, 0 0 0px transparent;
+	transition-duration: 0.25s;
+	color: rgba(128, 128, 128, 0.4);
+	font-size: 45px;
+}
+
+[class*="_lyricsText"] > span:hover {
+	text-shadow: 0 0 2px lightgray, 0 0 20px lightgray;
+	color: lightgray;
+	padding-left: 20px;
+	transition-duration: 0.7s;
+}
+
+[data-test="now-playing-track-title"] {
+	text-shadow: 0 0 1px #fff, 0 0 30px #fff;
+}
+
+[class^="_bottomGradient"] {
+	visibility: hidden;
+}
+
+[aria-label="Show credits"] {
+	top: calc(var(--headerHeight) + 80px);
+}
+
+[data-current] {
+	transition: text-shadow 0.7s ease-in-out, text-shadow 0.7s ease-in-out padding 0.7s ease-in-out;
+}
+
+[data-current="true"] {
+	text-shadow: 0 0 2px #fff, 0 0 20px #fff;
+	padding-left: 20px;
+	transition-duration: 0.7s;
+}
+
+[data-current="false"] {
+	text-shadow: 0 0 0px transparent, 0 0 0px transparent;
+	transition-duration: 0.25s;
+	color: rgba(128, 128, 128, 0.4);
+}
+
+[data-current="false"]:hover {
+	text-shadow: 0 0 2px lightgray, 0 0 20px lightgray;
+	color: lightgray;
+	padding-left: 20px;
+	transition-duration: 0.7s;
+}
+
+[class^="_lyricsContainer"] > div > div > span {
+	margin-bottom: 2rem;
+	opacity: 1;
+	font-family: "AbyssFont", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+		"Helvetica Neue", sans-serif;
+	font-weight: 700;
+	font-size: 43px !important;
+}
+
+[class^="_lyricsProvider"] {
+	visibility: hidden;
+}
+
+[class^="_syncButton"] {
+	margin-bottom: 10px;
+}
