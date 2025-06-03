@@ -8,24 +8,24 @@ import separatedLyrics from "file://separated-lyrics.css?minify";
 import playerBarHidden from "file://player-bar-hidden.css?minify";
 import lyricsGlow from "file://lyrics-glow.css?minify";
 
-export const { trace } = Tracer("[Clean View]");
+export const { trace } = Tracer("[Radiant Lyrics]");
 export { Settings };
 
 // clean up resources
 export const unloads = new Set<LunaUnload>();
 
 // StyleTag instances for different CSS modules
-const lyricsStyleTag = new StyleTag("CleanView-lyrics", unloads);
-const baseStyleTag = new StyleTag("CleanView-base", unloads);
-const playerBarStyleTag = new StyleTag("CleanView-player-bar", unloads);
-const lyricsGlowStyleTag = new StyleTag("CleanView-lyrics-glow", unloads);
+const lyricsStyleTag = new StyleTag("RadiantLyrics-lyrics", unloads);
+const baseStyleTag = new StyleTag("RadiantLyrics-base", unloads);
+const playerBarStyleTag = new StyleTag("RadiantLyrics-player-bar", unloads);
+const lyricsGlowStyleTag = new StyleTag("RadiantLyrics-lyrics-glow", unloads);
 
 // Apply lyrics glow styles if enabled
 if (settings.lyricsGlowEnabled) {
     lyricsGlowStyleTag.css = lyricsGlow;
 }
 
-var isCleanView = false;
+var isHidden = false;
 var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
 
 const updateButtonStates = function(): void {
@@ -33,16 +33,16 @@ const updateButtonStates = function(): void {
     const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
     
     if (hideButton) {
-        hideButton.style.display = (settings.hideUIEnabled && !isCleanView) ? 'flex' : 'none';
+        hideButton.style.display = (settings.hideUIEnabled && !isHidden) ? 'flex' : 'none';
     }
     if (unhideButton) {
-        unhideButton.style.display = (settings.hideUIEnabled && isCleanView) ? 'flex' : 'none';
+        unhideButton.style.display = (settings.hideUIEnabled && isHidden) ? 'flex' : 'none';
     }
 };
 
 // Function to update styles when settings change
-const updateCleanViewStyles = function(): void {
-    if (isCleanView) {
+const updateRadiantLyricsStyles = function(): void {
+    if (isHidden) {
         // Apply all clean view styles
         lyricsStyleTag.css = separatedLyrics;
         baseStyleTag.css = baseStyles;
@@ -69,15 +69,15 @@ const updateCleanViewStyles = function(): void {
 };
 
 // Make this function available globally so Settings can call it
-(window as any).updateCleanViewStyles = updateCleanViewStyles;
+(window as any).updateRadiantLyricsStyles = updateRadiantLyricsStyles;
 
-const toggleCleanView = function(): void {
+const toggleRadiantLyrics = function(): void {
     // Toggle the state first
-    isCleanView = !isCleanView;
+    isHidden = !isHidden;
     
-    if (isCleanView) {
+    if (isHidden) {
         // Apply clean view styles
-        updateCleanViewStyles();
+        updateRadiantLyricsStyles();
     } else {
         // Remove all clean view styles
         lyricsStyleTag.remove();
@@ -140,7 +140,7 @@ const createHideUIButton = function(): void {
             hideUIButton.style.backgroundColor = 'var(--wave-color-solid-accent-fill)';
         });
         
-        hideUIButton.onclick = toggleCleanView;
+        hideUIButton.onclick = toggleRadiantLyrics;
 
         // Insert after the fullscreen button
         buttonContainer.insertBefore(hideUIButton, fullscreenButton.nextSibling);
@@ -201,7 +201,7 @@ const createUnhideUIButton = function(): void {
             unhideUIButton.style.transform = 'scale(1)';
         });
         
-        unhideUIButton.onclick = toggleCleanView;
+        unhideUIButton.onclick = toggleRadiantLyrics;
 
         // Append to body instead of a specific container
         document.body.appendChild(unhideUIButton);
