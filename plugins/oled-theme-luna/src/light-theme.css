@@ -129,13 +129,7 @@
     color: #333333;
 }
 
-/* Override button span color specifically for play/shuffle buttons */
-button[data-test="play-all"] [class^="button"]>span,
-button[data-test="shuffle-all"] [class^="button"]>span,
-button[data-test="play-all"] span,
-button[data-test="shuffle-all"] span {
-    color: white !important;
-}
+
 
 [class^="_explicitBadge"] {
     color: var(--wave-color-solid-accent-fill);
@@ -292,42 +286,72 @@ button[data-test="close-now-playing"]:hover {
     margin-top: 7.5px;
 }
 
-/* Play and Shuffle buttons - ultra aggressive targeting */
-button[data-test="play-all"],
-button[data-test="shuffle-all"],
-div[data-test="play-all"],
-div[data-test="shuffle-all"] {
-    background-color: #666666 !important;
-    color: white !important;
-    border-radius: 12px !important;
+/* Button styling using proper light theme approach */
+:root {
+    --button-light: #d9d9d9 !important;
+    --button-medium: #cbcbcb !important;
 }
 
-/* Target all possible text and icon elements */
-button[data-test="play-all"] *,
-button[data-test="shuffle-all"] *,
-div[data-test="play-all"] *,
-div[data-test="shuffle-all"] *,
-[data-test="play-all"] span,
-[data-test="shuffle-all"] span,
-[data-test="play-all"] svg,
-[data-test="shuffle-all"] svg,
-[data-test="play-all"] path,
-[data-test="shuffle-all"] path,
-[data-test="play-all"] div,
-[data-test="shuffle-all"] div,
-[data-test="play-all"] button,
-[data-test="shuffle-all"] button {
-    color: white !important;
-    fill: white !important;
-    background-color: transparent !important;
+/*buttons*/
+._activeTab_f47dafa {
+    background: #0000001c;
 }
 
-/* Override any CSS variable usage */
-[data-test="play-all"],
-[data-test="shuffle-all"] {
-    --wave-color-solid-accent-fill: white !important;
-    --wave-color-solid-contrast-fill: white !important;
-    --wave-text-body-medium: white !important;
+/*canvas nav buttons*/
+.viewAllButton--Nb87U,
+.css-7l8ggf {
+    background: #e0e0e0;
+}
+
+.viewAllButton--Nb87U:hover,
+.css-7l8ggf:hover {
+    background: #cbcbcb;
+}
+
+/*tracks page*/
+.variantPrimary--pjymy,
+._button_3357ce6 {
+    background-color: var(--button-light);
+}
+
+._button_f1c7fcb {
+    background: var(--wave-color-solid-base-brighter);
+}
+
+._button_84b8ffe {
+    background-color: var(--wave-color-solid-base-brighter);
+}
+
+._button_84b8ffe:hover {
+    background-color: var(--wave-color-solid-base-brightest);
+}
+
+.button--_0I_t {
+    background-color: var(--button-light);
+}
+
+.button--_0I_t:hover {
+    background-color: var(--wave-color-opacity-contrast-fill-regular);
+}
+
+._button_94c5125 {
+    background: var(--wave-color-solid-base-brighter);
+}
+
+.primary--NLSX4 {
+    background-color: #d5d5d5;
+}
+
+.primary--NLSX4:hover {
+    background-color: var(--wave-color-opacity-contrast-fill-regular) !important;
+}
+
+.primary--NLSX4:disabled {
+    background-color: #e7e7e8;
+}
+
+.primary--NLSX4:disabled:hover {
+    background-color: #e7e7e8;
 }
 
 [class^="__NEPTUNE_PAGE"],
