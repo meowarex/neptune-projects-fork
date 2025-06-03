@@ -15,10 +15,10 @@ A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
 - Reduces battery consumption on OLED displays.. i guess <3
 - Modern, sleek dark interface
 
-### 🎵 Clean View Luna  
-**Location:** `plugins/clean-view-luna/`
+### 🎵 Radiant Lyrics Luna  
+**Location:** `plugins/radiant-lyrics-luna/`
 
-Makes your "Play Queue" clean and immersive with dynamic visual effects.
+A radiant and beautiful lyrics view for TIDAL with dynamic visual effects.
 
 **Features:**
 - Dynamic album art backgrounds with blur and rotation effects

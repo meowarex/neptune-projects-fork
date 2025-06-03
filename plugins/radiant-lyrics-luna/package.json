@@ -1,6 +1,6 @@
 {
-	"name": "@meowarex/clean-view",
-	"description": "Make your \"Now Playing View\" allot cleaner, heavily based in beautiful-lyrics from @surfbryce!.",
+	"name": "@meowarex/radiant-lyrics",
+	"description": "A radiant and beautiful lyrics view for TIDAL, heavily based in beautiful-lyrics from @surfbryce!",
 	"author": {
 		"name": "meowarex",
 		"url": "https://github.com/meowarex",
