@@ -116,10 +116,13 @@ const applyThemeStyles = function(): void {
     
     // Apply the selected theme using StyleTag
     themeStyleTag.css = selectedStyle;
+
+
 };
 
 // Make this function available globally so Settings can call it
 (window as any).updateOLEDThemeStyles = applyThemeStyles;
 
 // Apply the OLED theme initially
-applyThemeStyles(); 
+applyThemeStyles();
+
