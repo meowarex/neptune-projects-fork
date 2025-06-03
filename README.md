@@ -4,7 +4,7 @@ A collection of Luna plugins for Tidal, ported from Neptune framework.
 
 ## Plugins
 
-### 🎨 OLED Theme Luna
+### 🎨 OLED Theme
 **Location:** `plugins/oled-theme-luna/`
 
 A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
@@ -15,7 +15,7 @@ A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
 - Reduces battery consumption on OLED displays.. i guess <3
 - Modern, sleek dark interface
 
-### 🎵 Radiant Lyrics Luna  
+### 🎵 Radiant Lyrics
 **Location:** `plugins/radiant-lyrics-luna/`
 
 A radiant and beautiful lyrics view for TIDAL with dynamic visual effects.
@@ -24,7 +24,7 @@ A radiant and beautiful lyrics view for TIDAL with dynamic visual effects.
 - Dynamic album art backgrounds with blur and rotation effects
 - Glowing Animated Lyrics with clean scrolling
 
-### 📋 Copy Lyrics Luna
+### 📋 Copy Lyrics
 **Location:** `plugins/copy-lyrics-luna/`
 
 Allows users to copy song lyrics by selecting them directly in the interface.
