@@ -36,6 +36,14 @@ Allows users to copy song lyrics by selecting them directly in the interface.
 
 ## Installation
 
+### Installing from URL
+1. Open TidalLuna after Building & Serving
+2. Navigate to Luna Settings (Top right of Tidal)
+3. Click "Plugin Store" Tab
+4. Paste in the "Install from URL" Bar `https://github.com/meowarex/tidalluna-plugins/releases/download/latest/store.json`
+
+## Installation from Source
+
 ### Building All Plugins
 ```bash
 # Git Clone the Repo
@@ -50,12 +58,8 @@ pnpm install
 # Build & Serve all plugins
 pnpm run watch
 ```
-### Installing from URL
-1. Open TidalLuna after Building & Serving
-2. Navigate to Luna Settings (Top right of Tidal)
-3. Click "Plugin Store" Tab
-4. Paste in the "Install from URL" Bar `https://github.com/meowarex/tidalluna-plugins/releases/download/latest/store.json`
-### Installing Plugins in TidalLuna from Files
+
+### Installing Plugins in TidalLuna
 1. Open TidalLuna after Building & Serving
 2. Navigate to Luna Settings (Top right of Tidal)
 3. Click "Plugin Store" Tab
@@ -69,7 +73,7 @@ This project is made for:
 
 ## GitHub Actions
 
-- **Automated builds** on every push
+- **Automated builds** on every push (to main)
 - **Release automation** for distributing plugins
 - **Artifact uploads** for easy plugin distribution
 
