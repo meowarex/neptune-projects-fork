@@ -334,7 +334,7 @@ const observeTrackChanges = (): void => {
     const interval = setInterval(() => {
         const currentTrackId = PlayState.playbackContext?.actualProductId;
         if (currentTrackId && currentTrackId !== lastTrackId) {
-            trace.msg.log(`Track changed: ${lastTrackId} -> ${currentTrackId}`);
+            //trace.msg.log(`Track changed: ${lastTrackId} -> ${currentTrackId}`);
             lastTrackId = currentTrackId;
             // delay for cover art to load (to prevent flickering)
             setTimeout(() => {
