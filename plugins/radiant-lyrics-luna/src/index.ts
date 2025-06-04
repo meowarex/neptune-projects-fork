@@ -1,5 +1,5 @@
 import { LunaUnload, Tracer, ftch } from "@luna/core";
-import { StyleTag } from "@luna/lib";
+import { StyleTag, PlayState } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
 // Import CSS files directly using Luna's file:// syntax - Took me a while to figure out <3
@@ -29,8 +29,6 @@ if (settings.lyricsGlowEnabled) {
 }
 
 var isHidden = false;
-var currentCoverArtSrc: string | null = null; // Track current Cover Art to prevent unnecessary updates
-var currentGlobalBackgroundSrc: string | null = null; // Track current global background to prevent unnecessary updates
 
 const updateButtonStates = function(): void {
     const hideButton = document.querySelector('.hide-ui-button') as HTMLElement;
@@ -72,7 +70,7 @@ const updateRadiantLyricsStyles = function(): void {
     }
 };
 
-// Function to apply spinning background to the entire app
+// Function to apply spinning background to the entire app (cover everywhere)
 const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
     if (!settings.spinningCoverEverywhere) {
@@ -97,7 +95,7 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
     // Remove any existing background elements
     appContainer.querySelectorAll('.global-spinning-image, .global-spinning-black-bg').forEach(el => el.remove());
 
-    // Add black background
+    // Add black background (to obscure image edges)
     const blackBg = document.createElement('div');
     blackBg.className = 'global-spinning-black-bg';
     appContainer.appendChild(blackBg);
@@ -137,13 +135,13 @@ const cleanUpGlobalSpinningBackground = function(): void {
     if (blackBg && blackBg.parentNode) {
         blackBg.parentNode.removeChild(blackBg);
     }
-    currentGlobalBackgroundSrc = null; // Reset current global background source
 };
 
 // Function to update global background when settings change
 const updateRadiantLyricsGlobalBackground = function(): void {
-    if (settings.spinningCoverEverywhere && currentCoverArtSrc) {
-        applyGlobalSpinningBackground(currentCoverArtSrc);
+    if (settings.spinningCoverEverywhere) {
+        // Get current cover art and apply global background
+        updateCoverArtBackground();
     } else {
         cleanUpGlobalSpinningBackground();
     }
@@ -330,77 +328,55 @@ const createUnhideUIButton = function(): void {
     }, 1500); // Slight delay after hide button
 };
 
-function observeTrackTitle(): void {
-    // Observe track title changes
-    const trackTitleElement = document.querySelector('[class^="_trackTitleContainer"]');
-    if (trackTitleElement) {
-        const titleObserver = new MutationObserver(() => {
+// Function to observe track changes using track ID
+const observeTrackChanges = (): void => {
+    let lastTrackId: string | null = null;
+    const interval = setInterval(() => {
+        const currentTrackId = PlayState.playbackContext?.actualProductId;
+        if (currentTrackId && currentTrackId !== lastTrackId) {
+            trace.msg.log(`Track changed: ${lastTrackId} -> ${currentTrackId}`);
+            lastTrackId = currentTrackId;
+            // delay for cover art to load (to prevent flickering)
             setTimeout(() => {
                 updateCoverArtBackground();
-            }, 300);
-        });
-        
-        titleObserver.observe(trackTitleElement, {
-            childList: true,
-            subtree: true
-        });
-        
-        unloads.add(() => titleObserver.disconnect());
-    }
-
-    // Also observe the CoverArt image container for changes
-    const coverArtImageContainer = document.querySelector('figure[class*="_albumImage"]');
-    if (coverArtImageContainer) {
-        const imageObserver = new MutationObserver(() => {
-            setTimeout(() => {
-                updateCoverArtBackground();
-            }, 100); // Slightly longer delay for image loading
-        });
-        
-        imageObserver.observe(coverArtImageContainer, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['src', 'poster']
-        });
-        
-        unloads.add(() => imageObserver.disconnect());
-    }
-
-    // Set up a periodic check as fallback
-    const periodicCheck = setInterval(() => {
-        updateCoverArtBackground();
-    }, 100); // Check every 100ms
-    
-    unloads.add(() => clearInterval(periodicCheck));
-}
-
-// Also observe for the buttons to appear so we can add our buttons
-function observeForButtons(): void {
-    const observer = new MutationObserver(() => {
-        // Only observe for buttons if Hide UI is enabled
-        if (settings.hideUIEnabled) {
-            const fullscreenButton = document.querySelector('[data-test="request-fullscreen"]');
-            if (fullscreenButton && !document.querySelector('.hide-ui-button')) {
-                createHideUIButton();
-            }
-            
-            // Create unhide button if it doesn't exist
-            if (!document.querySelector('.unhide-ui-button')) {
-                createUnhideUIButton();
-            }
+            }, 150);
         }
-    });
+    }, 150); // Check every 150ms for better responsiveness
     
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
+    unloads.add(() => clearInterval(interval));
+
+    // Initial background application (if a track is already loaded)
+    const currentTrackId = PlayState.playbackContext?.actualProductId;
+    if (currentTrackId) {
+        lastTrackId = currentTrackId;
+        // Reduced delay for initial load
+        setTimeout(() => {
+            updateCoverArtBackground();
+        }, 300);
+    }
+};
+
+// Button observer using polling (instead of Stupid Bloated MutationObserver)
+function observeForButtons(): void {
+    const buttonCheckInterval = setInterval(() => {
+        // Only observe for buttons if Hide UI is enabled
+        if (!settings.hideUIEnabled) return;
+        
+        const fullscreenButton = document.querySelector('[data-test="request-fullscreen"]');
+        if (fullscreenButton && !document.querySelector('.hide-ui-button')) {
+            createHideUIButton();
+        }
+        
+        // Create unhide button if it doesn't exist
+        if (!document.querySelector('.unhide-ui-button')) {
+            createUnhideUIButton();
+        }
+    }, 500); // Check every 500ms (much more efficient than MutationObserver)
     
-    unloads.add(() => observer.disconnect());
+    unloads.add(() => clearInterval(buttonCheckInterval));
 }
 
-// Also observe for lyrics container changes to apply the setting
+// Also observe for lyrics container changes to apply the setting 
 function observeLyricsContainer(): void {
     const observer = new MutationObserver(() => {
         const lyricsContainer = document.querySelector('[class^="_lyricsContainer"]');
@@ -451,13 +427,10 @@ const updateCoverArtBackground = function (method: number = 0): void {
         }
     }
 
-    // Only update if the image source has actually changed
-    if (coverArtImageSrc && coverArtImageSrc !== currentCoverArtSrc) {
-        currentCoverArtSrc = coverArtImageSrc;
-        
+    // Update backgrounds when we have a valid cover art source
+    if (coverArtImageSrc) {
         // Apply global spinning background if enabled
-        if (settings.spinningCoverEverywhere && coverArtImageSrc !== currentGlobalBackgroundSrc) {
-            currentGlobalBackgroundSrc = coverArtImageSrc;
+        if (settings.spinningCoverEverywhere) {
             applyGlobalSpinningBackground(coverArtImageSrc);
         }
         
@@ -468,7 +441,7 @@ const updateCoverArtBackground = function (method: number = 0): void {
             const existingBackgroundImages = nowPlayingContainerElement.querySelectorAll('.now-playing-background-image, .now-playing-black-bg');
             existingBackgroundImages.forEach(img => img.remove());
 
-            // Add black background layer
+            // Add black background layer (to obscure image edges)
             const blackBg = document.createElement('div');
             blackBg.className = 'now-playing-black-bg';
             blackBg.style.position = 'absolute';
@@ -481,7 +454,7 @@ const updateCoverArtBackground = function (method: number = 0): void {
             blackBg.style.pointerEvents = 'none';
             nowPlayingContainerElement.appendChild(blackBg);
 
-            // Create and append single background layer
+            // Create and append single background layer (the cover art)
             const backgroundImage = document.createElement('img');
             backgroundImage.src = coverArtImageSrc;
             backgroundImage.className = 'now-playing-background-image';
@@ -541,7 +514,6 @@ const cleanUpDynamicArt = function (): void {
     Array.from(nowPlayingBackgroundImages).forEach((element) => {
         element.remove();
     });
-    currentCoverArtSrc = null; // Reset current CoverArt source
     
     // Also clean up global spinning backgrounds
     cleanUpGlobalSpinningBackground();
@@ -549,7 +521,7 @@ const cleanUpDynamicArt = function (): void {
 
 // Initialize the button creation and observers
 observeForButtons();
-observeTrackTitle();
+observeTrackChanges();
 observeLyricsContainer();
 updateCoverArtBackground(1);
 
