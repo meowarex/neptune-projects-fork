@@ -107,6 +107,7 @@ const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
     img.src = albumImageSrc;
     img.className = 'global-spinning-image';
     img.style.animationDelay = '0s';
+    img.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
     appContainer.appendChild(img);
 };
 
@@ -399,7 +400,6 @@ const onTrackChanged = function (method: number = 0): void {
             }
         } else {
             cleanUpDynamicArt();
-            //trace.msg.log("Couldn't get album art"); - Broken as fucky
             return;
         }
     }
@@ -407,7 +407,6 @@ const onTrackChanged = function (method: number = 0): void {
     // Only update if the image source has actually changed
     if (albumImageSrc && albumImageSrc !== currentTrackSrc) {
         currentTrackSrc = albumImageSrc;
-        //trace.msg.log(`Track changed, updating background: ${albumImageSrc}`); - Accidentally left this in Prod... 
         
         // Apply global spinning background if enabled
         if (settings.spinningCoverEverywhere && albumImageSrc !== currentGlobalTrackSrc) {
@@ -434,7 +433,7 @@ const onTrackChanged = function (method: number = 0): void {
             centerImg.style.height = '150vh';
             centerImg.style.objectFit = 'cover';
             centerImg.style.zIndex = '-1';
-            centerImg.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
+            centerImg.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
             centerImg.style.animation = 'spin 35s linear infinite';
             centerImg.style.animationDelay = '5s';  // Add a 5-second delay
             nowPlayingContainerElement.appendChild(centerImg);
@@ -450,7 +449,7 @@ const onTrackChanged = function (method: number = 0): void {
             centerImg2.style.height = '150vh';
             centerImg2.style.objectFit = 'cover';
             centerImg2.style.zIndex = '-1';
-            centerImg2.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
+            centerImg2.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
             centerImg2.style.animation = 'spin 35s linear infinite';
             nowPlayingContainerElement.appendChild(centerImg2);
 
