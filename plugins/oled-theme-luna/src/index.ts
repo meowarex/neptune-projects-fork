@@ -2,7 +2,7 @@ import { LunaUnload, Tracer } from "@luna/core";
 import { StyleTag, observePromise, PlayState, Quality, type MediaItem } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
-// Import CSS files directly using Luna's file:// syntax
+// Import CSS files directly using Luna's file:// syntax - Took me a while to figure out <3
 import darkTheme from "file://dark-theme.css?minify";
 import oledFriendlyTheme from "file://oled-friendly.css?minify";
 import lightTheme from "file://light-theme.css?minify";

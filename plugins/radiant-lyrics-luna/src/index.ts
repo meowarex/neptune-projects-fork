@@ -2,7 +2,7 @@ import { LunaUnload, Tracer, ftch } from "@luna/core";
 import { StyleTag } from "@luna/lib";
 import { settings, Settings } from "./Settings";
 
-// Import CSS files directly using Luna's file:// syntax
+// Import CSS files directly using Luna's file:// syntax - Took me a while to figure out <3
 import baseStyles from "file://styles.css?minify";
 import separatedLyrics from "file://separated-lyrics.css?minify";
 import playerBarHidden from "file://player-bar-hidden.css?minify";
@@ -29,7 +29,7 @@ if (settings.lyricsGlowEnabled) {
 }
 
 var isHidden = false;
-var currentCoverArtSrc: string | null = null; // Track current CoverArt to prevent unnecessary updates
+var currentCoverArtSrc: string | null = null; // Track current Cover Art to prevent unnecessary updates
 var currentGlobalBackgroundSrc: string | null = null; // Track current global background to prevent unnecessary updates
 
 const updateButtonStates = function(): void {
@@ -453,12 +453,25 @@ const updateCoverArtBackground = function (method: number = 0): void {
             applyGlobalSpinningBackground(coverArtImageSrc);
         }
         
-        // Setting spinning CoverArt background to the Now Playing container
+        // Apply spinning CoverArt background to the Now Playing container
         const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
         if (nowPlayingContainerElement) {
             // Remove existing background images if they exist
-            const existingBackgroundImages = nowPlayingContainerElement.querySelectorAll('.now-playing-background-image');
+            const existingBackgroundImages = nowPlayingContainerElement.querySelectorAll('.now-playing-background-image, .now-playing-black-bg');
             existingBackgroundImages.forEach(img => img.remove());
+
+            // Add black background layer
+            const blackBg = document.createElement('div');
+            blackBg.className = 'now-playing-black-bg';
+            blackBg.style.position = 'absolute';
+            blackBg.style.left = '0';
+            blackBg.style.top = '0';
+            blackBg.style.width = '100%';
+            blackBg.style.height = '100%';
+            blackBg.style.background = '#000';
+            blackBg.style.zIndex = '-2';
+            blackBg.style.pointerEvents = 'none';
+            nowPlayingContainerElement.appendChild(blackBg);
 
             // Create and append single background layer
             const backgroundImage = document.createElement('img');
@@ -468,21 +481,36 @@ const updateCoverArtBackground = function (method: number = 0): void {
             backgroundImage.style.left = '50%';
             backgroundImage.style.top = '50%';
             backgroundImage.style.transform = 'translate(-50%, -50%)';
-            backgroundImage.style.width = '75vw';
-            backgroundImage.style.height = '150vh';
+            backgroundImage.style.width = '90vw';
+            backgroundImage.style.height = '90vh';
             backgroundImage.style.objectFit = 'cover';
             backgroundImage.style.zIndex = '-1';
             backgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
+            backgroundImage.style.willChange = 'transform, filter';
+            backgroundImage.style.transformOrigin = 'center center';
             
             // Apply animation based on performance mode
             if (settings.performanceMode) {
                 backgroundImage.style.animation = 'none';
                 backgroundImage.classList.add('performance-mode-static');
             } else {
-                backgroundImage.style.animation = 'spin 35s linear infinite';
+                backgroundImage.style.animation = 'spin 45s linear infinite';
                 backgroundImage.classList.remove('performance-mode-static');
             }
             nowPlayingContainerElement.appendChild(backgroundImage);
+
+            // Create subtle gradient overlay to hide edges (Hate this approach but it's the only way I could get it to work)
+            const gradientOverlay = document.createElement('div');
+            gradientOverlay.className = 'now-playing-gradient-overlay';
+            gradientOverlay.style.position = 'absolute';
+            gradientOverlay.style.left = '0';
+            gradientOverlay.style.top = '0';
+            gradientOverlay.style.width = '100%';
+            gradientOverlay.style.height = '100%';
+            gradientOverlay.style.background = 'radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.8) 90%)';
+            gradientOverlay.style.zIndex = '-1';
+            gradientOverlay.style.pointerEvents = 'none';
+            nowPlayingContainerElement.appendChild(gradientOverlay);
 
             // Add keyframe animation if it doesn't exist
             if (!document.querySelector('#spinAnimation')) {
