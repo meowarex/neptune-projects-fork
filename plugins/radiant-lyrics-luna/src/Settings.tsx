@@ -31,7 +31,7 @@ export const Settings = () => {
 				}}
 			/>
 			<LunaSwitchSetting
-				title="Spinning Cover Everywhere"
+				title="Cover Everywhere | Experimental"
 				desc="Apply the spinning album cover background to the entire app, not just the Now Playing view, Heavily Inspired by Cover-Theme by @Inrixia"
 				checked={spinningCoverEverywhere}
 				onChange={(_, checked: boolean) => {

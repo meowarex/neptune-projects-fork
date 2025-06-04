@@ -82,6 +82,9 @@ const applyGlobalSpinningBackground = function(albumImageSrc: string): void {
     existingGlobalImages.forEach(img => img.remove());
     const existingBlackBg = appContainer.querySelector('.global-spinning-black-bg');
     if (existingBlackBg) existingBlackBg.remove();
+    // Remove overlay if it exists (for safety)
+    const existingOverlay = appContainer.querySelector('.global-spinning-overlay');
+    if (existingOverlay) existingOverlay.remove();
 
     // Add a solid black background behind the spinning images
     const blackBg = document.createElement('div');
@@ -104,11 +107,11 @@ const applyGlobalSpinningBackground = function(albumImageSrc: string): void {
     globalImg1.style.left = '50%';
     globalImg1.style.top = '50%';
     globalImg1.style.transform = 'translate(-50%, -50%)';
-    globalImg1.style.width = '100vw';
-    globalImg1.style.height = '100vh';
+    globalImg1.style.width = '150vw';
+    globalImg1.style.height = '150vh';
     globalImg1.style.objectFit = 'cover';
     globalImg1.style.zIndex = '-1';
-    globalImg1.style.filter = 'blur(80px) brightness(0.3) contrast(1.4) saturate(1.3)';
+    globalImg1.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
     globalImg1.style.opacity = '1';
     globalImg1.style.animation = 'spinGlobal 45s linear infinite';
     globalImg1.style.animationDelay = '0s';
@@ -121,28 +124,15 @@ const applyGlobalSpinningBackground = function(albumImageSrc: string): void {
     globalImg2.style.left = '50%';
     globalImg2.style.top = '50%';
     globalImg2.style.transform = 'translate(-50%, -50%)';
-    globalImg2.style.width = '100vw';
-    globalImg2.style.height = '100vh';
+    globalImg2.style.width = '150vw';
+    globalImg2.style.height = '150vh';
     globalImg2.style.objectFit = 'cover';
     globalImg2.style.zIndex = '-1';
-    globalImg2.style.filter = 'blur(80px) brightness(0.25) contrast(1.4) saturate(1.3)';
+    globalImg2.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
     globalImg2.style.opacity = '1';
-    globalImg2.style.animation = 'spinGlobal 45s linear infinite reverse';
-    globalImg2.style.animationDelay = '22.5s';
+    globalImg2.style.animation = 'spinGlobal 45s linear infinite';
+    globalImg2.style.animationDelay = '0s';
     appContainer.appendChild(globalImg2);
-
-    // Add a semi-transparent overlay to enhance visibility
-    const overlay = document.createElement('div');
-    overlay.className = 'global-spinning-overlay';
-    overlay.style.position = 'fixed';
-    overlay.style.left = '0';
-    overlay.style.top = '0';
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-    overlay.style.zIndex = '-1';
-    overlay.style.pointerEvents = 'none';
-    appContainer.appendChild(overlay);
 
     // Add keyframe animation for global spinning if it doesn't exist
     if (!document.querySelector('#spinGlobalAnimation')) {
@@ -206,7 +196,6 @@ const cleanUpGlobalSpinningBackground = function(): void {
     Array.from(globalImages).forEach((element) => {
         element.remove();
     });
-    
     // Also remove the overlay
     const overlay = document.querySelector('.global-spinning-overlay');
     if (overlay && overlay.parentNode) {
@@ -217,7 +206,6 @@ const cleanUpGlobalSpinningBackground = function(): void {
     if (blackBg && blackBg.parentNode) {
         blackBg.parentNode.removeChild(blackBg);
     }
-    
     currentGlobalTrackSrc = null; // Reset current global track source
 };
 
