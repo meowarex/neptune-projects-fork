@@ -88,14 +88,12 @@ const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
     blackBg.className = 'global-spinning-black-bg';
     appContainer.appendChild(blackBg);
 
-    // Add two spinning images
-    for (let i = 0; i < 2; i++) {
-        const img = document.createElement('img');
-        img.src = albumImageSrc;
-        img.className = 'global-spinning-image';
-        img.style.animationDelay = '0s';
-        appContainer.appendChild(img);
-    }
+    // Add one spinning image for performance
+    const img = document.createElement('img');
+    img.src = albumImageSrc;
+    img.className = 'global-spinning-image';
+    img.style.animationDelay = '0s';
+    appContainer.appendChild(img);
 };
 
 // Function to clean up global spinning background
