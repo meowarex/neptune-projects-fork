@@ -1,7 +1,7 @@
 import { LunaUnload, Tracer } from "@luna/core";
 import { StyleTag } from "@luna/lib";
 
-// Import CSS directly using Luna's file:// syntax
+// Import CSS directly using Luna's file:// syntax - Took me a while to figure out <3
 import unlockSelection from "file://styles.css?minify";
 
 export const { trace } = Tracer("[Copy Lyrics]");
