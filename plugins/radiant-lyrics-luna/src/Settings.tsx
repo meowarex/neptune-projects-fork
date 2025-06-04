@@ -11,6 +11,8 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	backgroundContrast: 120,
 	backgroundBlur: 80,
 	backgroundBrightness: 40,
+	spinSpeed: 45,
+	settingsAffectNowPlaying: true,
 });
 
 export const Settings = () => {
@@ -22,6 +24,8 @@ export const Settings = () => {
 	const [backgroundContrast, setBackgroundContrast] = React.useState(settings.backgroundContrast);
 	const [backgroundBlur, setBackgroundBlur] = React.useState(settings.backgroundBlur);
 	const [backgroundBrightness, setBackgroundBrightness] = React.useState(settings.backgroundBrightness);
+	const [spinSpeed, setSpinSpeed] = React.useState(settings.spinSpeed);
+	const [settingsAffectNowPlaying, setSettingsAffectNowPlaying] = React.useState(settings.settingsAffectNowPlaying);
 	
 	return (
 		<LunaSettings>
@@ -102,6 +106,9 @@ export const Settings = () => {
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();
 					}
+					if (settings.settingsAffectNowPlaying && (window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
+					}
 				}}
 			/>
 			<LunaNumberSetting
@@ -117,6 +124,9 @@ export const Settings = () => {
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();
 					}
+					if (settings.settingsAffectNowPlaying && (window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
+					}
 				}}
 			/>
 			<LunaNumberSetting
@@ -131,6 +141,40 @@ export const Settings = () => {
 					setBackgroundBrightness((settings.backgroundBrightness = value));
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();
+					}
+					if (settings.settingsAffectNowPlaying && (window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
+					}
+				}}
+			/>
+			<LunaNumberSetting
+				title="Spin Speed"
+				desc="Adjust the rotation speed in seconds (10-120, default: 45) - Lower values = Faster rotation"
+				min={10}
+				max={120}
+				step={1}
+				value={spinSpeed}
+				onNumber={(value: number) => {
+					console.log("Spin Speed:", value);
+					setSpinSpeed((settings.spinSpeed = value));
+					if ((window as any).updateRadiantLyricsGlobalBackground) {
+						(window as any).updateRadiantLyricsGlobalBackground();
+					}
+					if (settings.settingsAffectNowPlaying && (window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Settings Affect Now Playing"
+				desc="Apply background settings to Now Playing view"
+				checked={settingsAffectNowPlaying}
+				onChange={(_, checked: boolean) => {
+					console.log("Settings Affect Now Playing:", checked ? "enabled" : "disabled");
+					setSettingsAffectNowPlaying((settings.settingsAffectNowPlaying = checked));
+					// Update Now Playing background immediately when setting changes
+					if ((window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
 					}
 				}}
 			/>
