@@ -31,6 +31,13 @@
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+/* Performance mode - static backgrounds */
+.global-spinning-image.performance-mode-static,
+.now-playing-background-image.performance-mode-static {
+    animation: none !important;
+    transform: translate(-50%, -50%) !important;
+}
+
 /* Make background visible through all containers */
 body,
 #wimp,
