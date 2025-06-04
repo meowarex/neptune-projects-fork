@@ -114,6 +114,7 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
         img.style.animation = 'none';
         img.classList.add('performance-mode-static');
     } else {
+        img.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
         img.classList.remove('performance-mode-static');
     }
     
@@ -148,31 +149,38 @@ const updateRadiantLyricsGlobalBackground = function(): void {
     }
 };
 
-// Function to update performance mode for existing backgrounds
-const updateRadiantLyricsPerformanceMode = function(): void {
-    // Update global spinning background images
-    const globalImages = document.querySelectorAll('.global-spinning-image');
-    globalImages.forEach((img: Element) => {
-        const imgElement = img as HTMLElement;
-        if (settings.performanceMode) {
-            imgElement.style.animation = 'none';
-            imgElement.classList.add('performance-mode-static');
-        } else {
-            imgElement.style.animation = '';
-            imgElement.classList.remove('performance-mode-static');
-        }
-    });
-    
-    // Update Now Playing background images
+// Function to update Now Playing background when settings change
+const updateRadiantLyricsNowPlayingBackground = function(): void {
     const nowPlayingBackgroundImages = document.querySelectorAll('.now-playing-background-image');
     nowPlayingBackgroundImages.forEach((img: Element) => {
         const imgElement = img as HTMLElement;
-        if (settings.performanceMode) {
-            imgElement.style.animation = 'none';
-            imgElement.classList.add('performance-mode-static');
+        
+        // Default values when settings don't affect Now Playing
+        const defaultBlur = 80;
+        const defaultBrightness = 40;
+        const defaultContrast = 120;
+        const defaultSpinSpeed = 45;
+        
+        if (settings.settingsAffectNowPlaying) {
+            // Use settings values
+            if (settings.performanceMode) {
+                imgElement.style.animation = 'none';
+                imgElement.classList.add('performance-mode-static');
+            } else {
+                imgElement.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                imgElement.classList.remove('performance-mode-static');
+            }
+            imgElement.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
         } else {
-            imgElement.style.animation = 'spin 35s linear infinite';
-            imgElement.classList.remove('performance-mode-static');
+            // Reset to default values
+            if (settings.performanceMode) {
+                imgElement.style.animation = 'none';
+                imgElement.classList.add('performance-mode-static');
+            } else {
+                imgElement.style.animation = `spin ${defaultSpinSpeed}s linear infinite`;
+                imgElement.classList.remove('performance-mode-static');
+            }
+            imgElement.style.filter = `blur(${defaultBlur}px) brightness(${defaultBrightness / 100}) contrast(${defaultContrast}%)`;
         }
     });
 };
@@ -180,7 +188,7 @@ const updateRadiantLyricsPerformanceMode = function(): void {
 // Make these functions available globally so Settings can call them
 (window as any).updateRadiantLyricsStyles = updateRadiantLyricsStyles;
 (window as any).updateRadiantLyricsGlobalBackground = updateRadiantLyricsGlobalBackground;
-(window as any).updateRadiantLyricsPerformanceMode = updateRadiantLyricsPerformanceMode;
+(window as any).updateRadiantLyricsNowPlayingBackground = updateRadiantLyricsNowPlayingBackground;
 
 const toggleRadiantLyrics = function(): void {
     // Toggle the state first
@@ -494,7 +502,7 @@ const updateCoverArtBackground = function (method: number = 0): void {
                 backgroundImage.style.animation = 'none';
                 backgroundImage.classList.add('performance-mode-static');
             } else {
-                backgroundImage.style.animation = 'spin 45s linear infinite';
+                backgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
                 backgroundImage.classList.remove('performance-mode-static');
             }
             nowPlayingContainerElement.appendChild(backgroundImage);
