@@ -37,7 +37,7 @@
     margin-top: -20px !important;
 }
 
-/* Move album art and lyrics content up */
+/* Move CoverArt and lyrics content up */
 [class*="_lyricsContainer"],
 [class*="_mediaContainer"] {
     margin-top: -30px !important;

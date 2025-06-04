@@ -29,8 +29,8 @@ if (settings.lyricsGlowEnabled) {
 }
 
 var isHidden = false;
-var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
-var currentGlobalTrackSrc: string | null = null; // Track current global background to prevent unnecessary updates
+var currentCoverArtSrc: string | null = null; // Track current CoverArt to prevent unnecessary updates
+var currentGlobalBackgroundSrc: string | null = null; // Track current global background to prevent unnecessary updates
 
 const updateButtonStates = function(): void {
     const hideButton = document.querySelector('.hide-ui-button') as HTMLElement;
@@ -73,7 +73,7 @@ const updateRadiantLyricsStyles = function(): void {
 };
 
 // Function to apply spinning background to the entire app
-const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
+const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
     if (!settings.spinningCoverEverywhere) {
         // Remove StyleTag and all background elements
@@ -102,12 +102,21 @@ const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
     blackBg.className = 'global-spinning-black-bg';
     appContainer.appendChild(blackBg);
 
-    // Add one spinning image for performance
+    // Add one image for background (spinning or static based on performance mode)
     const img = document.createElement('img');
-    img.src = albumImageSrc;
+    img.src = coverArtImageSrc;
     img.className = 'global-spinning-image';
     img.style.animationDelay = '0s';
     img.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
+    
+    // Apply or remove animation based on performance mode
+    if (settings.performanceMode) {
+        img.style.animation = 'none';
+        img.classList.add('performance-mode-static');
+    } else {
+        img.classList.remove('performance-mode-static');
+    }
+    
     appContainer.appendChild(img);
 };
 
@@ -127,21 +136,51 @@ const cleanUpGlobalSpinningBackground = function(): void {
     if (blackBg && blackBg.parentNode) {
         blackBg.parentNode.removeChild(blackBg);
     }
-    currentGlobalTrackSrc = null; // Reset current global track source
+    currentGlobalBackgroundSrc = null; // Reset current global background source
 };
 
 // Function to update global background when settings change
 const updateRadiantLyricsGlobalBackground = function(): void {
-    if (settings.spinningCoverEverywhere && currentTrackSrc) {
-        applyGlobalSpinningBackground(currentTrackSrc);
+    if (settings.spinningCoverEverywhere && currentCoverArtSrc) {
+        applyGlobalSpinningBackground(currentCoverArtSrc);
     } else {
         cleanUpGlobalSpinningBackground();
     }
 };
 
+// Function to update performance mode for existing backgrounds
+const updateRadiantLyricsPerformanceMode = function(): void {
+    // Update global spinning background images
+    const globalImages = document.querySelectorAll('.global-spinning-image');
+    globalImages.forEach((img: Element) => {
+        const imgElement = img as HTMLElement;
+        if (settings.performanceMode) {
+            imgElement.style.animation = 'none';
+            imgElement.classList.add('performance-mode-static');
+        } else {
+            imgElement.style.animation = '';
+            imgElement.classList.remove('performance-mode-static');
+        }
+    });
+    
+    // Update Now Playing background images
+    const nowPlayingBackgroundImages = document.querySelectorAll('.now-playing-background-image');
+    nowPlayingBackgroundImages.forEach((img: Element) => {
+        const imgElement = img as HTMLElement;
+        if (settings.performanceMode) {
+            imgElement.style.animation = 'none';
+            imgElement.classList.add('performance-mode-static');
+        } else {
+            imgElement.style.animation = 'spin 35s linear infinite';
+            imgElement.classList.remove('performance-mode-static');
+        }
+    });
+};
+
 // Make these functions available globally so Settings can call them
 (window as any).updateRadiantLyricsStyles = updateRadiantLyricsStyles;
 (window as any).updateRadiantLyricsGlobalBackground = updateRadiantLyricsGlobalBackground;
+(window as any).updateRadiantLyricsPerformanceMode = updateRadiantLyricsPerformanceMode;
 
 const toggleRadiantLyrics = function(): void {
     // Toggle the state first
@@ -289,7 +328,7 @@ function observeTrackTitle(): void {
     if (trackTitleElement) {
         const titleObserver = new MutationObserver(() => {
             setTimeout(() => {
-                onTrackChanged();
+                updateCoverArtBackground();
             }, 300);
         });
         
@@ -301,16 +340,16 @@ function observeTrackTitle(): void {
         unloads.add(() => titleObserver.disconnect());
     }
 
-    // Also observe the album image container for changes
-    const albumImageContainer = document.querySelector('figure[class*="_albumImage"]');
-    if (albumImageContainer) {
+    // Also observe the CoverArt image container for changes
+    const coverArtImageContainer = document.querySelector('figure[class*="_albumImage"]');
+    if (coverArtImageContainer) {
         const imageObserver = new MutationObserver(() => {
             setTimeout(() => {
-                onTrackChanged();
+                updateCoverArtBackground();
             }, 100); // Slightly longer delay for image loading
         });
         
-        imageObserver.observe(albumImageContainer, {
+        imageObserver.observe(coverArtImageContainer, {
             childList: true,
             subtree: true,
             attributes: true,
@@ -322,7 +361,7 @@ function observeTrackTitle(): void {
 
     // Set up a periodic check as fallback
     const periodicCheck = setInterval(() => {
-        onTrackChanged();
+        updateCoverArtBackground();
     }, 100); // Check every 100ms
     
     unloads.add(() => clearInterval(periodicCheck));
@@ -374,29 +413,29 @@ function observeLyricsContainer(): void {
     unloads.add(() => observer.disconnect());
 }
 
-const onTrackChanged = function (method: number = 0): void {
+const updateCoverArtBackground = function (method: number = 0): void {
     if (method === 1) {
         setTimeout(() => {
-            onTrackChanged();
+            updateCoverArtBackground();
             return;
         }, 2000);
     }
 
-    let albumImageElement = document.querySelector('figure[class*="_albumImage"] > div > div > div > img') as HTMLImageElement;
-    let albumImageSrc: string | null = null;
+    let coverArtImageElement = document.querySelector('figure[class*="_albumImage"] > div > div > div > img') as HTMLImageElement;
+    let coverArtImageSrc: string | null = null;
 
-    if (albumImageElement) {
-        albumImageSrc = albumImageElement.src;
+    if (coverArtImageElement) {
+        coverArtImageSrc = coverArtImageElement.src;
         // Set res to 1280x1280
-        albumImageSrc = albumImageSrc.replace(/\d+x\d+/, '1280x1280');
-        albumImageElement.src = albumImageSrc;
+        coverArtImageSrc = coverArtImageSrc.replace(/\d+x\d+/, '1280x1280');
+        coverArtImageElement.src = coverArtImageSrc;
     } else {
         const videoElement = document.querySelector('figure[class*="_albumImage"] > div > div > div > video') as HTMLVideoElement;
         if (videoElement) {
-            albumImageSrc = videoElement.getAttribute("poster");
-            if (albumImageSrc) {
+            coverArtImageSrc = videoElement.getAttribute("poster");
+            if (coverArtImageSrc) {
                 // Set res to 1280x1280
-                albumImageSrc = albumImageSrc.replace(/\d+x\d+/, '1280x1280');
+                coverArtImageSrc = coverArtImageSrc.replace(/\d+x\d+/, '1280x1280');
             }
         } else {
             cleanUpDynamicArt();
@@ -405,53 +444,45 @@ const onTrackChanged = function (method: number = 0): void {
     }
 
     // Only update if the image source has actually changed
-    if (albumImageSrc && albumImageSrc !== currentTrackSrc) {
-        currentTrackSrc = albumImageSrc;
+    if (coverArtImageSrc && coverArtImageSrc !== currentCoverArtSrc) {
+        currentCoverArtSrc = coverArtImageSrc;
         
         // Apply global spinning background if enabled
-        if (settings.spinningCoverEverywhere && albumImageSrc !== currentGlobalTrackSrc) {
-            currentGlobalTrackSrc = albumImageSrc;
-            applyGlobalSpinningBackground(albumImageSrc);
+        if (settings.spinningCoverEverywhere && coverArtImageSrc !== currentGlobalBackgroundSrc) {
+            currentGlobalBackgroundSrc = coverArtImageSrc;
+            applyGlobalSpinningBackground(coverArtImageSrc);
         }
         
-        // Setting background to the *="nowPlayingContainer" element
+        // Setting spinning CoverArt background to the Now Playing container
         const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
         if (nowPlayingContainerElement) {
-            // Remove existing corner images if they exist
-            const existingImages = nowPlayingContainerElement.querySelectorAll('.corner-image');
-            existingImages.forEach(img => img.remove());
+            // Remove existing background images if they exist
+            const existingBackgroundImages = nowPlayingContainerElement.querySelectorAll('.now-playing-background-image');
+            existingBackgroundImages.forEach(img => img.remove());
 
-            // Create and append center image
-            const centerImg = document.createElement('img');
-            centerImg.src = albumImageSrc;
-            centerImg.className = 'corner-image';
-            centerImg.style.position = 'absolute';
-            centerImg.style.left = '50%';
-            centerImg.style.top = '50%';
-            centerImg.style.transform = 'translate(-50%, -50%)';
-            centerImg.style.width = '75vw';
-            centerImg.style.height = '150vh';
-            centerImg.style.objectFit = 'cover';
-            centerImg.style.zIndex = '-1';
-            centerImg.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-            centerImg.style.animation = 'spin 35s linear infinite';
-            centerImg.style.animationDelay = '5s';  // Add a 5-second delay
-            nowPlayingContainerElement.appendChild(centerImg);
-
-            const centerImg2 = document.createElement('img');
-            centerImg2.src = albumImageSrc;
-            centerImg2.className = 'corner-image';
-            centerImg2.style.position = 'absolute';
-            centerImg2.style.left = '50%';
-            centerImg2.style.top = '50%';
-            centerImg2.style.transform = 'translate(-50%, -50%)';
-            centerImg2.style.width = '75vw';
-            centerImg2.style.height = '150vh';
-            centerImg2.style.objectFit = 'cover';
-            centerImg2.style.zIndex = '-1';
-            centerImg2.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-            centerImg2.style.animation = 'spin 35s linear infinite';
-            nowPlayingContainerElement.appendChild(centerImg2);
+            // Create and append single background layer
+            const backgroundImage = document.createElement('img');
+            backgroundImage.src = coverArtImageSrc;
+            backgroundImage.className = 'now-playing-background-image';
+            backgroundImage.style.position = 'absolute';
+            backgroundImage.style.left = '50%';
+            backgroundImage.style.top = '50%';
+            backgroundImage.style.transform = 'translate(-50%, -50%)';
+            backgroundImage.style.width = '75vw';
+            backgroundImage.style.height = '150vh';
+            backgroundImage.style.objectFit = 'cover';
+            backgroundImage.style.zIndex = '-1';
+            backgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
+            
+            // Apply animation based on performance mode
+            if (settings.performanceMode) {
+                backgroundImage.style.animation = 'none';
+                backgroundImage.classList.add('performance-mode-static');
+            } else {
+                backgroundImage.style.animation = 'spin 35s linear infinite';
+                backgroundImage.classList.remove('performance-mode-static');
+            }
+            nowPlayingContainerElement.appendChild(backgroundImage);
 
             // Add keyframe animation if it doesn't exist
             if (!document.querySelector('#spinAnimation')) {
@@ -470,11 +501,11 @@ const onTrackChanged = function (method: number = 0): void {
 };
 
 const cleanUpDynamicArt = function (): void {
-    const cornerImages = document.getElementsByClassName("corner-image");
-    Array.from(cornerImages).forEach((element) => {
+    const nowPlayingBackgroundImages = document.getElementsByClassName("now-playing-background-image");
+    Array.from(nowPlayingBackgroundImages).forEach((element) => {
         element.remove();
     });
-    currentTrackSrc = null; // Reset current track source
+    currentCoverArtSrc = null; // Reset current CoverArt source
     
     // Also clean up global spinning backgrounds
     cleanUpGlobalSpinningBackground();
@@ -484,7 +515,7 @@ const cleanUpDynamicArt = function (): void {
 observeForButtons();
 observeTrackTitle();
 observeLyricsContainer();
-onTrackChanged(1);
+updateCoverArtBackground(1);
 
 // Add cleanup to unloads
 unloads.add(() => {

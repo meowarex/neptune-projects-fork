@@ -7,6 +7,7 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	playerBarVisible: true,
 	lyricsGlowEnabled: true,
 	spinningCoverEverywhere: false,
+	performanceMode: false,
 	backgroundContrast: 120,
 	backgroundBlur: 80,
 	backgroundBrightness: 40,
@@ -17,6 +18,7 @@ export const Settings = () => {
 	const [playerBarVisible, setPlayerBarVisible] = React.useState(settings.playerBarVisible);
 	const [lyricsGlowEnabled, setLyricsGlowEnabled] = React.useState(settings.lyricsGlowEnabled);
 	const [spinningCoverEverywhere, setSpinningCoverEverywhere] = React.useState(settings.spinningCoverEverywhere);
+	const [performanceMode, setPerformanceMode] = React.useState(settings.performanceMode);
 	const [backgroundContrast, setBackgroundContrast] = React.useState(settings.backgroundContrast);
 	const [backgroundBlur, setBackgroundBlur] = React.useState(settings.backgroundBlur);
 	const [backgroundBrightness, setBackgroundBrightness] = React.useState(settings.backgroundBrightness);
@@ -60,7 +62,7 @@ export const Settings = () => {
 			/>
 			<LunaSwitchSetting
 				title="Cover Everywhere | Experimental"
-				desc="Apply the spinning album cover background to the entire app, not just the Now Playing view, Heavily Inspired by Cover-Theme by @Inrixia"
+				desc="Apply the spinning CoverArt background to the entire app, not just the Now Playing view, Heavily Inspired by Cover-Theme by @Inrixia"
 				checked={spinningCoverEverywhere}
 				onChange={(_, checked: boolean) => {
 					console.log("Spinning Cover Everywhere:", checked ? "enabled" : "disabled");
@@ -68,6 +70,22 @@ export const Settings = () => {
 					// Update styles immediately when setting changes
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Performance Mode"
+				desc="Disable spinning animations to reduce performance impact on your computer (backgrounds become static)"
+				checked={performanceMode}
+				onChange={(_, checked: boolean) => {
+					console.log("Performance Mode:", checked ? "enabled" : "disabled");
+					setPerformanceMode((settings.performanceMode = checked));
+					// Update background animations immediately when setting changes
+					if ((window as any).updateRadiantLyricsGlobalBackground) {
+						(window as any).updateRadiantLyricsGlobalBackground();
+					}
+					if ((window as any).updateRadiantLyricsPerformanceMode) {
+						(window as any).updateRadiantLyricsPerformanceMode();
 					}
 				}}
 			/>

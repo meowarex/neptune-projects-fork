@@ -21,7 +21,7 @@ A dark OLED-friendly theme plugin that transforms Tidal Luna's appearance.
 A radiant and beautiful lyrics view for TIDAL with dynamic visual effects.
 
 **Features:**
-- Dynamic album art backgrounds with blur and rotation effects
+- Dynamic CoverArt backgrounds with blur and rotation effects
 - Glowing Animated Lyrics with clean scrolling
 
 ### 📋 Copy Lyrics
