@@ -6,12 +6,14 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	hideUIEnabled: true,
 	playerBarVisible: true,
 	lyricsGlowEnabled: true,
+	spinningCoverEverywhere: false,
 });
 
 export const Settings = () => {
 	const [hideUIEnabled, setHideUIEnabled] = React.useState(settings.hideUIEnabled);
 	const [playerBarVisible, setPlayerBarVisible] = React.useState(settings.playerBarVisible);
 	const [lyricsGlowEnabled, setLyricsGlowEnabled] = React.useState(settings.lyricsGlowEnabled);
+	const [spinningCoverEverywhere, setSpinningCoverEverywhere] = React.useState(settings.spinningCoverEverywhere);
 	
 	return (
 		<LunaSettings>
@@ -25,6 +27,19 @@ export const Settings = () => {
 					// Update styles immediately when setting changes
 					if ((window as any).updateRadiantLyricsStyles) {
 						(window as any).updateRadiantLyricsStyles();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Spinning Cover Everywhere"
+				desc="Apply the spinning album cover background to the entire app, not just the Now Playing view, Heavily Inspired by Cover-Theme by @Inrixia"
+				checked={spinningCoverEverywhere}
+				onChange={(_, checked: boolean) => {
+					console.log("Spinning Cover Everywhere:", checked ? "enabled" : "disabled");
+					setSpinningCoverEverywhere((settings.spinningCoverEverywhere = checked));
+					// Update styles immediately when setting changes
+					if ((window as any).updateRadiantLyricsGlobalBackground) {
+						(window as any).updateRadiantLyricsGlobalBackground();
 					}
 				}}
 			/>

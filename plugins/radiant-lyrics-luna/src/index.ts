@@ -27,6 +27,7 @@ if (settings.lyricsGlowEnabled) {
 
 var isHidden = false;
 var currentTrackSrc: string | null = null; // Track current album art to prevent unnecessary updates
+var currentGlobalTrackSrc: string | null = null; // Track current global background to prevent unnecessary updates
 
 const updateButtonStates = function(): void {
     const hideButton = document.querySelector('.hide-ui-button') as HTMLElement;
@@ -68,8 +69,170 @@ const updateRadiantLyricsStyles = function(): void {
     }
 };
 
-// Make this function available globally so Settings can call it
+// Function to apply spinning background to the entire app
+const applyGlobalSpinningBackground = function(albumImageSrc: string): void {
+    if (!settings.spinningCoverEverywhere) return;
+
+    // Apply background to the main app container
+    const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
+    if (!appContainer) return;
+
+    // Remove existing global background images and black bg if they exist
+    const existingGlobalImages = appContainer.querySelectorAll('.global-spinning-image');
+    existingGlobalImages.forEach(img => img.remove());
+    const existingBlackBg = appContainer.querySelector('.global-spinning-black-bg');
+    if (existingBlackBg) existingBlackBg.remove();
+
+    // Add a solid black background behind the spinning images
+    const blackBg = document.createElement('div');
+    blackBg.className = 'global-spinning-black-bg';
+    blackBg.style.position = 'fixed';
+    blackBg.style.left = '0';
+    blackBg.style.top = '0';
+    blackBg.style.width = '100vw';
+    blackBg.style.height = '100vh';
+    blackBg.style.background = '#000';
+    blackBg.style.zIndex = '-2';
+    blackBg.style.pointerEvents = 'none';
+    appContainer.appendChild(blackBg);
+
+    // Create and append spinning background images to the app container
+    const globalImg1 = document.createElement('img');
+    globalImg1.src = albumImageSrc;
+    globalImg1.className = 'global-spinning-image';
+    globalImg1.style.position = 'fixed';
+    globalImg1.style.left = '50%';
+    globalImg1.style.top = '50%';
+    globalImg1.style.transform = 'translate(-50%, -50%)';
+    globalImg1.style.width = '100vw';
+    globalImg1.style.height = '100vh';
+    globalImg1.style.objectFit = 'cover';
+    globalImg1.style.zIndex = '-1';
+    globalImg1.style.filter = 'blur(80px) brightness(0.3) contrast(1.4) saturate(1.3)';
+    globalImg1.style.opacity = '1';
+    globalImg1.style.animation = 'spinGlobal 45s linear infinite';
+    globalImg1.style.animationDelay = '0s';
+    appContainer.appendChild(globalImg1);
+
+    const globalImg2 = document.createElement('img');
+    globalImg2.src = albumImageSrc;
+    globalImg2.className = 'global-spinning-image';
+    globalImg2.style.position = 'fixed';
+    globalImg2.style.left = '50%';
+    globalImg2.style.top = '50%';
+    globalImg2.style.transform = 'translate(-50%, -50%)';
+    globalImg2.style.width = '100vw';
+    globalImg2.style.height = '100vh';
+    globalImg2.style.objectFit = 'cover';
+    globalImg2.style.zIndex = '-1';
+    globalImg2.style.filter = 'blur(80px) brightness(0.25) contrast(1.4) saturate(1.3)';
+    globalImg2.style.opacity = '1';
+    globalImg2.style.animation = 'spinGlobal 45s linear infinite reverse';
+    globalImg2.style.animationDelay = '22.5s';
+    appContainer.appendChild(globalImg2);
+
+    // Add a semi-transparent overlay to enhance visibility
+    const overlay = document.createElement('div');
+    overlay.className = 'global-spinning-overlay';
+    overlay.style.position = 'fixed';
+    overlay.style.left = '0';
+    overlay.style.top = '0';
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    overlay.style.zIndex = '-1';
+    overlay.style.pointerEvents = 'none';
+    appContainer.appendChild(overlay);
+
+    // Add keyframe animation for global spinning if it doesn't exist
+    if (!document.querySelector('#spinGlobalAnimation')) {
+        const styleSheet = document.createElement('style');
+        styleSheet.id = 'spinGlobalAnimation';
+        styleSheet.textContent = `
+            @keyframes spinGlobal {
+                from { transform: translate(-50%, -50%) rotate(0deg); }
+                to { transform: translate(-50%, -50%) rotate(360deg); }
+            }
+
+            /* Make background visible through all containers */
+            body,
+            #wimp,
+            main,
+            [class^="_sidebarWrapper"],
+            [class^="_mainContainer"],
+            [class*="smallHeader"],
+            [data-test="main-layout-sidebar-wrapper"],
+            [data-test="main-layout-header"],
+            [data-test="feed-sidebar"],
+            [data-test="stream-metadata"],
+            [data-test="footer-player"] {
+                background: unset !important;
+            }
+
+            /* Make sidebar and player bar semi-transparent */
+            [data-test="footer-player"],
+            [data-test="main-layout-sidebar-wrapper"],
+            [class^="_bar"],
+            [class^="_sidebarItem"]:hover {
+                background-color: rgba(0, 0, 0, 0.3) !important;
+                backdrop-filter: blur(10px) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
+            }
+
+            /* Remove bottom gradient */
+            [class^="_bottomGradient"] {
+                display: none !important;
+            }
+
+            /* Make sure the background is visible through all containers */
+            [class^="_sidebarWrapper"],
+            [class^="_mainContainer"],
+            [class*="smallHeader"],
+            [data-test="main-layout-sidebar-wrapper"],
+            [data-test="main-layout-header"],
+            [data-test="feed-sidebar"],
+            [data-test="stream-metadata"],
+            [data-test="footer-player"] {
+                background: unset !important;
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    }
+};
+
+// Function to clean up global spinning background
+const cleanUpGlobalSpinningBackground = function(): void {
+    const globalImages = document.getElementsByClassName("global-spinning-image");
+    Array.from(globalImages).forEach((element) => {
+        element.remove();
+    });
+    
+    // Also remove the overlay
+    const overlay = document.querySelector('.global-spinning-overlay');
+    if (overlay && overlay.parentNode) {
+        overlay.parentNode.removeChild(overlay);
+    }
+    // Also remove the black bg
+    const blackBg = document.querySelector('.global-spinning-black-bg');
+    if (blackBg && blackBg.parentNode) {
+        blackBg.parentNode.removeChild(blackBg);
+    }
+    
+    currentGlobalTrackSrc = null; // Reset current global track source
+};
+
+// Function to update global background when settings change
+const updateRadiantLyricsGlobalBackground = function(): void {
+    if (settings.spinningCoverEverywhere && currentTrackSrc) {
+        applyGlobalSpinningBackground(currentTrackSrc);
+    } else {
+        cleanUpGlobalSpinningBackground();
+    }
+};
+
+// Make these functions available globally so Settings can call them
 (window as any).updateRadiantLyricsStyles = updateRadiantLyricsStyles;
+(window as any).updateRadiantLyricsGlobalBackground = updateRadiantLyricsGlobalBackground;
 
 const toggleRadiantLyrics = function(): void {
     // Toggle the state first
@@ -338,6 +501,12 @@ const onTrackChanged = function (method: number = 0): void {
         currentTrackSrc = albumImageSrc;
         //trace.msg.log(`Track changed, updating background: ${albumImageSrc}`); - Accidentally left this in Prod... 
         
+        // Apply global spinning background if enabled
+        if (settings.spinningCoverEverywhere && albumImageSrc !== currentGlobalTrackSrc) {
+            currentGlobalTrackSrc = albumImageSrc;
+            applyGlobalSpinningBackground(albumImageSrc);
+        }
+        
         // Setting background to the *="nowPlayingContainer" element
         const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
         if (nowPlayingContainerElement) {
@@ -399,6 +568,9 @@ const cleanUpDynamicArt = function (): void {
         element.remove();
     });
     currentTrackSrc = null; // Reset current track source
+    
+    // Also clean up global spinning backgrounds
+    cleanUpGlobalSpinningBackground();
 };
 
 // Initialize the button creation and observers
@@ -422,9 +594,17 @@ unloads.add(() => {
         unhideButton.parentNode.removeChild(unhideButton);
     }
 
-    // Clean up spin animation
+    // Clean up spin animations
     const spinAnimationStyle = document.querySelector('#spinAnimation');
     if (spinAnimationStyle && spinAnimationStyle.parentNode) {
         spinAnimationStyle.parentNode.removeChild(spinAnimationStyle);
     }
+    
+    const spinGlobalAnimationStyle = document.querySelector('#spinGlobalAnimation');
+    if (spinGlobalAnimationStyle && spinGlobalAnimationStyle.parentNode) {
+        spinGlobalAnimationStyle.parentNode.removeChild(spinGlobalAnimationStyle);
+    }
+    
+    // Clean up global spinning backgrounds
+    cleanUpGlobalSpinningBackground();
 }); 
