@@ -7,6 +7,7 @@ import baseStyles from "file://styles.css?minify";
 import separatedLyrics from "file://separated-lyrics.css?minify";
 import playerBarHidden from "file://player-bar-hidden.css?minify";
 import lyricsGlow from "file://lyrics-glow.css?minify";
+import coverEverywhereCss from "file://cover-everywhere.css?minify";
 
 export const { trace } = Tracer("[Radiant Lyrics]");
 export { Settings };
@@ -19,6 +20,9 @@ const lyricsStyleTag = new StyleTag("RadiantLyrics-lyrics", unloads);
 const baseStyleTag = new StyleTag("RadiantLyrics-base", unloads);
 const playerBarStyleTag = new StyleTag("RadiantLyrics-player-bar", unloads);
 const lyricsGlowStyleTag = new StyleTag("RadiantLyrics-lyrics-glow", unloads);
+
+// StyleTag for global spinning background CSS
+const globalSpinningBgStyleTag = new StyleTag("RadiantLyrics-global-spinning-bg", unloads, coverEverywhereCss);
 
 // Apply lyrics glow styles if enabled
 if (settings.lyricsGlowEnabled) {
@@ -70,123 +74,27 @@ const updateRadiantLyricsStyles = function(): void {
 };
 
 // Function to apply spinning background to the entire app
-const applyGlobalSpinningBackground = function(albumImageSrc: string): void {
+const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
     if (!settings.spinningCoverEverywhere) return;
 
-    // Apply background to the main app container
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
     if (!appContainer) return;
 
-    // Remove existing global background images and black bg if they exist
-    const existingGlobalImages = appContainer.querySelectorAll('.global-spinning-image');
-    existingGlobalImages.forEach(img => img.remove());
-    const existingBlackBg = appContainer.querySelector('.global-spinning-black-bg');
-    if (existingBlackBg) existingBlackBg.remove();
-    // Remove overlay if it exists (for safety)
-    const existingOverlay = appContainer.querySelector('.global-spinning-overlay');
-    if (existingOverlay) existingOverlay.remove();
+    // Remove any existing background elements
+    appContainer.querySelectorAll('.global-spinning-image, .global-spinning-black-bg').forEach(el => el.remove());
 
-    // Add a solid black background behind the spinning images
+    // Add black background
     const blackBg = document.createElement('div');
     blackBg.className = 'global-spinning-black-bg';
-    blackBg.style.position = 'fixed';
-    blackBg.style.left = '0';
-    blackBg.style.top = '0';
-    blackBg.style.width = '100vw';
-    blackBg.style.height = '100vh';
-    blackBg.style.background = '#000';
-    blackBg.style.zIndex = '-2';
-    blackBg.style.pointerEvents = 'none';
     appContainer.appendChild(blackBg);
 
-    // Create and append spinning background images to the app container
-    const globalImg1 = document.createElement('img');
-    globalImg1.src = albumImageSrc;
-    globalImg1.className = 'global-spinning-image';
-    globalImg1.style.position = 'fixed';
-    globalImg1.style.left = '50%';
-    globalImg1.style.top = '50%';
-    globalImg1.style.transform = 'translate(-50%, -50%)';
-    globalImg1.style.width = '150vw';
-    globalImg1.style.height = '150vh';
-    globalImg1.style.objectFit = 'cover';
-    globalImg1.style.zIndex = '-1';
-    globalImg1.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
-    globalImg1.style.opacity = '1';
-    globalImg1.style.animation = 'spinGlobal 45s linear infinite';
-    globalImg1.style.animationDelay = '0s';
-    appContainer.appendChild(globalImg1);
-
-    const globalImg2 = document.createElement('img');
-    globalImg2.src = albumImageSrc;
-    globalImg2.className = 'global-spinning-image';
-    globalImg2.style.position = 'fixed';
-    globalImg2.style.left = '50%';
-    globalImg2.style.top = '50%';
-    globalImg2.style.transform = 'translate(-50%, -50%)';
-    globalImg2.style.width = '150vw';
-    globalImg2.style.height = '150vh';
-    globalImg2.style.objectFit = 'cover';
-    globalImg2.style.zIndex = '-1';
-    globalImg2.style.filter = 'blur(100px) brightness(0.4) contrast(1.2) saturate(1)';
-    globalImg2.style.opacity = '1';
-    globalImg2.style.animation = 'spinGlobal 45s linear infinite';
-    globalImg2.style.animationDelay = '0s';
-    appContainer.appendChild(globalImg2);
-
-    // Add keyframe animation for global spinning if it doesn't exist
-    if (!document.querySelector('#spinGlobalAnimation')) {
-        const styleSheet = document.createElement('style');
-        styleSheet.id = 'spinGlobalAnimation';
-        styleSheet.textContent = `
-            @keyframes spinGlobal {
-                from { transform: translate(-50%, -50%) rotate(0deg); }
-                to { transform: translate(-50%, -50%) rotate(360deg); }
-            }
-
-            /* Make background visible through all containers */
-            body,
-            #wimp,
-            main,
-            [class^="_sidebarWrapper"],
-            [class^="_mainContainer"],
-            [class*="smallHeader"],
-            [data-test="main-layout-sidebar-wrapper"],
-            [data-test="main-layout-header"],
-            [data-test="feed-sidebar"],
-            [data-test="stream-metadata"],
-            [data-test="footer-player"] {
-                background: unset !important;
-            }
-
-            /* Make sidebar and player bar semi-transparent */
-            [data-test="footer-player"],
-            [data-test="main-layout-sidebar-wrapper"],
-            [class^="_bar"],
-            [class^="_sidebarItem"]:hover {
-                background-color: rgba(0, 0, 0, 0.3) !important;
-                backdrop-filter: blur(10px) !important;
-                -webkit-backdrop-filter: blur(10px) !important;
-            }
-
-            /* Remove bottom gradient */
-            [class^="_bottomGradient"] {
-                display: none !important;
-            }
-
-            /* Make sure the background is visible through all containers */
-            [class^="_sidebarWrapper"],
-            [class^="_mainContainer"],
-            [class*="smallHeader"],
-            [data-test="main-layout-sidebar-wrapper"],
-            [data-test="main-layout-header"],
-            [data-test="feed-sidebar"],
-            [data-test="stream-metadata"],
-            [data-test="footer-player"] {
-                background: unset !important;
-            }
-        `;
-        document.head.appendChild(styleSheet);
+    // Add two spinning images
+    for (let i = 0; i < 2; i++) {
+        const img = document.createElement('img');
+        img.src = albumImageSrc;
+        img.className = 'global-spinning-image';
+        img.style.animationDelay = '0s';
+        appContainer.appendChild(img);
     }
 };
 
@@ -586,11 +494,6 @@ unloads.add(() => {
     const spinAnimationStyle = document.querySelector('#spinAnimation');
     if (spinAnimationStyle && spinAnimationStyle.parentNode) {
         spinAnimationStyle.parentNode.removeChild(spinAnimationStyle);
-    }
-    
-    const spinGlobalAnimationStyle = document.querySelector('#spinGlobalAnimation');
-    if (spinGlobalAnimationStyle && spinGlobalAnimationStyle.parentNode) {
-        spinGlobalAnimationStyle.parentNode.removeChild(spinGlobalAnimationStyle);
     }
     
     // Clean up global spinning backgrounds

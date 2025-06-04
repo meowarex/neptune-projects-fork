@@ -1,0 +1,61 @@
+/* Global Spinning Background Styles */
+
+.global-spinning-black-bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.global-spinning-image {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 150vw;
+    height: 150vh;
+    object-fit: cover;
+    z-index: -1;
+    filter: blur(100px) brightness(0.4) contrast(1.2) saturate(1);
+    opacity: 1;
+    animation: spinGlobal 45s linear infinite;
+}
+
+@keyframes spinGlobal {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Make background visible through all containers */
+body,
+#wimp,
+main,
+[class^="_sidebarWrapper"],
+[class^="_mainContainer"],
+[class*="smallHeader"],
+[data-test="main-layout-sidebar-wrapper"],
+[data-test="main-layout-header"],
+[data-test="feed-sidebar"],
+[data-test="stream-metadata"],
+[data-test="footer-player"] {
+    background: unset !important;
+}
+
+/* Make sidebar and player bar semi-transparent */
+[data-test="footer-player"],
+[data-test="main-layout-sidebar-wrapper"],
+[class^="_bar"],
+[class^="_sidebarItem"]:hover {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Remove bottom gradient */
+[class^="_bottomGradient"] {
+    display: none !important;
+} 
