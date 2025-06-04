@@ -21,8 +21,7 @@ const baseStyleTag = new StyleTag("RadiantLyrics-base", unloads);
 const playerBarStyleTag = new StyleTag("RadiantLyrics-player-bar", unloads);
 const lyricsGlowStyleTag = new StyleTag("RadiantLyrics-lyrics-glow", unloads);
 
-// StyleTag for global spinning background CSS
-const globalSpinningBgStyleTag = new StyleTag("RadiantLyrics-global-spinning-bg", unloads, coverEverywhereCss);
+let globalSpinningBgStyleTag: StyleTag | null = null;
 
 // Apply lyrics glow styles if enabled
 if (settings.lyricsGlowEnabled) {
@@ -75,9 +74,24 @@ const updateRadiantLyricsStyles = function(): void {
 
 // Function to apply spinning background to the entire app
 const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
-    if (!settings.spinningCoverEverywhere) return;
-
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
+    if (!settings.spinningCoverEverywhere) {
+        // Remove StyleTag and all background elements
+        if (globalSpinningBgStyleTag) {
+            globalSpinningBgStyleTag.remove();
+            globalSpinningBgStyleTag = null;
+        }
+        if (appContainer) {
+            appContainer.querySelectorAll('.global-spinning-image, .global-spinning-black-bg').forEach(el => el.remove());
+        }
+        return;
+    }
+
+    // Add StyleTag if not present
+    if (!globalSpinningBgStyleTag) {
+        globalSpinningBgStyleTag = new StyleTag("RadiantLyrics-global-spinning-bg", unloads, coverEverywhereCss);
+    }
+
     if (!appContainer) return;
 
     // Remove any existing background elements
@@ -88,14 +102,12 @@ const applyGlobalSpinningBackground = (albumImageSrc: string): void => {
     blackBg.className = 'global-spinning-black-bg';
     appContainer.appendChild(blackBg);
 
-    // Add two spinning images
-    for (let i = 0; i < 2; i++) {
-        const img = document.createElement('img');
-        img.src = albumImageSrc;
-        img.className = 'global-spinning-image';
-        img.style.animationDelay = '0s';
-        appContainer.appendChild(img);
-    }
+    // Add one spinning image for performance
+    const img = document.createElement('img');
+    img.src = albumImageSrc;
+    img.className = 'global-spinning-image';
+    img.style.animationDelay = '0s';
+    appContainer.appendChild(img);
 };
 
 // Function to clean up global spinning background
