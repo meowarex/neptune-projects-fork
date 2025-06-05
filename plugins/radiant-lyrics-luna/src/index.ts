@@ -192,14 +192,30 @@ const toggleRadiantLyrics = function(): void {
     // Toggle the state first
     isHidden = !isHidden;
     
+    const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
+    
     if (isHidden) {
         // Apply clean view styles
         updateRadiantLyricsStyles();
+        // Add a class to the container to trigger CSS animations
+        if (nowPlayingContainer) {
+            nowPlayingContainer.classList.add('radiant-lyrics-ui-hidden');
+        }
+        document.body.classList.add('radiant-lyrics-ui-hidden');
     } else {
-        // Remove all clean view styles
-        lyricsStyleTag.remove();
-        baseStyleTag.remove();
-        playerBarStyleTag.remove();
+        // Don't remove StyleTags completely, just remove the class to show elements again
+        if (nowPlayingContainer) {
+            nowPlayingContainer.classList.remove('radiant-lyrics-ui-hidden');
+        }
+        document.body.classList.remove('radiant-lyrics-ui-hidden');
+        // Remove styles after animation completes
+        setTimeout(() => {
+            if (!isHidden) {
+                lyricsStyleTag.remove();
+                baseStyleTag.remove();
+                playerBarStyleTag.remove();
+            }
+        }, 500); // Wait for fade animation to complete
     }
     updateButtonStates();
 };
