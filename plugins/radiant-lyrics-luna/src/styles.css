@@ -36,12 +36,11 @@
 
 /* Remove all layout-changing rules - only fade buttons, keep everything else in place */
 
-/* Immediate hide class for unhide button */
+/* Immediate hide class for unhide button with smooth transition */
 .hide-immediately {
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
-    transition: none !important;
 }
 
 [class^="_bar"] {
@@ -173,8 +172,4 @@ button[aria-label*="Heart"],
     transition: opacity 0.5s ease-in-out;
 }
 
-/* Keep the Unhide button always visible with special styling */
-.unhide-ui-button {
-    opacity: 1 !important;
-    display: flex !important;
-} 
+/* Let JavaScript handle the unhide button visibility and transitions */ 

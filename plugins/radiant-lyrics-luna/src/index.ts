@@ -35,13 +35,43 @@ const updateButtonStates = function(): void {
     const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
     
     if (hideButton) {
-        hideButton.style.display = (settings.hideUIEnabled && !isHidden) ? 'flex' : 'none';
+        if (settings.hideUIEnabled && !isHidden) {
+            hideButton.style.display = 'flex';
+            hideButton.style.opacity = '1';
+            hideButton.style.visibility = 'visible';
+            hideButton.style.pointerEvents = 'auto';
+        } else {
+            hideButton.style.opacity = '0';
+            hideButton.style.visibility = 'hidden';
+            hideButton.style.pointerEvents = 'none';
+            // Keep display: flex to maintain transitions
+            setTimeout(() => {
+                if (hideButton.style.opacity === '0') {
+                    hideButton.style.display = 'none';
+                }
+            }, 500); // Wait for transition to complete
+        }
     }
     if (unhideButton) {
-        unhideButton.style.display = (settings.hideUIEnabled && isHidden) ? 'flex' : 'none';
-        // Remove the immediate hide class when button should be visible
         if (settings.hideUIEnabled && isHidden) {
+            unhideButton.style.display = 'flex';
+            // Remove the hide-immediately class and let it fade in
             unhideButton.classList.remove('hide-immediately');
+            setTimeout(() => {
+                unhideButton.style.opacity = '1';
+                unhideButton.style.visibility = 'visible';
+                unhideButton.style.pointerEvents = 'auto';
+            }, 50); // Small delay to ensure display is set first
+        } else {
+            unhideButton.style.opacity = '0';
+            unhideButton.style.visibility = 'hidden';
+            unhideButton.style.pointerEvents = 'none';
+            // Keep display: flex to maintain transitions
+            setTimeout(() => {
+                if (unhideButton.style.opacity === '0') {
+                    unhideButton.style.display = 'none';
+                }
+            }, 500); // Wait for transition to complete
         }
     }
 };
@@ -278,10 +308,13 @@ const createHideUIButton = function(): void {
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: background-color 0.2s ease;
+            transition: all 0.5s ease-in-out;
             font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         `;
         
         // Add hover effect
@@ -341,7 +374,7 @@ const createUnhideUIButton = function(): void {
             display: none;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease-in-out;
             font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
@@ -349,6 +382,9 @@ const createUnhideUIButton = function(): void {
             -webkit-backdrop-filter: blur(10px);
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         `;
         
         // Add hover effect
