@@ -70,15 +70,20 @@ main,
     -webkit-backdrop-filter: blur(10px) !important;
 }
 
-/* Feed sidebar - completely transparent to show background */
-[data-test="feed-sidebar"],
-[class^="_feedSidebarVStack"],
-[class^="_feedSidebarSpacer"],
-[class^="_feedSidebarItem"],
-[class^="_feedSidebarItemDiv"] {
-    background-color: transparent !important;
+/* Feed sidebar panel - black tint background for readability | Cheers @isolate for the idea */
+[data-test="feed-sidebar"] {
+    background-color: rgba(0, 0, 0, 0.5) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Feed sidebar items - transparent | Cheers @isolate for the idea */
+[class*="_feedSidebarItem"],
+[class*="_feedSidebarItemDiv"],
+[class*="_cellContainer"],
+[data-test="feed-interval"],
+[data-test="feed-item"] {
+    background-color: transparent !important;
 }
 
 /* Remove bottom gradient */
