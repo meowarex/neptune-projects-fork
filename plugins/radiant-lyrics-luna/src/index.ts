@@ -35,13 +35,44 @@ const updateButtonStates = function(): void {
     const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
     
     if (hideButton) {
-        hideButton.style.display = (settings.hideUIEnabled && !isHidden) ? 'flex' : 'none';
+        if (settings.hideUIEnabled && !isHidden) {
+            hideButton.style.display = 'flex';
+            // Small delay to ensure display is set first, then fade in
+            setTimeout(() => {
+                hideButton.style.opacity = '1';
+                hideButton.style.visibility = 'visible';
+                hideButton.style.pointerEvents = 'auto';
+            }, 50);
+        } else {
+            // Hide UI button immediately when clicked - (couldn't get the fade to work)
+            hideButton.style.display = 'none';
+            hideButton.style.opacity = '0';
+            hideButton.style.visibility = 'hidden';
+            hideButton.style.pointerEvents = 'none';
+        }
     }
     if (unhideButton) {
-        unhideButton.style.display = (settings.hideUIEnabled && isHidden) ? 'flex' : 'none';
-        // Remove the immediate hide class when button should be visible
         if (settings.hideUIEnabled && isHidden) {
+            unhideButton.style.display = 'flex';
+            // Remove the hide-immediately class and let it fade in smoothly
             unhideButton.classList.remove('hide-immediately');
+            // Small delay to ensure display is set first, then fade in - (Works for unhide button.. but not hide button.. because uhh idk)
+            setTimeout(() => {
+                unhideButton.style.opacity = '1';
+                unhideButton.style.visibility = 'visible';
+                unhideButton.style.pointerEvents = 'auto';
+            }, 50);
+        } else {
+            // Smooth fade out for Unhide UI button
+            unhideButton.style.opacity = '0';
+            unhideButton.style.visibility = 'hidden';
+            unhideButton.style.pointerEvents = 'none';
+            // Keep display: flex to maintain transitions, then hide after fade
+            setTimeout(() => {
+                if (unhideButton.style.opacity === '0') {
+                    unhideButton.style.display = 'none';
+                }
+            }, 500); // Wait for transition to complete
         }
     }
 };
@@ -89,7 +120,7 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
         return;
     }
 
-    // Add StyleTag if not present
+    // Add StyleTag if not present (Don't know if this is needed.. But it's here)
     if (!globalSpinningBgStyleTag) {
         globalSpinningBgStyleTag = new StyleTag("RadiantLyrics-global-spinning-bg", unloads, coverEverywhereCss);
     }
@@ -196,11 +227,11 @@ const toggleRadiantLyrics = function(): void {
     const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
     
     if (isHidden) {
-        // We're currently hidden, so we're about to show UI
+        // currently hidden, so we're about to show UI
         // Add a class to immediately hide the unhide button with CSS
         const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
         if (unhideButton) {
-            unhideButton.classList.add('hide-immediately');
+            unhideButton.classList.add('hide-immediately'); // actually uses fade out but.. still
         }
         
         // Toggle the state
@@ -211,7 +242,7 @@ const toggleRadiantLyrics = function(): void {
             nowPlayingContainer.classList.remove('radiant-lyrics-ui-hidden');
         }
         document.body.classList.remove('radiant-lyrics-ui-hidden');
-        // Remove styles after animation completes
+        // Remove styles after animation completes (I think this is needed.. but not sure)
         setTimeout(() => {
             if (!isHidden) {
                 lyricsStyleTag.remove();
@@ -227,16 +258,19 @@ const toggleRadiantLyrics = function(): void {
         // Toggle the state first
         isHidden = !isHidden;
         
-        // Apply clean view styles
-        updateRadiantLyricsStyles();
-        // Add a class to the container to trigger CSS animations
-        if (nowPlayingContainer) {
-            nowPlayingContainer.classList.add('radiant-lyrics-ui-hidden');
-        }
-        document.body.classList.add('radiant-lyrics-ui-hidden');
-        
-        // Update button states immediately for hiding
+        // Update button states immediately to start Hide UI button fade-out
         updateButtonStates();
+        
+        // Delay adding the CSS class to allow Hide UI button to fade out first - (Had issues with the fade out.. so I removed it)
+        setTimeout(() => {
+            // Apply clean view styles
+            updateRadiantLyricsStyles();
+            // Add a class to the container to trigger CSS animations
+            if (nowPlayingContainer) {
+                nowPlayingContainer.classList.add('radiant-lyrics-ui-hidden');
+            }
+            document.body.classList.add('radiant-lyrics-ui-hidden');
+        }, 50); // Small delay to let Hide UI button start its fade transition - (Had issues with the fade out.. so I removed it)
     }
 };
 
@@ -266,23 +300,24 @@ const createHideUIButton = function(): void {
         hideUIButton.textContent = 'Hide UI';
         
         // Style to match Tidal's buttons
-        hideUIButton.style.cssText = `
-            background-color: var(--wave-color-solid-accent-fill);
-            color: black;
-            border: none;
-            border-radius: 12px;
-            height: 40px;
-            padding: 0 12px;
-            margin-left: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.2s ease;
-            font-size: 12px;
-            font-weight: 600;
-            white-space: nowrap;
-        `;
+        hideUIButton.style.backgroundColor = 'var(--wave-color-solid-accent-fill)';
+        hideUIButton.style.color = 'black';
+        hideUIButton.style.border = 'none';
+        hideUIButton.style.borderRadius = '12px';
+        hideUIButton.style.height = '40px';
+        hideUIButton.style.padding = '0 12px';
+        hideUIButton.style.marginLeft = '8px';
+        hideUIButton.style.cursor = 'pointer';
+        hideUIButton.style.display = 'flex';
+        hideUIButton.style.alignItems = 'center';
+        hideUIButton.style.justifyContent = 'center';
+        hideUIButton.style.fontSize = '12px';
+        hideUIButton.style.fontWeight = '600';
+        hideUIButton.style.whiteSpace = 'nowrap';
+        hideUIButton.style.transition = 'opacity 0.5s ease-in-out, visibility 0.5s ease-in-out, background-color 0.2s ease-in-out';
+        hideUIButton.style.opacity = '0';
+        hideUIButton.style.visibility = 'hidden';
+        hideUIButton.style.pointerEvents = 'none';
         
         // Add hover effect
         hideUIButton.addEventListener('mouseenter', () => {
@@ -298,8 +333,16 @@ const createHideUIButton = function(): void {
         // Insert after the fullscreen button
         buttonContainer.insertBefore(hideUIButton, fullscreenButton.nextSibling);
         
+        // Fade in the button after a small delay
+        setTimeout(() => {
+            if (settings.hideUIEnabled && !isHidden) {
+                hideUIButton.style.opacity = '1';
+                hideUIButton.style.visibility = 'visible';
+                hideUIButton.style.pointerEvents = 'auto';
+            }
+        }, 100); // Small delay to ensure DOM insertion is complete
+        
         //trace.msg.log("Hide UI button added next to fullscreen button");
-        updateButtonStates();
     }, 1000);
 };
 
@@ -319,14 +362,14 @@ const createUnhideUIButton = function(): void {
             return;
         }
 
-        // Create our unhide UI button
+        // Create unhide UI button
         const unhideUIButton = document.createElement("button");
         unhideUIButton.className = 'unhide-ui-button';
         unhideUIButton.setAttribute('aria-label', 'Unhide UI');
         unhideUIButton.setAttribute('title', 'Unhide UI');
         unhideUIButton.textContent = 'Unhide';
         
-        // Style for top-right positioning within the Now Playing container (with safe margin)
+        // Style for top-right positioning within the Now Playing container (is a pain)
         unhideUIButton.style.cssText = `
             position: absolute;
             top: 10px;
@@ -341,7 +384,7 @@ const createUnhideUIButton = function(): void {
             display: none;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: all 0.5s ease-in-out;
             font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
@@ -349,6 +392,9 @@ const createUnhideUIButton = function(): void {
             -webkit-backdrop-filter: blur(10px);
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         `;
         
         // Add hover effect
@@ -414,6 +460,15 @@ function observeForButtons(): void {
         // Create unhide button if it doesn't exist
         if (!document.querySelector('.unhide-ui-button')) {
             createUnhideUIButton();
+        }
+        
+        // Fix unhide button visibility if UI is hidden but button isn't showing
+        if (isHidden) {
+            const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
+            if (unhideButton && (unhideButton.style.display === 'none' || unhideButton.style.opacity === '0')) {
+                // Force update button states to fix visibility
+                updateButtonStates();
+            }
         }
     }, 500); // Check every 500ms (much more efficient than MutationObserver)
     
