@@ -282,11 +282,11 @@ const createUnhideUIButton = function(): void {
         unhideUIButton.setAttribute('title', 'Unhide UI');
         unhideUIButton.textContent = 'Unhide';
         
-        // Style for bottom-left positioning with blur and transparency
+        // Style for bottom-right positioning with blur and transparency
         unhideUIButton.style.cssText = `
             position: fixed;
             bottom: 120px;
-            left: 20px;
+            right: 20px;
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -323,7 +323,7 @@ const createUnhideUIButton = function(): void {
         // Append to body instead of a specific container
         document.body.appendChild(unhideUIButton);
         
-        //trace.msg.log("Unhide UI button added to bottom-left above player bar");
+        //trace.msg.log("Unhide UI button added to bottom-right above player bar");
         updateButtonStates();
     }, 1500); // Slight delay after hide button
 };
