@@ -40,19 +40,11 @@
     transition: opacity 0.4s ease-in-out;
 }
 
-/* Hide bottom gradient - only when UI is hidden */
-.radiant-lyrics-ui-hidden [class^="_bottomGradient"] {
-    opacity: 0 !important;
-    transition: opacity 0.4s ease-in-out;
-}
+/* Keep bottom gradient visible - may be needed for lyrics scrolling */
 
 /* Remove credits button repositioning - let it stay where it is */
 
-/* Hide lyrics provider - only when UI is hidden */
-.radiant-lyrics-ui-hidden [class^="_lyricsProvider"] {
-    opacity: 0 !important;
-    transition: opacity 0.4s ease-in-out;
-}
+/* Keep lyrics provider visible - don't hide with UI */
 
 /* Sync button margin */
 [class^="_syncButton"] {

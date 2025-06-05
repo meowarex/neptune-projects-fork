@@ -36,6 +36,14 @@
 
 /* Remove all layout-changing rules - only fade buttons, keep everything else in place */
 
+/* Immediate hide class for unhide button */
+.hide-immediately {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: none !important;
+}
+
 [class^="_bar"] {
     background-color: transparent;
 }
