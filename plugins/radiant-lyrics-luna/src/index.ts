@@ -39,14 +39,18 @@ const updateButtonStates = function(): void {
     }
     if (unhideButton) {
         unhideButton.style.display = (settings.hideUIEnabled && isHidden) ? 'flex' : 'none';
+        // Remove the immediate hide class when button should be visible
+        if (settings.hideUIEnabled && isHidden) {
+            unhideButton.classList.remove('hide-immediately');
+        }
     }
 };
 
 // Function to update styles when settings change
 const updateRadiantLyricsStyles = function(): void {
     if (isHidden) {
-        // Apply all clean view styles
-        lyricsStyleTag.css = separatedLyrics;
+        // Apply only base styles (button hiding), NOT separated lyrics styles
+        // to avoid affecting lyrics scrolling behavior
         baseStyleTag.css = baseStyles;
         
         // Apply player bar styles based on setting
@@ -57,9 +61,9 @@ const updateRadiantLyricsStyles = function(): void {
         }
     }
 
-    // Update lyrics glow based on setting
+    // Update lyrics glow based on setting (only if UI is not hidden to avoid interference)
     const lyricsContainer = document.querySelector('[class^="_lyricsContainer"]');
-    if (lyricsContainer) {
+    if (lyricsContainer && !isHidden) {
         if (settings.lyricsGlowEnabled) {
             lyricsContainer.classList.remove('lyrics-glow-disabled');
             lyricsGlowStyleTag.css = lyricsGlow;
@@ -189,19 +193,51 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
 (window as any).updateRadiantLyricsNowPlayingBackground = updateRadiantLyricsNowPlayingBackground;
 
 const toggleRadiantLyrics = function(): void {
-    // Toggle the state first
-    isHidden = !isHidden;
+    const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
     
     if (isHidden) {
+        // We're currently hidden, so we're about to show UI
+        // Add a class to immediately hide the unhide button with CSS
+        const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
+        if (unhideButton) {
+            unhideButton.classList.add('hide-immediately');
+        }
+        
+        // Toggle the state
+        isHidden = !isHidden;
+        
+        // Don't remove StyleTags completely, just remove the class to show elements again
+        if (nowPlayingContainer) {
+            nowPlayingContainer.classList.remove('radiant-lyrics-ui-hidden');
+        }
+        document.body.classList.remove('radiant-lyrics-ui-hidden');
+        // Remove styles after animation completes
+        setTimeout(() => {
+            if (!isHidden) {
+                lyricsStyleTag.remove();
+                baseStyleTag.remove();
+                playerBarStyleTag.remove();
+            }
+        }, 500); // Wait for fade animation to complete
+        
+        // Update button states normally
+        updateButtonStates();
+    } else {
+        // We're currently visible, so we're about to hide UI
+        // Toggle the state first
+        isHidden = !isHidden;
+        
         // Apply clean view styles
         updateRadiantLyricsStyles();
-    } else {
-        // Remove all clean view styles
-        lyricsStyleTag.remove();
-        baseStyleTag.remove();
-        playerBarStyleTag.remove();
+        // Add a class to the container to trigger CSS animations
+        if (nowPlayingContainer) {
+            nowPlayingContainer.classList.add('radiant-lyrics-ui-hidden');
+        }
+        document.body.classList.add('radiant-lyrics-ui-hidden');
+        
+        // Update button states immediately for hiding
+        updateButtonStates();
     }
-    updateButtonStates();
 };
 
 const createHideUIButton = function(): void {
@@ -293,8 +329,8 @@ const createUnhideUIButton = function(): void {
         // Style for top-right positioning within the Now Playing container (with safe margin)
         unhideUIButton.style.cssText = `
             position: absolute;
-            top: 20px;
-            right: 80px;
+            top: 10px;
+            right: 10px;
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);

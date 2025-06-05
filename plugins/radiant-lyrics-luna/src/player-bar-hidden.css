@@ -1,16 +1,15 @@
-/* Hide player bar when setting is disabled, but show on hover */
-[data-test="footer-player"] {
+/* Hide player bar when setting is disabled, but show on hover - only when UI is hidden */
+.radiant-lyrics-ui-hidden [data-test="footer-player"] {
     opacity: 0 !important;
-    transition: opacity 0.3s ease-in-out !important;
-    pointer-events: auto !important;
+    transition: opacity 0.5s ease-in-out !important;
 }
 
-[data-test="footer-player"]:hover {
+.radiant-lyrics-ui-hidden [data-test="footer-player"]:hover {
     opacity: 1 !important;
 }
 
-/* Also show player bar when hovering over the bottom area */
-body:has([data-test="footer-player"]:hover) [data-test="footer-player"],
-body [data-test="footer-player"]:hover {
+/* Also show player bar when hovering over the bottom area - only when UI is hidden */
+.radiant-lyrics-ui-hidden:has([data-test="footer-player"]:hover) [data-test="footer-player"],
+.radiant-lyrics-ui-hidden [data-test="footer-player"]:hover {
     opacity: 1 !important;
 } 

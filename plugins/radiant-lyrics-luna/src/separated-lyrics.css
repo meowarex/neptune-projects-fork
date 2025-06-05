@@ -23,39 +23,28 @@
     src: url("https://excel.lexploits.top/extra/tidal/LyricsBold.woff2") format("woff2");
 }
 
-/* Tab and container visibility */
-[class*="tabItems"] {
+/* Tab and container visibility - only when UI is hidden */
+.radiant-lyrics-ui-hidden [class*="tabItems"] {
     opacity: 0 !important;
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.4s ease-in-out;
 }
 
-[class*="_imageContainer"] {
-    margin-top: 40px !important;
-}
+/* Remove image container positioning - let it stay where it is */
 
-[class*="_tabItems"]:hover {
+.radiant-lyrics-ui-hidden [class*="_tabItems"]:hover {
     opacity: 1 !important;
 }
 
-[data-test="header-container"] {
-    opacity: 0;
-    margin: -40px;
+.radiant-lyrics-ui-hidden [data-test="header-container"] {
+    opacity: 0 !important;
+    transition: opacity 0.4s ease-in-out;
 }
 
-/* Hide bottom gradient */
-[class^="_bottomGradient"] {
-    visibility: hidden;
-}
+/* Keep bottom gradient visible - may be needed for lyrics scrolling */
 
-/* Credits button positioning */
-[aria-label="Show credits"] {
-    top: calc(var(--headerHeight) + 80px);
-}
+/* Remove credits button repositioning - let it stay where it is */
 
-/* Hide lyrics provider */
-[class^="_lyricsProvider"] {
-    visibility: hidden;
-}
+/* Keep lyrics provider visible - don't hide with UI */
 
 /* Sync button margin */
 [class^="_syncButton"] {
