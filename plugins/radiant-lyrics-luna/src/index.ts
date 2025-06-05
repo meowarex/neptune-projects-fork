@@ -275,35 +275,43 @@ const createUnhideUIButton = function(): void {
         // Check if our button already exists
         if (document.querySelector('.unhide-ui-button')) return;
 
-        // Create our unhide UI button and position it on the left side above player
+        // Find the Now Playing container to place the button within it
+        const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
+        if (!nowPlayingContainer) {
+            // Retry if container not found yet
+            setTimeout(() => createUnhideUIButton(), 1000);
+            return;
+        }
+
+        // Create our unhide UI button
         const unhideUIButton = document.createElement("button");
         unhideUIButton.className = 'unhide-ui-button';
         unhideUIButton.setAttribute('aria-label', 'Unhide UI');
         unhideUIButton.setAttribute('title', 'Unhide UI');
         unhideUIButton.textContent = 'Unhide';
         
-        // Style for bottom-left positioning with blur and transparency
+        // Style for top-left positioning within the Now Playing container
         unhideUIButton.style.cssText = `
-            position: fixed;
-            bottom: 120px;
+            position: absolute;
+            top: 20px;
             left: 20px;
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 12px;
-            height: 50px;
-            padding: 0 16px;
+            height: 40px;
+            padding: 0 12px;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 600;
             white-space: nowrap;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            z-index: 9999;
+            z-index: 1000;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         `;
         
@@ -320,10 +328,10 @@ const createUnhideUIButton = function(): void {
         
         unhideUIButton.onclick = toggleRadiantLyrics;
 
-        // Append to body instead of a specific container
-        document.body.appendChild(unhideUIButton);
+        // Append to the Now Playing container
+        nowPlayingContainer.appendChild(unhideUIButton);
         
-        //trace.msg.log("Unhide UI button added to bottom-left above player bar");
+        //trace.msg.log("Unhide UI button added to top-left of Now Playing container");
         updateButtonStates();
     }, 1500); // Slight delay after hide button
 };
@@ -367,8 +375,9 @@ function observeForButtons(): void {
             createHideUIButton();
         }
         
-        // Create unhide button if it doesn't exist
-        if (!document.querySelector('.unhide-ui-button')) {
+        // Create unhide button if it doesn't exist and Now Playing container exists
+        const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]');
+        if (nowPlayingContainer && !document.querySelector('.unhide-ui-button')) {
             createUnhideUIButton();
         }
     }, 500); // Check every 500ms (much more efficient than MutationObserver)
