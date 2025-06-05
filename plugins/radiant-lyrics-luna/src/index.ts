@@ -290,11 +290,11 @@ const createUnhideUIButton = function(): void {
         unhideUIButton.setAttribute('title', 'Unhide UI');
         unhideUIButton.textContent = 'Unhide';
         
-        // Style for top-left positioning within the Now Playing container
+        // Style for top-right positioning within the Now Playing container (with safe margin)
         unhideUIButton.style.cssText = `
             position: absolute;
             top: 20px;
-            left: 20px;
+            right: 80px;
             background-color: rgba(255, 255, 255, 0.2);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -328,10 +328,10 @@ const createUnhideUIButton = function(): void {
         
         unhideUIButton.onclick = toggleRadiantLyrics;
 
-        // Append to the Now Playing container
+        // Append to the Now Playing container so it only shows there
         nowPlayingContainer.appendChild(unhideUIButton);
         
-        //trace.msg.log("Unhide UI button added to top-left of Now Playing container");
+        //trace.msg.log("Unhide UI button added to top-right of Now Playing container");
         updateButtonStates();
     }, 1500); // Slight delay after hide button
 };
@@ -375,9 +375,8 @@ function observeForButtons(): void {
             createHideUIButton();
         }
         
-        // Create unhide button if it doesn't exist and Now Playing container exists
-        const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]');
-        if (nowPlayingContainer && !document.querySelector('.unhide-ui-button')) {
+        // Create unhide button if it doesn't exist
+        if (!document.querySelector('.unhide-ui-button')) {
             createUnhideUIButton();
         }
     }, 500); // Check every 500ms (much more efficient than MutationObserver)
