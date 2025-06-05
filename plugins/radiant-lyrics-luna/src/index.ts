@@ -44,7 +44,7 @@ const updateButtonStates = function(): void {
                 hideButton.style.pointerEvents = 'auto';
             }, 50);
         } else {
-            // Hide UI button immediately when clicked - no fade animation
+            // Hide UI button immediately when clicked - (couldn't get the fade to work)
             hideButton.style.display = 'none';
             hideButton.style.opacity = '0';
             hideButton.style.visibility = 'hidden';
@@ -56,7 +56,7 @@ const updateButtonStates = function(): void {
             unhideButton.style.display = 'flex';
             // Remove the hide-immediately class and let it fade in smoothly
             unhideButton.classList.remove('hide-immediately');
-            // Small delay to ensure display is set first, then fade in
+            // Small delay to ensure display is set first, then fade in - (Works for unhide button.. but not hide button.. because uhh idk)
             setTimeout(() => {
                 unhideButton.style.opacity = '1';
                 unhideButton.style.visibility = 'visible';
@@ -120,7 +120,7 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
         return;
     }
 
-    // Add StyleTag if not present
+    // Add StyleTag if not present (Don't know if this is needed.. But it's here)
     if (!globalSpinningBgStyleTag) {
         globalSpinningBgStyleTag = new StyleTag("RadiantLyrics-global-spinning-bg", unloads, coverEverywhereCss);
     }
@@ -227,11 +227,11 @@ const toggleRadiantLyrics = function(): void {
     const nowPlayingContainer = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
     
     if (isHidden) {
-        // We're currently hidden, so we're about to show UI
+        // currently hidden, so we're about to show UI
         // Add a class to immediately hide the unhide button with CSS
         const unhideButton = document.querySelector('.unhide-ui-button') as HTMLElement;
         if (unhideButton) {
-            unhideButton.classList.add('hide-immediately');
+            unhideButton.classList.add('hide-immediately'); // actually uses fade out but.. still
         }
         
         // Toggle the state
@@ -242,7 +242,7 @@ const toggleRadiantLyrics = function(): void {
             nowPlayingContainer.classList.remove('radiant-lyrics-ui-hidden');
         }
         document.body.classList.remove('radiant-lyrics-ui-hidden');
-        // Remove styles after animation completes
+        // Remove styles after animation completes (I think this is needed.. but not sure)
         setTimeout(() => {
             if (!isHidden) {
                 lyricsStyleTag.remove();
@@ -261,7 +261,7 @@ const toggleRadiantLyrics = function(): void {
         // Update button states immediately to start Hide UI button fade-out
         updateButtonStates();
         
-        // Delay adding the CSS class to allow Hide UI button to fade out first
+        // Delay adding the CSS class to allow Hide UI button to fade out first - (Had issues with the fade out.. so I removed it)
         setTimeout(() => {
             // Apply clean view styles
             updateRadiantLyricsStyles();
@@ -270,7 +270,7 @@ const toggleRadiantLyrics = function(): void {
                 nowPlayingContainer.classList.add('radiant-lyrics-ui-hidden');
             }
             document.body.classList.add('radiant-lyrics-ui-hidden');
-        }, 50); // Small delay to let Hide UI button start its fade transition
+        }, 50); // Small delay to let Hide UI button start its fade transition - (Had issues with the fade out.. so I removed it)
     }
 };
 
@@ -362,14 +362,14 @@ const createUnhideUIButton = function(): void {
             return;
         }
 
-        // Create our unhide UI button
+        // Create unhide UI button
         const unhideUIButton = document.createElement("button");
         unhideUIButton.className = 'unhide-ui-button';
         unhideUIButton.setAttribute('aria-label', 'Unhide UI');
         unhideUIButton.setAttribute('title', 'Unhide UI');
         unhideUIButton.textContent = 'Unhide';
         
-        // Style for top-right positioning within the Now Playing container (with safe margin)
+        // Style for top-right positioning within the Now Playing container (is a pain)
         unhideUIButton.style.cssText = `
             position: absolute;
             top: 10px;
