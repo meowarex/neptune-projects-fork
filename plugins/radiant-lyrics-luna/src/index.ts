@@ -29,6 +29,7 @@ if (settings.lyricsGlowEnabled) {
 }
 
 var isHidden = false;
+let unhideButtonAutoFadeTimeout: number | null = null;
 
 const updateButtonStates = function(): void {
     const hideButton = document.querySelector('.hide-ui-button') as HTMLElement;
@@ -52,21 +53,36 @@ const updateButtonStates = function(): void {
         }
     }
     if (unhideButton) {
+        // Clear any existing auto-fade timeout
+        if (unhideButtonAutoFadeTimeout) {
+            window.clearTimeout(unhideButtonAutoFadeTimeout);
+            unhideButtonAutoFadeTimeout = null;
+        }
+        
         if (settings.hideUIEnabled && isHidden) {
             unhideButton.style.display = 'flex';
             // Remove the hide-immediately class and let it fade in smoothly
             unhideButton.classList.remove('hide-immediately');
+            unhideButton.classList.remove('auto-faded');
             // Small delay to ensure display is set first, then fade in - (Works for unhide button.. but not hide button.. because uhh idk)
             setTimeout(() => {
                 unhideButton.style.opacity = '1';
                 unhideButton.style.visibility = 'visible';
                 unhideButton.style.pointerEvents = 'auto';
+                
+                // Set up auto-fade after 2 seconds
+                unhideButtonAutoFadeTimeout = window.setTimeout(() => {
+                    if (isHidden && unhideButton && !unhideButton.matches(':hover')) {
+                        unhideButton.classList.add('auto-faded');
+                    }
+                }, 2000);
             }, 50);
         } else {
             // Smooth fade out for Unhide UI button
             unhideButton.style.opacity = '0';
             unhideButton.style.visibility = 'hidden';
             unhideButton.style.pointerEvents = 'none';
+            unhideButton.classList.remove('auto-faded');
             // Keep display: flex to maintain transitions, then hide after fade
             setTimeout(() => {
                 if (unhideButton.style.opacity === '0') {
@@ -397,15 +413,22 @@ const createUnhideUIButton = function(): void {
             pointer-events: none;
         `;
         
-        // Add hover effect
+        // Add hover effect with auto-fade handling
         unhideUIButton.addEventListener('mouseenter', () => {
             unhideUIButton.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
             unhideUIButton.style.transform = 'scale(1.05)';
+            unhideUIButton.classList.remove('auto-faded');
         });
         
         unhideUIButton.addEventListener('mouseleave', () => {
             unhideUIButton.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
             unhideUIButton.style.transform = 'scale(1)';
+            // Re-add auto-fade after a short delay if still in hidden mode
+            window.setTimeout(() => {
+                if (isHidden && !unhideUIButton.matches(':hover')) {
+                    unhideUIButton.classList.add('auto-faded');
+                }
+            }, 2000);
         });
         
         unhideUIButton.onclick = toggleRadiantLyrics;
@@ -627,6 +650,12 @@ updateCoverArtBackground(1);
 // Add cleanup to unloads
 unloads.add(() => {
     cleanUpDynamicArt();
+
+    // Clean up auto-fade timeout
+    if (unhideButtonAutoFadeTimeout) {
+        window.clearTimeout(unhideButtonAutoFadeTimeout);
+        unhideButtonAutoFadeTimeout = null;
+    }
 
     // Clean up our custom buttons
     const hideButton = document.querySelector('.hide-ui-button');
