@@ -39,11 +39,11 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  plugins/clean-view-luna: {}
-
   plugins/copy-lyrics-luna: {}
 
   plugins/oled-theme-luna: {}
+
+  plugins/radiant-lyrics-luna: {}
 
 packages:
 
