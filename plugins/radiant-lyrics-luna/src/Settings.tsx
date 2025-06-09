@@ -34,7 +34,6 @@ export const Settings = () => {
 				desc="Enable glowing effect for lyrics & Font Stytling Changes"
 				checked={lyricsGlowEnabled}
 				onChange={(_, checked: boolean) => {
-					console.log("Lyrics Glow Effect:", checked ? "enabled" : "disabled");
 					setLyricsGlowEnabled((settings.lyricsGlowEnabled = checked));
 					// Update styles immediately when setting changes
 					if ((window as any).updateRadiantLyricsStyles) {
@@ -47,7 +46,6 @@ export const Settings = () => {
 				desc="Enable hide/unhide UI functionality with toggle buttons"
 				checked={hideUIEnabled}
 				onChange={(_, checked: boolean) => {
-					console.log("Hide UI Feature:", checked ? "enabled" : "disabled");
 					setHideUIEnabled((settings.hideUIEnabled = checked));
 				}}
 			/>
@@ -101,7 +99,6 @@ export const Settings = () => {
 				step={1}
 				value={backgroundContrast}
 				onNumber={(value: number) => {
-					console.log("Background Contrast:", value);
 					setBackgroundContrast((settings.backgroundContrast = value));
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();
