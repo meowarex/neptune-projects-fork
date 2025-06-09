@@ -4,7 +4,6 @@ import { settings, Settings } from "./Settings";
 
 // Import CSS files directly using Luna's file:// syntax - Took me a while to figure out <3
 import baseStyles from "file://styles.css?minify";
-import separatedLyrics from "file://separated-lyrics.css?minify";
 import playerBarHidden from "file://player-bar-hidden.css?minify";
 import lyricsGlow from "file://lyrics-glow.css?minify";
 import coverEverywhereCss from "file://cover-everywhere.css?minify";
