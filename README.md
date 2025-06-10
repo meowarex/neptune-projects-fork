@@ -34,6 +34,19 @@ Allows users to copy song lyrics by selecting them directly in the interface.
 - Automatic clipboard copying of selected lyrics
 - Smart lyric span detection
 
+### 🎶 Audio Visualizer
+**Location:** `plugins/audio-visualizer-luna/`
+
+⚠️ **Work in Progress** - Audio visualization plugin that displays real-time audio frequency data.
+
+**Features:**
+- Real-time audio frequency visualization with bars
+- Animated effect when no audio is detected
+- Configurable options.. like allot of em
+- Theme frienly (Wont clash with your themes style)
+
+**Note:** This plugin is currently in development and may have stability issues.
+
 ## Installation
 
 ### Installing from URL
