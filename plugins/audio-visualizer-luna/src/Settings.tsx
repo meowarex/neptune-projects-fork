@@ -52,13 +52,24 @@ export const Settings = () => {
         setBarColor(color);
         setCustomInput(color);
         settings.barColor = color;
+        (window as any).updateAudioVisualizer?.();
     };
 
     const addCustomColor = () => {
-        if (customInput && !colorPresets.includes(customInput) && !customColors.includes(customInput)) {
-            const newCustomColors = [...customColors, customInput];
-            setCustomColors(newCustomColors);
-            settings.customColors = newCustomColors;
+        if (customInput) {
+            // Trim whitespace and convert to lowercase
+            const trimmedInput = customInput.trim().toLowerCase();
+            
+            // Validate hex color format
+            const hexColorRegex = /^#([0-9a-f]{6}|[0-9a-f]{3})$/i;
+            
+            if (hexColorRegex.test(trimmedInput) && 
+                !colorPresets.includes(trimmedInput) && 
+                !customColors.includes(trimmedInput)) {
+                const newCustomColors = [...customColors, trimmedInput];
+                setCustomColors(newCustomColors);
+                settings.customColors = newCustomColors;
+            }
         }
     };
 
@@ -84,6 +95,7 @@ export const Settings = () => {
                 onChange={(_, checked) => {
                     setBarRounding(checked);
                     settings.barRounding = checked;
+                    (window as any).updateAudioVisualizer?.();
                 }}
             />
             
@@ -97,6 +109,7 @@ export const Settings = () => {
                 onNumber={(value: number) => {
                     setBarCount(value);
                     settings.barCount = value;
+                    (window as any).updateAudioVisualizer?.();
                 }}
             />
             

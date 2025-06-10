@@ -390,9 +390,7 @@ const updateAudioVisualizer = (): void => {
         // use a fixed size that provides enough frequency bins
         analyser.fftSize = 512; // Fixed power of 2 - important
         analyser.smoothingTimeConstant = config.smoothing;
-        if (dataArray) {
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-        }
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
     }
 
     if (canvas) {
