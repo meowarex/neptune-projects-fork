@@ -77,7 +77,7 @@ export const Settings = () => {
 			/>
 			<LunaSwitchSetting
 				title="Performance Mode"
-				desc="Disable spinning animations to reduce performance impact on your computer (backgrounds become static)"
+				desc="Ultra-light performance mode: Reduces blur effects (max 20px), uses smaller image sizes, disables animations, and optimizes GPU usage for better performance"
 				checked={performanceMode}
 				onChange={(_, checked: boolean) => {
 					console.log("Performance Mode:", checked ? "enabled" : "disabled");
@@ -86,8 +86,8 @@ export const Settings = () => {
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();
 					}
-					if ((window as any).updateRadiantLyricsPerformanceMode) {
-						(window as any).updateRadiantLyricsPerformanceMode();
+					if ((window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
 					}
 				}}
 			/>
