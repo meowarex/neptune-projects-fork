@@ -30,10 +30,6 @@ let currentGlobalCoverSrc: string | null = null;
 let lastUpdateTime = 0;
 const UPDATE_THROTTLE = 500; // Throttle updates to max once per 500ms
 
-// Image cache for better performance
-const imageCache = new Map<string, HTMLImageElement>();
-const MAX_CACHE_SIZE = 10; // Limit cache size to prevent memory leaks
-
 // Apply lyrics glow styles if enabled
 if (settings.lyricsGlowEnabled) {
     lyricsGlowStyleTag.css = lyricsGlow;
@@ -193,60 +189,30 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
         globalBackgroundContainer.appendChild(globalBackgroundImage);
     }
 
-    // Update image source efficiently with caching for smoother transitions
+    // Update image source efficiently
     if (globalBackgroundImage && globalBackgroundImage.src !== coverArtImageSrc) {
-        // Check cache first
-        if (imageCache.has(coverArtImageSrc)) {
-            globalBackgroundImage.src = coverArtImageSrc;
-        } else {
-            // Preload and cache the new image
-            const preloadImg = new Image();
-            preloadImg.onload = () => {
-                // Add to cache (with size limit)
-                if (imageCache.size >= MAX_CACHE_SIZE) {
-                    const firstKey = imageCache.keys().next().value;
-                    if (firstKey) {
-                        imageCache.delete(firstKey);
-                    }
-                }
-                imageCache.set(coverArtImageSrc, preloadImg);
-                
-                if (globalBackgroundImage && globalBackgroundImage.src !== coverArtImageSrc) {
-                    globalBackgroundImage.src = coverArtImageSrc;
-                }
-            };
-            preloadImg.src = coverArtImageSrc;
-        }
+        globalBackgroundImage.src = coverArtImageSrc;
     }
 
     // Apply performance-optimized settings
     if (globalBackgroundImage) {
         // Performance mode optimizations
         if (settings.performanceMode) {
-            // Ultra-light performance mode
+            // Performance mode with spinning enabled
             globalBackgroundImage.style.width = '120vw';
             globalBackgroundImage.style.height = '120vh';
             globalBackgroundImage.style.filter = `blur(${Math.min(settings.backgroundBlur, 20)}px) brightness(${settings.backgroundBrightness / 100}) contrast(${Math.min(settings.backgroundContrast, 150)}%)`;
-            globalBackgroundImage.style.animation = 'none';
-            globalBackgroundImage.style.transform = 'translate(-50%, -50%)';
-            globalBackgroundImage.classList.add('performance-mode-static');
-            // Remove will-change for better memory usage
-            globalBackgroundImage.style.willChange = 'auto';
+            globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            globalBackgroundImage.classList.remove('performance-mode-static');
+            globalBackgroundImage.style.willChange = 'transform';
         } else {
-            // OPTIMIZED Normal mode - Better performance while maintaining quality
+            // Normal mode
             globalBackgroundImage.style.width = '150vw';
             globalBackgroundImage.style.height = '150vh';
-            // Use CSS custom properties for dynamic updates without style recalculation
-            globalBackgroundImage.style.setProperty('--bg-contrast', `${settings.backgroundContrast}%`);
-            globalBackgroundImage.style.setProperty('--bg-brightness', `${settings.backgroundBrightness / 100}`);
-            globalBackgroundImage.style.setProperty('--bg-blur', `${settings.backgroundBlur}px`);
-            globalBackgroundImage.style.animation = `spinGlobalOptimized ${settings.spinSpeed}s linear infinite`;
+            globalBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
+            globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
             globalBackgroundImage.classList.remove('performance-mode-static');
-            // Use transform3d for better GPU acceleration
             globalBackgroundImage.style.willChange = 'transform';
-            globalBackgroundImage.style.transformOrigin = 'center center';
-            // Force GPU layer creation for smoother animations
-            globalBackgroundImage.style.transform = 'translate3d(-50%, -50%, 0)';
         }
     }
 };
@@ -312,25 +278,19 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
         
         // Performance mode optimizations
         if (settings.performanceMode) {
-            // Reduce blur and effects for better performance
+            // Reduce blur and effects for better performance, but keep spinning
             blur = Math.min(blur, 20);
             contrast = Math.min(contrast, 150);
-            imgElement.style.animation = 'none';
-            imgElement.style.transform = 'translate3d(-50%, -50%, 0)';
-            imgElement.classList.add('performance-mode-static');
-            imgElement.style.willChange = 'auto';
-            imgElement.style.filter = `blur(${blur}px) brightness(${brightness / 100}) contrast(${contrast}%)`;
-        } else {
-            // OPTIMIZED Normal mode updates using CSS custom properties
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
             imgElement.classList.remove('performance-mode-static');
             imgElement.style.willChange = 'transform';
-            imgElement.style.transform = 'translate3d(-50%, -50%, 0)';
-            // Use CSS custom properties for efficient updates
-            imgElement.style.setProperty('--bg-contrast', `${contrast}%`);
-            imgElement.style.setProperty('--bg-brightness', `${brightness / 100}`);
-            imgElement.style.setProperty('--bg-blur', `${blur}px`);
+        } else {
+            imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
+            imgElement.classList.remove('performance-mode-static');
+            imgElement.style.willChange = 'transform';
         }
+        
+        imgElement.style.filter = `blur(${blur}px) brightness(${brightness / 100}) contrast(${contrast}%)`;
     });
 };
 
@@ -756,62 +716,32 @@ const updateCoverArtBackground = function (method: number = 0): void {
                 nowPlayingBackgroundContainer.appendChild(nowPlayingGradientOverlay);
             }
 
-            // Update image source efficiently with caching
+            // Update image source efficiently
             if (nowPlayingBackgroundImage && nowPlayingBackgroundImage.src !== coverArtImageSrc) {
-                // Check cache first
-                if (imageCache.has(coverArtImageSrc)) {
-                    nowPlayingBackgroundImage.src = coverArtImageSrc;
-                    currentNowPlayingCoverSrc = coverArtImageSrc;
-                } else {
-                    // Preload and cache the new image
-                    const preloadImg = new Image();
-                    preloadImg.onload = () => {
-                        // Add to cache (with size limit)
-                        if (imageCache.size >= MAX_CACHE_SIZE) {
-                            const firstKey = imageCache.keys().next().value;
-                            if (firstKey) {
-                                imageCache.delete(firstKey);
-                            }
-                        }
-                        imageCache.set(coverArtImageSrc, preloadImg);
-                        
-                        if (nowPlayingBackgroundImage && nowPlayingBackgroundImage.src !== coverArtImageSrc) {
-                            nowPlayingBackgroundImage.src = coverArtImageSrc;
-                            currentNowPlayingCoverSrc = coverArtImageSrc;
-                        }
-                    };
-                    preloadImg.src = coverArtImageSrc;
-                }
+                nowPlayingBackgroundImage.src = coverArtImageSrc;
+                currentNowPlayingCoverSrc = coverArtImageSrc;
             }
 
             // Apply performance-optimized settings
             if (nowPlayingBackgroundImage) {
                 if (settings.performanceMode) {
-                    // Ultra-light performance mode
+                    // Performance mode with spinning enabled
                     nowPlayingBackgroundImage.style.width = '80vw';
                     nowPlayingBackgroundImage.style.height = '80vh';
                     const blur = Math.min(settings.backgroundBlur, 20);
                     const contrast = Math.min(settings.backgroundContrast, 150);
                     nowPlayingBackgroundImage.style.filter = `blur(${blur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${contrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = 'none';
-                    nowPlayingBackgroundImage.style.transform = 'translate(-50%, -50%)';
-                    nowPlayingBackgroundImage.classList.add('performance-mode-static');
-                    nowPlayingBackgroundImage.style.willChange = 'auto';
-                } else {
-                    // OPTIMIZED Normal mode - Better performance while maintaining quality
-                    nowPlayingBackgroundImage.style.width = '90vw';
-                    nowPlayingBackgroundImage.style.height = '90vh';
-                    // Use CSS custom properties for efficient dynamic updates
-                    nowPlayingBackgroundImage.style.setProperty('--bg-contrast', `${settings.backgroundContrast}%`);
-                    nowPlayingBackgroundImage.style.setProperty('--bg-brightness', `${settings.backgroundBrightness / 100}`);
-                    nowPlayingBackgroundImage.style.setProperty('--bg-blur', `${settings.backgroundBlur}px`);
                     nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
-                    // Enhanced GPU acceleration for smoother animations
                     nowPlayingBackgroundImage.style.willChange = 'transform';
-                    nowPlayingBackgroundImage.style.transformOrigin = 'center center';
-                    // Force hardware acceleration with transform3d
-                    nowPlayingBackgroundImage.style.transform = 'translate3d(-50%, -50%, 0)';
+                } else {
+                    // Normal mode
+                    nowPlayingBackgroundImage.style.width = '90vw';
+                    nowPlayingBackgroundImage.style.height = '90vh';
+                    nowPlayingBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
+                    nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                    nowPlayingBackgroundImage.classList.remove('performance-mode-static');
+                    nowPlayingBackgroundImage.style.willChange = 'transform';
                 }
             }
 
@@ -864,15 +794,10 @@ if (settings.performanceMode) {
 }
 
 updateCoverArtBackground(1);
+
 // Add cleanup to unloads
 unloads.add(() => {
     cleanUpDynamicArt();
-    
-   // Clean up spin animation style
-   const spinAnimationStyle = document.querySelector('#spinAnimation');
-   if (spinAnimationStyle && spinAnimationStyle.parentNode) {
-       spinAnimationStyle.parentNode.removeChild(spinAnimationStyle);
-   }
 
     // Clean up auto-fade timeout
     if (unhideButtonAutoFadeTimeout) {
@@ -891,9 +816,12 @@ unloads.add(() => {
         unhideButton.parentNode.removeChild(unhideButton);
     }
 
+    // Clean up spin animations
+    const spinAnimationStyle = document.querySelector('#spinAnimation');
+    if (spinAnimationStyle && spinAnimationStyle.parentNode) {
+        spinAnimationStyle.parentNode.removeChild(spinAnimationStyle);
+    }
+    
     // Clean up global spinning backgrounds
     cleanUpGlobalSpinningBackground();
-    
-    // Clear image cache
-    imageCache.clear();
 }); 

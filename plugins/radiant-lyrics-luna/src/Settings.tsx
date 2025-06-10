@@ -77,7 +77,7 @@ export const Settings = () => {
 			/>
 			<LunaSwitchSetting
 				title="Performance Mode"
-				desc="Ultra-light performance mode: Reduces blur effects (max 20px), uses smaller image sizes, disables animations, and optimizes GPU usage for better performance"
+				desc="Performance mode: Reduces blur effects (max 20px), uses smaller image sizes, and optimizes GPU usage while keeping spinning animations"
 				checked={performanceMode}
 				onChange={(_, checked: boolean) => {
 					console.log("Performance Mode:", checked ? "enabled" : "disabled");
