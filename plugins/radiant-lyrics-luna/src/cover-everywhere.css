@@ -9,10 +9,9 @@
     z-index: -3;
     pointer-events: none;
     overflow: hidden;
-    /* Enhanced hardware acceleration */
-    transform: translate3d(0, 0, 0);
+    /* Hardware acceleration */
+    transform: translateZ(0);
     backface-visibility: hidden;
-    perspective: 1000px;
 }
 
 .global-spinning-black-bg {
@@ -24,35 +23,29 @@
     background: #000;
     z-index: -2;
     pointer-events: none;
-    /* Force GPU layer */
-    transform: translateZ(0);
 }
 
 .global-spinning-image {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate3d(-50%, -50%, 0);
+    transform: translate(-50%, -50%);
     width: 150vw;
     height: 150vh;
     object-fit: cover;
     z-index: -1;
     filter: blur(80px) brightness(0.4) contrast(1.2) saturate(1);
     opacity: 1;
-    animation: spinGlobalOptimized 45s cubic-bezier(0, 0, 1, 1) infinite;
+    animation: spinGlobal 45s linear infinite;
     will-change: transform;
-    /* Enhanced hardware acceleration for smooth animations */
+    /* Hardware acceleration */
     transform-origin: center center;
     backface-visibility: hidden;
-    /* Optimized compositing */
-    contain: layout style paint;
 }
 
-/* Performance mode optimizations */
+/* Performance mode optimizations - keep spinning but optimize other aspects */
 .global-spinning-image.performance-mode-static {
-    animation: none !important;
-    transform: translate3d(-50%, -50%, 0) !important;
-    will-change: auto !important;
+    /* Keep animation enabled in performance mode */
     /* Lighter blur for performance */
     filter: blur(20px) brightness(0.4) contrast(1.2) saturate(1) !important;
     /* Smaller size for performance */
@@ -61,9 +54,7 @@
 }
 
 .now-playing-background-image.performance-mode-static {
-    animation: none !important;
-    transform: translate3d(-50%, -50%, 0) !important;
-    will-change: auto !important;
+    /* Keep animation enabled in performance mode */
     /* Optimized size and effects for performance */
     width: 80vw !important;
     height: 80vh !important;
@@ -79,38 +70,19 @@
     z-index: -3;
     pointer-events: none;
     overflow: hidden;
-    /* Enhanced hardware acceleration */
-    transform: translate3d(0, 0, 0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-/* OPTIMIZED keyframe animations with better GPU acceleration */
-@keyframes spinGlobalOptimized {
-    0% { 
-        transform: translate3d(-50%, -50%, 0) rotate(0deg);
-    }
-    100% { 
-        transform: translate3d(-50%, -50%, 0) rotate(360deg);
-    }
-}
-
-@keyframes spin {
-    0% { 
-        transform: translate3d(-50%, -50%, 0) rotate(0deg);
-    }
-    100% { 
-        transform: translate3d(-50%, -50%, 0) rotate(360deg);
-    }
-}
-
-/* Optimized backdrop-filter usage for better performance */
-.optimized-backdrop {
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    /* Force GPU acceleration for backdrop filters */
+    /* Hardware acceleration */
     transform: translateZ(0);
-    will-change: backdrop-filter;
+    backface-visibility: hidden;
+}
+
+/* Optimized keyframe animations with GPU acceleration */
+@keyframes spinGlobal {
+    from { 
+        transform: translate(-50%, -50%) rotate(0deg); 
+    }
+    to { 
+        transform: translate(-50%, -50%) rotate(360deg); 
+    }
 }
 
 /* Reduced motion for users who prefer it */
@@ -118,35 +90,16 @@
     .global-spinning-image,
     .now-playing-background-image {
         animation: none !important;
-        transform: translate3d(-50%, -50%, 0) !important;
+        transform: translate(-50%, -50%) !important;
         will-change: auto !important;
     }
 }
 
-/* Performance mode: disable heavy effects */
+/* Performance mode: optimize effects but keep spinning */
 .performance-mode .global-spinning-image,
 .performance-mode .now-playing-background-image {
+    /* Keep animations but optimize filter effects */
     filter: blur(10px) brightness(0.4) contrast(1.1) !important;
-    animation: none !important;
-    will-change: auto !important;
-}
-
-/* OPTIMIZED Normal mode styles for better performance without quality loss */
-body:not(.performance-mode) .global-spinning-image {
-    /* Use optimized filter order for better GPU performance */
-    filter: contrast(var(--bg-contrast, 1.2)) brightness(var(--bg-brightness, 0.4)) blur(var(--bg-blur, 80px)) saturate(1);
-    /* Enhanced GPU acceleration */
-    transform-style: preserve-3d;
-    /* Optimized compositing layer */
-    isolation: isolate;
-}
-
-body:not(.performance-mode) .now-playing-background-image {
-    /* Use optimized filter order */
-    filter: contrast(var(--bg-contrast, 1.2)) brightness(var(--bg-brightness, 0.4)) blur(var(--bg-blur, 80px));
-    /* Enhanced GPU acceleration */
-    transform-style: preserve-3d;
-    isolation: isolate;
 }
 
 /* Make Notification Feed sidebar transparent */
@@ -171,7 +124,7 @@ main,
     background: unset !important;
 }
 
-/* OPTIMIZED sidebar and player bar with better backdrop-filter performance */
+/* Make sidebar and player bar semi-transparent with optimized backdrop-filter */
 [data-test="footer-player"],
 [data-test="main-layout-sidebar-wrapper"],
 [class^="_bar"],
@@ -179,9 +132,6 @@ main,
     background-color: rgba(0, 0, 0, 0.3) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
-    /* Force GPU acceleration for backdrop filters */
-    transform: translateZ(0);
-    will-change: backdrop-filter;
 }
 
 /* Performance mode: reduce backdrop blur */
@@ -193,14 +143,11 @@ main,
     -webkit-backdrop-filter: blur(5px) !important;
 }
 
-/* OPTIMIZED Feed sidebar panel */
+/* Feed sidebar panel - black tint background for readability */
 [data-test="feed-sidebar"] {
     background-color: rgba(0, 0, 0, 0.5) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
-    /* Enhanced GPU acceleration */
-    transform: translateZ(0);
-    will-change: backdrop-filter;
 }
 
 /* Performance mode: reduce sidebar backdrop blur */
