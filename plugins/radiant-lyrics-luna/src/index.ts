@@ -22,6 +22,18 @@ const lyricsGlowStyleTag = new StyleTag("RadiantLyrics-lyrics-glow", unloads);
 
 let globalSpinningBgStyleTag: StyleTag | null = null;
 
+// Performance optimized variables for cover everywhere
+let globalBackgroundContainer: HTMLElement | null = null;
+let globalBackgroundImage: HTMLImageElement | null = null;
+let globalBlackBg: HTMLElement | null = null;
+let currentGlobalCoverSrc: string | null = null;
+let lastUpdateTime = 0;
+const UPDATE_THROTTLE = 500; // Throttle updates to max once per 500ms
+
+// Image cache for better performance
+const imageCache = new Map<string, HTMLImageElement>();
+const MAX_CACHE_SIZE = 10; // Limit cache size to prevent memory leaks
+
 // Apply lyrics glow styles if enabled
 if (settings.lyricsGlowEnabled) {
     lyricsGlowStyleTag.css = lyricsGlow;
@@ -120,75 +132,150 @@ const updateRadiantLyricsStyles = function(): void {
     }
 };
 
-// Function to apply spinning background to the entire app (cover everywhere)
+// Function to apply spinning background to the entire app (cover everywhere) - PERFORMANCE OPTIMIZED
 const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
+    
     if (!settings.spinningCoverEverywhere) {
-        // Remove StyleTag and all background elements
-        if (globalSpinningBgStyleTag) {
-            globalSpinningBgStyleTag.remove();
-            globalSpinningBgStyleTag = null;
-        }
-        if (appContainer) {
-            appContainer.querySelectorAll('.global-spinning-image, .global-spinning-black-bg').forEach(el => el.remove());
-        }
+        cleanUpGlobalSpinningBackground();
         return;
     }
 
-    // Add StyleTag if not present (Don't know if this is needed.. But it's here)
+    // Throttle updates to prevent excessive DOM manipulation
+    const now = Date.now();
+    if (now - lastUpdateTime < UPDATE_THROTTLE && currentGlobalCoverSrc === coverArtImageSrc) {
+        return;
+    }
+    lastUpdateTime = now;
+    currentGlobalCoverSrc = coverArtImageSrc;
+
+    // Add StyleTag if not present
     if (!globalSpinningBgStyleTag) {
         globalSpinningBgStyleTag = new StyleTag("RadiantLyrics-global-spinning-bg", unloads, coverEverywhereCss);
     }
 
     if (!appContainer) return;
 
-    // Remove any existing background elements
-    appContainer.querySelectorAll('.global-spinning-image, .global-spinning-black-bg').forEach(el => el.remove());
+    // Create container structure if it doesn't exist (REUSE DOM ELEMENTS)
+    if (!globalBackgroundContainer) {
+        globalBackgroundContainer = document.createElement('div');
+        globalBackgroundContainer.className = 'global-background-container';
+        globalBackgroundContainer.style.cssText = `
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -3;
+            pointer-events: none;
+            overflow: hidden;
+        `;
+        appContainer.appendChild(globalBackgroundContainer);
 
-    // Add black background (to obscure image edges)
-    const blackBg = document.createElement('div');
-    blackBg.className = 'global-spinning-black-bg';
-    appContainer.appendChild(blackBg);
+        // Create black background layer
+        globalBlackBg = document.createElement('div');
+        globalBlackBg.className = 'global-spinning-black-bg';
+        globalBackgroundContainer.appendChild(globalBlackBg);
 
-    // Add one image for background (spinning or static based on performance mode)
-    const img = document.createElement('img');
-    img.src = coverArtImageSrc;
-    img.className = 'global-spinning-image';
-    img.style.animationDelay = '0s';
-    img.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-    
-    // Apply or remove animation based on performance mode
-    if (settings.performanceMode) {
-        img.style.animation = 'none';
-        img.classList.add('performance-mode-static');
-    } else {
-        img.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
-        img.classList.remove('performance-mode-static');
+        // Create image element
+        globalBackgroundImage = document.createElement('img');
+        globalBackgroundImage.className = 'global-spinning-image';
+        globalBackgroundImage.style.cssText = `
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: -1;
+            will-change: transform;
+            transform-origin: center center;
+        `;
+        globalBackgroundContainer.appendChild(globalBackgroundImage);
     }
-    
-    appContainer.appendChild(img);
+
+    // Update image source efficiently with caching for smoother transitions
+    if (globalBackgroundImage && globalBackgroundImage.src !== coverArtImageSrc) {
+        // Check cache first
+        if (imageCache.has(coverArtImageSrc)) {
+            globalBackgroundImage.src = coverArtImageSrc;
+        } else {
+            // Preload and cache the new image
+            const preloadImg = new Image();
+            preloadImg.onload = () => {
+                // Add to cache (with size limit)
+                if (imageCache.size >= MAX_CACHE_SIZE) {
+                    const firstKey = imageCache.keys().next().value;
+                    if (firstKey) {
+                        imageCache.delete(firstKey);
+                    }
+                }
+                imageCache.set(coverArtImageSrc, preloadImg);
+                
+                if (globalBackgroundImage && globalBackgroundImage.src !== coverArtImageSrc) {
+                    globalBackgroundImage.src = coverArtImageSrc;
+                }
+            };
+            preloadImg.src = coverArtImageSrc;
+        }
+    }
+
+    // Apply performance-optimized settings
+    if (globalBackgroundImage) {
+        // Performance mode optimizations
+        if (settings.performanceMode) {
+            // Ultra-light performance mode
+            globalBackgroundImage.style.width = '120vw';
+            globalBackgroundImage.style.height = '120vh';
+            globalBackgroundImage.style.filter = `blur(${Math.min(settings.backgroundBlur, 20)}px) brightness(${settings.backgroundBrightness / 100}) contrast(${Math.min(settings.backgroundContrast, 150)}%)`;
+            globalBackgroundImage.style.animation = 'none';
+            globalBackgroundImage.style.transform = 'translate(-50%, -50%)';
+            globalBackgroundImage.classList.add('performance-mode-static');
+            // Remove will-change for better memory usage
+            globalBackgroundImage.style.willChange = 'auto';
+        } else {
+            // OPTIMIZED Normal mode - Better performance while maintaining quality
+            globalBackgroundImage.style.width = '150vw';
+            globalBackgroundImage.style.height = '150vh';
+            // Use CSS custom properties for dynamic updates without style recalculation
+            globalBackgroundImage.style.setProperty('--bg-contrast', `${settings.backgroundContrast}%`);
+            globalBackgroundImage.style.setProperty('--bg-brightness', `${settings.backgroundBrightness / 100}`);
+            globalBackgroundImage.style.setProperty('--bg-blur', `${settings.backgroundBlur}px`);
+            globalBackgroundImage.style.animation = `spinGlobalOptimized ${settings.spinSpeed}s linear infinite`;
+            globalBackgroundImage.classList.remove('performance-mode-static');
+            // Use transform3d for better GPU acceleration
+            globalBackgroundImage.style.willChange = 'transform';
+            globalBackgroundImage.style.transformOrigin = 'center center';
+            // Force GPU layer creation for smoother animations
+            globalBackgroundImage.style.transform = 'translate3d(-50%, -50%, 0)';
+        }
+    }
 };
 
-// Function to clean up global spinning background
+// Optimized cleanup function
 const cleanUpGlobalSpinningBackground = function(): void {
-    const globalImages = document.getElementsByClassName("global-spinning-image");
-    Array.from(globalImages).forEach((element) => {
-        element.remove();
-    });
-    // Also remove the overlay
-    const overlay = document.querySelector('.global-spinning-overlay');
-    if (overlay && overlay.parentNode) {
-        overlay.parentNode.removeChild(overlay);
+    if (globalBackgroundContainer && globalBackgroundContainer.parentNode) {
+        globalBackgroundContainer.parentNode.removeChild(globalBackgroundContainer);
     }
-    // Also remove the black bg
-    const blackBg = document.querySelector('.global-spinning-black-bg');
-    if (blackBg && blackBg.parentNode) {
-        blackBg.parentNode.removeChild(blackBg);
+    globalBackgroundContainer = null;
+    globalBackgroundImage = null;
+    globalBlackBg = null;
+    currentGlobalCoverSrc = null;
+    
+    if (globalSpinningBgStyleTag) {
+        globalSpinningBgStyleTag.remove();
+        globalSpinningBgStyleTag = null;
     }
 };
 
 // Function to update global background when settings change
 const updateRadiantLyricsGlobalBackground = function(): void {
+    // Apply performance mode class to document body
+    if (settings.performanceMode) {
+        document.body.classList.add('performance-mode');
+    } else {
+        document.body.classList.remove('performance-mode');
+    }
+    
     if (settings.spinningCoverEverywhere) {
         // Get current cover art and apply global background
         updateCoverArtBackground();
@@ -197,7 +284,7 @@ const updateRadiantLyricsGlobalBackground = function(): void {
     }
 };
 
-// Function to update Now Playing background when settings change
+// Function to update Now Playing background when settings change - PERFORMANCE OPTIMIZED
 const updateRadiantLyricsNowPlayingBackground = function(): void {
     const nowPlayingBackgroundImages = document.querySelectorAll('.now-playing-background-image');
     nowPlayingBackgroundImages.forEach((img: Element) => {
@@ -209,26 +296,40 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
         const defaultContrast = 120;
         const defaultSpinSpeed = 45;
         
+        let blur, brightness, contrast, spinSpeed;
+        
         if (settings.settingsAffectNowPlaying) {
-            // Use settings values
-            if (settings.performanceMode) {
-                imgElement.style.animation = 'none';
-                imgElement.classList.add('performance-mode-static');
-            } else {
-                imgElement.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
-                imgElement.classList.remove('performance-mode-static');
-            }
-            imgElement.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
+            blur = settings.backgroundBlur;
+            brightness = settings.backgroundBrightness;
+            contrast = settings.backgroundContrast;
+            spinSpeed = settings.spinSpeed;
         } else {
-            // Reset to default values
-            if (settings.performanceMode) {
-                imgElement.style.animation = 'none';
-                imgElement.classList.add('performance-mode-static');
-            } else {
-                imgElement.style.animation = `spin ${defaultSpinSpeed}s linear infinite`;
-                imgElement.classList.remove('performance-mode-static');
-            }
-            imgElement.style.filter = `blur(${defaultBlur}px) brightness(${defaultBrightness / 100}) contrast(${defaultContrast}%)`;
+            blur = defaultBlur;
+            brightness = defaultBrightness;
+            contrast = defaultContrast;
+            spinSpeed = defaultSpinSpeed;
+        }
+        
+        // Performance mode optimizations
+        if (settings.performanceMode) {
+            // Reduce blur and effects for better performance
+            blur = Math.min(blur, 20);
+            contrast = Math.min(contrast, 150);
+            imgElement.style.animation = 'none';
+            imgElement.style.transform = 'translate3d(-50%, -50%, 0)';
+            imgElement.classList.add('performance-mode-static');
+            imgElement.style.willChange = 'auto';
+            imgElement.style.filter = `blur(${blur}px) brightness(${brightness / 100}) contrast(${contrast}%)`;
+        } else {
+            // OPTIMIZED Normal mode updates using CSS custom properties
+            imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
+            imgElement.classList.remove('performance-mode-static');
+            imgElement.style.willChange = 'transform';
+            imgElement.style.transform = 'translate3d(-50%, -50%, 0)';
+            // Use CSS custom properties for efficient updates
+            imgElement.style.setProperty('--bg-contrast', `${contrast}%`);
+            imgElement.style.setProperty('--bg-brightness', `${brightness / 100}`);
+            imgElement.style.setProperty('--bg-blur', `${blur}px`);
         }
     });
 };
@@ -440,31 +541,52 @@ const createUnhideUIButton = function(): void {
     }, 1500); // Slight delay after hide button
 };
 
-// Function to observe track changes using track ID
+// PERFORMANCE OPTIMIZED track change observer
 const observeTrackChanges = (): void => {
     let lastTrackId: string | null = null;
-    const interval = setInterval(() => {
+    let checkCount = 0;
+    let currentInterval = 500; // Start with slower checks
+    
+    const checkTrackChange = () => {
         const currentTrackId = PlayState.playbackContext?.actualProductId;
         if (currentTrackId && currentTrackId !== lastTrackId) {
             //trace.msg.log(`Track changed: ${lastTrackId} -> ${currentTrackId}`);
             lastTrackId = currentTrackId;
-            // delay for cover art to load (to prevent flickering)
-            setTimeout(() => {
-                updateCoverArtBackground();
-            }, 150);
+            // Immediate update for better responsiveness, but throttled by the update function
+            updateCoverArtBackground();
+            
+            // Reset to faster checking for a short period after a change
+            checkCount = 0;
+            currentInterval = 250;
         }
-    }, 150); // Check every 150ms for better responsiveness
+        
+        // Gradually slow down checking if no changes
+        checkCount++;
+        if (checkCount > 10 && currentInterval < 1000) {
+            currentInterval = Math.min(currentInterval * 1.2, 1000);
+        }
+    };
     
-    unloads.add(() => clearInterval(interval));
+    // Adaptive interval - faster when changes are happening, slower when stable
+    const startAdaptiveInterval = () => {
+        const intervalId = setInterval(() => {
+            checkTrackChange();
+        }, currentInterval);
+        
+        unloads.add(() => clearInterval(intervalId));
+        return intervalId;
+    };
+    
+    startAdaptiveInterval();
 
     // Initial background application (if a track is already loaded)
     const currentTrackId = PlayState.playbackContext?.actualProductId;
     if (currentTrackId) {
         lastTrackId = currentTrackId;
-        // Reduced delay for initial load
+        // Immediate initial load for better UX
         setTimeout(() => {
             updateCoverArtBackground();
-        }, 300);
+        }, 100);
     }
 };
 
@@ -518,6 +640,14 @@ function observeLyricsContainer(): void {
     unloads.add(() => observer.disconnect());
 }
 
+// Optimized DOM element caching for Now Playing
+let nowPlayingBackgroundContainer: HTMLElement | null = null;
+let nowPlayingBackgroundImage: HTMLImageElement | null = null;
+let nowPlayingBlackBg: HTMLElement | null = null;
+let nowPlayingGradientOverlay: HTMLElement | null = null;
+let currentNowPlayingCoverSrc: string | null = null;
+let spinAnimationAdded = false;
+
 const updateCoverArtBackground = function (method: number = 0): void {
     if (method === 1) {
         setTimeout(() => {
@@ -531,16 +661,19 @@ const updateCoverArtBackground = function (method: number = 0): void {
 
     if (coverArtImageElement) {
         coverArtImageSrc = coverArtImageElement.src;
-        // Set res to 1280x1280
-        coverArtImageSrc = coverArtImageSrc.replace(/\d+x\d+/, '1280x1280');
-        coverArtImageElement.src = coverArtImageSrc;
+        // Use higher resolution for better quality, but consider performance mode
+        const targetRes = settings.performanceMode ? '640x640' : '1280x1280';
+        coverArtImageSrc = coverArtImageSrc.replace(/\d+x\d+/, targetRes);
+        if (coverArtImageElement.src !== coverArtImageSrc) {
+            coverArtImageElement.src = coverArtImageSrc;
+        }
     } else {
         const videoElement = document.querySelector('figure[class*="_albumImage"] > div > div > div > video') as HTMLVideoElement;
         if (videoElement) {
             coverArtImageSrc = videoElement.getAttribute("poster");
             if (coverArtImageSrc) {
-                // Set res to 1280x1280
-                coverArtImageSrc = coverArtImageSrc.replace(/\d+x\d+/, '1280x1280');
+                const targetRes = settings.performanceMode ? '640x640' : '1280x1280';
+                coverArtImageSrc = coverArtImageSrc.replace(/\d+x\d+/, targetRes);
             }
         } else {
             cleanUpDynamicArt();
@@ -555,67 +688,135 @@ const updateCoverArtBackground = function (method: number = 0): void {
             applyGlobalSpinningBackground(coverArtImageSrc);
         }
         
-        // Apply spinning CoverArt background to the Now Playing container
+        // Apply spinning CoverArt background to the Now Playing container - OPTIMIZED
         const nowPlayingContainerElement = document.querySelector('[class*="_nowPlayingContainer"]') as HTMLElement;
         if (nowPlayingContainerElement) {
-            // Remove existing background images if they exist
-            const existingBackgroundImages = nowPlayingContainerElement.querySelectorAll('.now-playing-background-image, .now-playing-black-bg');
-            existingBackgroundImages.forEach(img => img.remove());
+            // Create DOM structure if it doesn't exist (REUSE ELEMENTS)
+            if (!nowPlayingBackgroundContainer || !nowPlayingContainerElement.contains(nowPlayingBackgroundContainer)) {
+                // Clean up any old elements first
+                nowPlayingContainerElement.querySelectorAll('.now-playing-background-image, .now-playing-black-bg, .now-playing-gradient-overlay').forEach(el => el.remove());
+                
+                // Create container
+                nowPlayingBackgroundContainer = document.createElement('div');
+                nowPlayingBackgroundContainer.className = 'now-playing-background-container';
+                nowPlayingBackgroundContainer.style.cssText = `
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: -3;
+                    pointer-events: none;
+                    overflow: hidden;
+                `;
+                nowPlayingContainerElement.appendChild(nowPlayingBackgroundContainer);
 
-            // Add black background layer (to obscure image edges)
-            const blackBg = document.createElement('div');
-            blackBg.className = 'now-playing-black-bg';
-            blackBg.style.position = 'absolute';
-            blackBg.style.left = '0';
-            blackBg.style.top = '0';
-            blackBg.style.width = '100%';
-            blackBg.style.height = '100%';
-            blackBg.style.background = '#000';
-            blackBg.style.zIndex = '-2';
-            blackBg.style.pointerEvents = 'none';
-            nowPlayingContainerElement.appendChild(blackBg);
+                // Create black background layer
+                nowPlayingBlackBg = document.createElement('div');
+                nowPlayingBlackBg.className = 'now-playing-black-bg';
+                nowPlayingBlackBg.style.cssText = `
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: #000;
+                    z-index: -2;
+                    pointer-events: none;
+                `;
+                nowPlayingBackgroundContainer.appendChild(nowPlayingBlackBg);
 
-            // Create and append single background layer (the cover art)
-            const backgroundImage = document.createElement('img');
-            backgroundImage.src = coverArtImageSrc;
-            backgroundImage.className = 'now-playing-background-image';
-            backgroundImage.style.position = 'absolute';
-            backgroundImage.style.left = '50%';
-            backgroundImage.style.top = '50%';
-            backgroundImage.style.transform = 'translate(-50%, -50%)';
-            backgroundImage.style.width = '90vw';
-            backgroundImage.style.height = '90vh';
-            backgroundImage.style.objectFit = 'cover';
-            backgroundImage.style.zIndex = '-1';
-            backgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-            backgroundImage.style.willChange = 'transform, filter';
-            backgroundImage.style.transformOrigin = 'center center';
-            
-            // Apply animation based on performance mode
-            if (settings.performanceMode) {
-                backgroundImage.style.animation = 'none';
-                backgroundImage.classList.add('performance-mode-static');
-            } else {
-                backgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
-                backgroundImage.classList.remove('performance-mode-static');
+                // Create background image
+                nowPlayingBackgroundImage = document.createElement('img');
+                nowPlayingBackgroundImage.className = 'now-playing-background-image';
+                nowPlayingBackgroundImage.style.cssText = `
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    object-fit: cover;
+                    z-index: -1;
+                    transform-origin: center center;
+                `;
+                nowPlayingBackgroundContainer.appendChild(nowPlayingBackgroundImage);
+
+                // Create gradient overlay
+                nowPlayingGradientOverlay = document.createElement('div');
+                nowPlayingGradientOverlay.className = 'now-playing-gradient-overlay';
+                nowPlayingGradientOverlay.style.cssText = `
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.8) 90%);
+                    z-index: -1;
+                    pointer-events: none;
+                `;
+                nowPlayingBackgroundContainer.appendChild(nowPlayingGradientOverlay);
             }
-            nowPlayingContainerElement.appendChild(backgroundImage);
 
-            // Create subtle gradient overlay to hide edges (Hate this approach but it's the only way I could get it to work)
-            const gradientOverlay = document.createElement('div');
-            gradientOverlay.className = 'now-playing-gradient-overlay';
-            gradientOverlay.style.position = 'absolute';
-            gradientOverlay.style.left = '0';
-            gradientOverlay.style.top = '0';
-            gradientOverlay.style.width = '100%';
-            gradientOverlay.style.height = '100%';
-            gradientOverlay.style.background = 'radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.8) 90%)';
-            gradientOverlay.style.zIndex = '-1';
-            gradientOverlay.style.pointerEvents = 'none';
-            nowPlayingContainerElement.appendChild(gradientOverlay);
+            // Update image source efficiently with caching
+            if (nowPlayingBackgroundImage && nowPlayingBackgroundImage.src !== coverArtImageSrc) {
+                // Check cache first
+                if (imageCache.has(coverArtImageSrc)) {
+                    nowPlayingBackgroundImage.src = coverArtImageSrc;
+                    currentNowPlayingCoverSrc = coverArtImageSrc;
+                } else {
+                    // Preload and cache the new image
+                    const preloadImg = new Image();
+                    preloadImg.onload = () => {
+                        // Add to cache (with size limit)
+                        if (imageCache.size >= MAX_CACHE_SIZE) {
+                            const firstKey = imageCache.keys().next().value;
+                            if (firstKey) {
+                                imageCache.delete(firstKey);
+                            }
+                        }
+                        imageCache.set(coverArtImageSrc, preloadImg);
+                        
+                        if (nowPlayingBackgroundImage && nowPlayingBackgroundImage.src !== coverArtImageSrc) {
+                            nowPlayingBackgroundImage.src = coverArtImageSrc;
+                            currentNowPlayingCoverSrc = coverArtImageSrc;
+                        }
+                    };
+                    preloadImg.src = coverArtImageSrc;
+                }
+            }
 
-            // Add keyframe animation if it doesn't exist
-            if (!document.querySelector('#spinAnimation')) {
+            // Apply performance-optimized settings
+            if (nowPlayingBackgroundImage) {
+                if (settings.performanceMode) {
+                    // Ultra-light performance mode
+                    nowPlayingBackgroundImage.style.width = '80vw';
+                    nowPlayingBackgroundImage.style.height = '80vh';
+                    const blur = Math.min(settings.backgroundBlur, 20);
+                    const contrast = Math.min(settings.backgroundContrast, 150);
+                    nowPlayingBackgroundImage.style.filter = `blur(${blur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${contrast}%)`;
+                    nowPlayingBackgroundImage.style.animation = 'none';
+                    nowPlayingBackgroundImage.style.transform = 'translate(-50%, -50%)';
+                    nowPlayingBackgroundImage.classList.add('performance-mode-static');
+                    nowPlayingBackgroundImage.style.willChange = 'auto';
+                } else {
+                    // OPTIMIZED Normal mode - Better performance while maintaining quality
+                    nowPlayingBackgroundImage.style.width = '90vw';
+                    nowPlayingBackgroundImage.style.height = '90vh';
+                    // Use CSS custom properties for efficient dynamic updates
+                    nowPlayingBackgroundImage.style.setProperty('--bg-contrast', `${settings.backgroundContrast}%`);
+                    nowPlayingBackgroundImage.style.setProperty('--bg-brightness', `${settings.backgroundBrightness / 100}`);
+                    nowPlayingBackgroundImage.style.setProperty('--bg-blur', `${settings.backgroundBlur}px`);
+                    nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                    nowPlayingBackgroundImage.classList.remove('performance-mode-static');
+                    // Enhanced GPU acceleration for smoother animations
+                    nowPlayingBackgroundImage.style.willChange = 'transform';
+                    nowPlayingBackgroundImage.style.transformOrigin = 'center center';
+                    // Force hardware acceleration with transform3d
+                    nowPlayingBackgroundImage.style.transform = 'translate3d(-50%, -50%, 0)';
+                }
+            }
+
+            // Add keyframe animation only once
+            if (!spinAnimationAdded) {
                 const styleSheet = document.createElement('style');
                 styleSheet.id = 'spinAnimation';
                 styleSheet.textContent = `
@@ -625,12 +826,24 @@ const updateCoverArtBackground = function (method: number = 0): void {
                     }
                 `;
                 document.head.appendChild(styleSheet);
+                spinAnimationAdded = true;
             }
         }
     }
 };
 
 const cleanUpDynamicArt = function (): void {
+    // Clean up cached Now Playing elements
+    if (nowPlayingBackgroundContainer && nowPlayingBackgroundContainer.parentNode) {
+        nowPlayingBackgroundContainer.parentNode.removeChild(nowPlayingBackgroundContainer);
+    }
+    nowPlayingBackgroundContainer = null;
+    nowPlayingBackgroundImage = null;
+    nowPlayingBlackBg = null;
+    nowPlayingGradientOverlay = null;
+    currentNowPlayingCoverSrc = null;
+    
+    // Clean up any remaining elements (fallback)
     const nowPlayingBackgroundImages = document.getElementsByClassName("now-playing-background-image");
     Array.from(nowPlayingBackgroundImages).forEach((element) => {
         element.remove();
@@ -644,6 +857,12 @@ const cleanUpDynamicArt = function (): void {
 observeForButtons();
 observeTrackChanges();
 observeLyricsContainer();
+
+// Apply initial performance mode class
+if (settings.performanceMode) {
+    document.body.classList.add('performance-mode');
+}
+
 updateCoverArtBackground(1);
 
 // Add cleanup to unloads
@@ -675,4 +894,7 @@ unloads.add(() => {
     
     // Clean up global spinning backgrounds
     cleanUpGlobalSpinningBackground();
+    
+    // Clear image cache
+    imageCache.clear();
 }); 
