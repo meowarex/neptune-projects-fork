@@ -864,10 +864,15 @@ if (settings.performanceMode) {
 }
 
 updateCoverArtBackground(1);
-
 // Add cleanup to unloads
 unloads.add(() => {
     cleanUpDynamicArt();
+    
+   // Clean up spin animation style
+   const spinAnimationStyle = document.querySelector('#spinAnimation');
+   if (spinAnimationStyle && spinAnimationStyle.parentNode) {
+       spinAnimationStyle.parentNode.removeChild(spinAnimationStyle);
+   }
 
     // Clean up auto-fade timeout
     if (unhideButtonAutoFadeTimeout) {
@@ -886,12 +891,6 @@ unloads.add(() => {
         unhideButton.parentNode.removeChild(unhideButton);
     }
 
-    // Clean up spin animations
-    const spinAnimationStyle = document.querySelector('#spinAnimation');
-    if (spinAnimationStyle && spinAnimationStyle.parentNode) {
-        spinAnimationStyle.parentNode.removeChild(spinAnimationStyle);
-    }
-    
     // Clean up global spinning backgrounds
     cleanUpGlobalSpinningBackground();
     
