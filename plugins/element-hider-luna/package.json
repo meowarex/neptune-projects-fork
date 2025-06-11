@@ -1,0 +1,11 @@
+{
+	"name": "@meowarex/element-hider",
+	"description": "adds a right-click option to hide any element on the page.",
+	"author": {
+		"name": "meowarex",
+		"url": "https://github.com/meowarex",
+		"avatarUrl": "https://avatars.githubusercontent.com/u/90243579"
+	},
+	"main": "./src/index.ts",
+	"type": "module"
+} 
