@@ -8,6 +8,7 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	lyricsGlowEnabled: true,
 	spinningCoverEverywhere: false,
 	performanceMode: false,
+	spinningArtEnabled: false,
 	backgroundContrast: 120,
 	backgroundBlur: 80,
 	backgroundBrightness: 40,
@@ -21,6 +22,7 @@ export const Settings = () => {
 	const [lyricsGlowEnabled, setLyricsGlowEnabled] = React.useState(settings.lyricsGlowEnabled);
 	const [spinningCoverEverywhere, setSpinningCoverEverywhere] = React.useState(settings.spinningCoverEverywhere);
 	const [performanceMode, setPerformanceMode] = React.useState(settings.performanceMode);
+	const [spinningArtEnabled, setSpinningArtEnabled] = React.useState(settings.spinningArtEnabled);
 	const [backgroundContrast, setBackgroundContrast] = React.useState(settings.backgroundContrast);
 	const [backgroundBlur, setBackgroundBlur] = React.useState(settings.backgroundBlur);
 	const [backgroundBrightness, setBackgroundBrightness] = React.useState(settings.backgroundBrightness);
@@ -77,7 +79,7 @@ export const Settings = () => {
 			/>
 			<LunaSwitchSetting
 				title="Performance Mode"
-				desc="Performance mode: Reduces blur effects (max 20px), uses smaller image sizes, and optimizes GPU usage while keeping spinning animations"
+				desc="Performance mode: Reduces blur effects (20px), uses smaller image sizes, to optimize GPU usage"
 				checked={performanceMode}
 				onChange={(_, checked: boolean) => {
 					console.log("Performance Mode:", checked ? "enabled" : "disabled");
@@ -87,6 +89,21 @@ export const Settings = () => {
 						(window as any).updateRadiantLyricsGlobalBackground();
 					}
 					if ((window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Disable Cover Spin" // Cheers @Max/n0201 for the idea <3
+				desc="Disable the spinning cover art background animation"
+				checked={!spinningArtEnabled}
+				onChange={(_, checked: boolean) => {
+					console.log("Disable Cover Spin:", checked ? "disabled" : "enabled");
+					setSpinningArtEnabled((settings.spinningArtEnabled = !checked));
+					if ((window as any).updateRadiantLyricsGlobalBackground) {
+						(window as any).updateRadiantLyricsGlobalBackground();
+					}
+					if (settings.settingsAffectNowPlaying && (window as any).updateRadiantLyricsNowPlayingBackground) {
 						(window as any).updateRadiantLyricsNowPlayingBackground();
 					}
 				}}
