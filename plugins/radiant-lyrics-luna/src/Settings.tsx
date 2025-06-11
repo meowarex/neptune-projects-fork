@@ -8,7 +8,7 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	lyricsGlowEnabled: true,
 	spinningCoverEverywhere: false,
 	performanceMode: false,
-	spinningArtEnabled: true,
+	spinningArtEnabled: false,
 	backgroundContrast: 120,
 	backgroundBlur: 80,
 	backgroundBrightness: 40,
@@ -98,7 +98,7 @@ export const Settings = () => {
 				desc="Disable the spinning cover art background animation"
 				checked={!spinningArtEnabled}
 				onChange={(_, checked: boolean) => {
-					console.log("Disable Cover Spin:", checked ? "enabled" : "disabled");
+					console.log("Disable Cover Spin:", checked ? "disabled" : "enabled");
 					setSpinningArtEnabled((settings.spinningArtEnabled = !checked));
 					if ((window as any).updateRadiantLyricsGlobalBackground) {
 						(window as any).updateRadiantLyricsGlobalBackground();

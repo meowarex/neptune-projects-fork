@@ -204,12 +204,13 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.filter = `blur(${Math.min(settings.backgroundBlur, 20)}px) brightness(${settings.backgroundBrightness / 100}) contrast(${Math.min(settings.backgroundContrast, 150)}%)`;
             if (settings.spinningArtEnabled) {
                 globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+                globalBackgroundImage.style.willChange = 'transform';
             }
             else {
                 globalBackgroundImage.style.animation = 'none';
+                globalBackgroundImage.style.willChange = 'auto';
             }
             globalBackgroundImage.classList.remove('performance-mode-static');
-            globalBackgroundImage.style.willChange = 'transform';
         } else {
             // Normal mode
             globalBackgroundImage.style.width = '150vw';
@@ -217,12 +218,13 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
             if (settings.spinningArtEnabled) {
                 globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+                globalBackgroundImage.style.willChange = 'transform';
             }
             else {
                 globalBackgroundImage.style.animation = 'none';
+                globalBackgroundImage.style.willChange = 'auto';
             }
             globalBackgroundImage.classList.remove('performance-mode-static');
-            globalBackgroundImage.style.willChange = 'transform';
         }
     }
 };
@@ -293,21 +295,23 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
             contrast = Math.min(contrast, 150);
             if (settings.spinningArtEnabled) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
+            imgElement.style.willChange = 'transform';
             }
             else {
                 imgElement.style.animation = 'none';
+                imgElement.style.willChange = 'auto';
             }
             imgElement.classList.remove('performance-mode-static');
-            imgElement.style.willChange = 'transform';
         } else {
             if (settings.spinningArtEnabled) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
+            imgElement.style.willChange = 'transform';
             }
             else {
                 imgElement.style.animation = 'none';
+                imgElement.style.willChange = 'auto';
             }
             imgElement.classList.remove('performance-mode-static');
-            imgElement.style.willChange = 'transform';
         }
         
         imgElement.style.filter = `blur(${blur}px) brightness(${brightness / 100}) contrast(${contrast}%)`;
@@ -751,21 +755,27 @@ const updateCoverArtBackground = function (method: number = 0): void {
                     const blur = Math.min(settings.backgroundBlur, 20);
                     const contrast = Math.min(settings.backgroundContrast, 150);
                     nowPlayingBackgroundImage.style.filter = `blur(${blur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${contrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = settings.spinningArtEnabled
-     ? `spin ${settings.spinSpeed}s linear infinite`
-     : 'none';
+                    if (settings.spinningArtEnabled) {
+                        nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                        nowPlayingBackgroundImage.style.willChange = 'transform';
+                    } else {
+                        nowPlayingBackgroundImage.style.animation = 'none';
+                        nowPlayingBackgroundImage.style.willChange = 'auto';
+                    }
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
-                    nowPlayingBackgroundImage.style.willChange = 'transform';
                 } else {
                     // Normal mode
                     nowPlayingBackgroundImage.style.width = '90vw';
                     nowPlayingBackgroundImage.style.height = '90vh';
                     nowPlayingBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = settings.spinningArtEnabled
-     ? `spin ${settings.spinSpeed}s linear infinite`
-     : 'none';
+                    if (settings.spinningArtEnabled) {
+                        nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                        nowPlayingBackgroundImage.style.willChange = 'transform';
+                    } else {
+                        nowPlayingBackgroundImage.style.animation = 'none';
+                        nowPlayingBackgroundImage.style.willChange = 'auto';
+                    }
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
-                    nowPlayingBackgroundImage.style.willChange = 'transform';
                 }
             }
 
