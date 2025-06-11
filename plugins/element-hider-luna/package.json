@@ -1,6 +1,6 @@
 {
 	"name": "@meowarex/element-hider",
-	"description": "adds a right-click option to hide any element on the page.",
+	"description": "Adds RightClick/Context menu options for hiding elements",
 	"author": {
 		"name": "meowarex",
 		"url": "https://github.com/meowarex",
