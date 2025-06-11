@@ -128,7 +128,7 @@ const updateRadiantLyricsStyles = function(): void {
     }
 };
 
-// Function to apply spinning background to the entire app (cover everywhere) - PERFORMANCE OPTIMIZED
+// Function to apply spinning background to the entire app (cover everywhere)
 const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
     
@@ -202,7 +202,7 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.width = '120vw';
             globalBackgroundImage.style.height = '120vh';
             globalBackgroundImage.style.filter = `blur(${Math.min(settings.backgroundBlur, 20)}px) brightness(${settings.backgroundBrightness / 100}) contrast(${Math.min(settings.backgroundContrast, 150)}%)`;
-            if (!settings.noSpinningArt) {
+            if (settings.spinningArtEnabled) {
                 globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
             }
             else {
@@ -215,7 +215,7 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.width = '150vw';
             globalBackgroundImage.style.height = '150vh';
             globalBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-            if (!settings.noSpinningArt) {
+            if (settings.spinningArtEnabled) {
                 globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
             }
             else {
@@ -291,7 +291,7 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
             // Reduce blur and effects for better performance, but keep spinning
             blur = Math.min(blur, 20);
             contrast = Math.min(contrast, 150);
-            if (!settings.noSpinningArt) {
+            if (settings.spinningArtEnabled) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
             }
             else {
@@ -300,7 +300,7 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
             imgElement.classList.remove('performance-mode-static');
             imgElement.style.willChange = 'transform';
         } else {
-            if (!settings.noSpinningArt) {
+            if (settings.spinningArtEnabled) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
             }
             else {
@@ -751,7 +751,9 @@ const updateCoverArtBackground = function (method: number = 0): void {
                     const blur = Math.min(settings.backgroundBlur, 20);
                     const contrast = Math.min(settings.backgroundContrast, 150);
                     nowPlayingBackgroundImage.style.filter = `blur(${blur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${contrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                    nowPlayingBackgroundImage.style.animation = settings.spinningArtEnabled
+     ? `spin ${settings.spinSpeed}s linear infinite`
+     : 'none';
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
                     nowPlayingBackgroundImage.style.willChange = 'transform';
                 } else {
@@ -759,7 +761,9 @@ const updateCoverArtBackground = function (method: number = 0): void {
                     nowPlayingBackgroundImage.style.width = '90vw';
                     nowPlayingBackgroundImage.style.height = '90vh';
                     nowPlayingBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                    nowPlayingBackgroundImage.style.animation = settings.spinningArtEnabled
+     ? `spin ${settings.spinSpeed}s linear infinite`
+     : 'none';
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
                     nowPlayingBackgroundImage.style.willChange = 'transform';
                 }
