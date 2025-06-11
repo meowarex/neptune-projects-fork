@@ -128,7 +128,7 @@ const updateRadiantLyricsStyles = function(): void {
     }
 };
 
-// Function to apply spinning background to the entire app (cover everywhere) - PERFORMANCE OPTIMIZED
+// Function to apply spinning background to the entire app (cover everywhere)
 const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
     const appContainer = document.querySelector('[data-test="main"]') as HTMLElement;
     
@@ -202,17 +202,29 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.width = '120vw';
             globalBackgroundImage.style.height = '120vh';
             globalBackgroundImage.style.filter = `blur(${Math.min(settings.backgroundBlur, 20)}px) brightness(${settings.backgroundBrightness / 100}) contrast(${Math.min(settings.backgroundContrast, 150)}%)`;
-            globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            if (settings.spinningArtEnabled) {
+                globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+                globalBackgroundImage.style.willChange = 'transform';
+            }
+            else {
+                globalBackgroundImage.style.animation = 'none';
+                globalBackgroundImage.style.willChange = 'auto';
+            }
             globalBackgroundImage.classList.remove('performance-mode-static');
-            globalBackgroundImage.style.willChange = 'transform';
         } else {
             // Normal mode
             globalBackgroundImage.style.width = '150vw';
             globalBackgroundImage.style.height = '150vh';
             globalBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-            globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            if (settings.spinningArtEnabled) {
+                globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+                globalBackgroundImage.style.willChange = 'transform';
+            }
+            else {
+                globalBackgroundImage.style.animation = 'none';
+                globalBackgroundImage.style.willChange = 'auto';
+            }
             globalBackgroundImage.classList.remove('performance-mode-static');
-            globalBackgroundImage.style.willChange = 'transform';
         }
     }
 };
@@ -281,13 +293,25 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
             // Reduce blur and effects for better performance, but keep spinning
             blur = Math.min(blur, 20);
             contrast = Math.min(contrast, 150);
+            if (settings.spinningArtEnabled) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
-            imgElement.classList.remove('performance-mode-static');
             imgElement.style.willChange = 'transform';
+            }
+            else {
+                imgElement.style.animation = 'none';
+                imgElement.style.willChange = 'auto';
+            }
+            imgElement.classList.remove('performance-mode-static');
         } else {
+            if (settings.spinningArtEnabled) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
-            imgElement.classList.remove('performance-mode-static');
             imgElement.style.willChange = 'transform';
+            }
+            else {
+                imgElement.style.animation = 'none';
+                imgElement.style.willChange = 'auto';
+            }
+            imgElement.classList.remove('performance-mode-static');
         }
         
         imgElement.style.filter = `blur(${blur}px) brightness(${brightness / 100}) contrast(${contrast}%)`;
@@ -731,17 +755,27 @@ const updateCoverArtBackground = function (method: number = 0): void {
                     const blur = Math.min(settings.backgroundBlur, 20);
                     const contrast = Math.min(settings.backgroundContrast, 150);
                     nowPlayingBackgroundImage.style.filter = `blur(${blur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${contrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                    if (settings.spinningArtEnabled) {
+                        nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                        nowPlayingBackgroundImage.style.willChange = 'transform';
+                    } else {
+                        nowPlayingBackgroundImage.style.animation = 'none';
+                        nowPlayingBackgroundImage.style.willChange = 'auto';
+                    }
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
-                    nowPlayingBackgroundImage.style.willChange = 'transform';
                 } else {
                     // Normal mode
                     nowPlayingBackgroundImage.style.width = '90vw';
                     nowPlayingBackgroundImage.style.height = '90vh';
                     nowPlayingBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-                    nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                    if (settings.spinningArtEnabled) {
+                        nowPlayingBackgroundImage.style.animation = `spin ${settings.spinSpeed}s linear infinite`;
+                        nowPlayingBackgroundImage.style.willChange = 'transform';
+                    } else {
+                        nowPlayingBackgroundImage.style.animation = 'none';
+                        nowPlayingBackgroundImage.style.willChange = 'auto';
+                    }
                     nowPlayingBackgroundImage.classList.remove('performance-mode-static');
-                    nowPlayingBackgroundImage.style.willChange = 'transform';
                 }
             }
 
