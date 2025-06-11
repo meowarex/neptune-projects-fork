@@ -202,7 +202,12 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.width = '120vw';
             globalBackgroundImage.style.height = '120vh';
             globalBackgroundImage.style.filter = `blur(${Math.min(settings.backgroundBlur, 20)}px) brightness(${settings.backgroundBrightness / 100}) contrast(${Math.min(settings.backgroundContrast, 150)}%)`;
-            globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            if (!settings.noSpinningArt) {
+                globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            }
+            else {
+                globalBackgroundImage.style.animation = 'none';
+            }
             globalBackgroundImage.classList.remove('performance-mode-static');
             globalBackgroundImage.style.willChange = 'transform';
         } else {
@@ -210,7 +215,12 @@ const applyGlobalSpinningBackground = (coverArtImageSrc: string): void => {
             globalBackgroundImage.style.width = '150vw';
             globalBackgroundImage.style.height = '150vh';
             globalBackgroundImage.style.filter = `blur(${settings.backgroundBlur}px) brightness(${settings.backgroundBrightness / 100}) contrast(${settings.backgroundContrast}%)`;
-            globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            if (!settings.noSpinningArt) {
+                globalBackgroundImage.style.animation = `spinGlobal ${settings.spinSpeed}s linear infinite`;
+            }
+            else {
+                globalBackgroundImage.style.animation = 'none';
+            }
             globalBackgroundImage.classList.remove('performance-mode-static');
             globalBackgroundImage.style.willChange = 'transform';
         }
@@ -281,11 +291,21 @@ const updateRadiantLyricsNowPlayingBackground = function(): void {
             // Reduce blur and effects for better performance, but keep spinning
             blur = Math.min(blur, 20);
             contrast = Math.min(contrast, 150);
+            if (!settings.noSpinningArt) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
+            }
+            else {
+                imgElement.style.animation = 'none';
+            }
             imgElement.classList.remove('performance-mode-static');
             imgElement.style.willChange = 'transform';
         } else {
+            if (!settings.noSpinningArt) {
             imgElement.style.animation = `spin ${spinSpeed}s linear infinite`;
+            }
+            else {
+                imgElement.style.animation = 'none';
+            }
             imgElement.classList.remove('performance-mode-static');
             imgElement.style.willChange = 'transform';
         }

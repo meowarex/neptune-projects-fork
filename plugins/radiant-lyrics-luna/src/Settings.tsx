@@ -8,6 +8,7 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	lyricsGlowEnabled: true,
 	spinningCoverEverywhere: false,
 	performanceMode: false,
+	noSpinningArt: false,
 	backgroundContrast: 120,
 	backgroundBlur: 80,
 	backgroundBrightness: 40,
@@ -21,6 +22,7 @@ export const Settings = () => {
 	const [lyricsGlowEnabled, setLyricsGlowEnabled] = React.useState(settings.lyricsGlowEnabled);
 	const [spinningCoverEverywhere, setSpinningCoverEverywhere] = React.useState(settings.spinningCoverEverywhere);
 	const [performanceMode, setPerformanceMode] = React.useState(settings.performanceMode);
+	const [noSpinningArt, setNoSpinningArt] = React.useState(settings.noSpinningArt);
 	const [backgroundContrast, setBackgroundContrast] = React.useState(settings.backgroundContrast);
 	const [backgroundBlur, setBackgroundBlur] = React.useState(settings.backgroundBlur);
 	const [backgroundBrightness, setBackgroundBrightness] = React.useState(settings.backgroundBrightness);
@@ -87,6 +89,21 @@ export const Settings = () => {
 						(window as any).updateRadiantLyricsGlobalBackground();
 					}
 					if ((window as any).updateRadiantLyricsNowPlayingBackground) {
+						(window as any).updateRadiantLyricsNowPlayingBackground();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Disable Spinning Art"
+				desc="Disable the spinning cover art background animation"
+				checked={noSpinningArt}
+				onChange={(_, checked: boolean) => {
+					console.log("No Spinning Art:", checked ? "enabled" : "disabled");
+					setNoSpinningArt((settings.noSpinningArt = checked));
+					if ((window as any).updateRadiantLyricsGlobalBackground) {
+						(window as any).updateRadiantLyricsGlobalBackground();
+					}
+					if (settings.settingsAffectNowPlaying && (window as any).updateRadiantLyricsNowPlayingBackground) {
 						(window as any).updateRadiantLyricsNowPlayingBackground();
 					}
 				}}
