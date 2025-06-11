@@ -90,7 +90,7 @@ function generateElementSelector(element: HTMLElement): string {
 		}
 	}
 	
-	console.log(`[Element Hider] Generated specific selector: ${selector}`);
+	trace.log(`Generated specific selector: ${selector}`);
 	return selector;
 }
 
@@ -112,10 +112,10 @@ function saveHiddenElement(element: HTMLElement): void {
 	
 	if (existingIndex === -1) {
 		settings.hiddenElements.push(elementInfo);
-		console.log(`[Element Hider] Saved element: ${elementInfo.selector}`);
-		console.log(`[Element Hider] Total stored: ${settings.hiddenElements.length}`);
+		trace.log(`Saved element: ${elementInfo.selector}`);
+		trace.log(`Total stored: ${settings.hiddenElements.length}`);
 	} else {
-		console.log(`[Element Hider] Element already saved: ${elementInfo.selector}`);
+		trace.log(`Element already saved: ${elementInfo.selector}`);
 	}
 }
 
@@ -126,8 +126,8 @@ function removeSavedElement(element: HTMLElement): void {
 	
 	if (index !== -1) {
 		settings.hiddenElements.splice(index, 1);
-		console.log(`[Element Hider] Permanently removed: ${selector}`);
-		console.log(`[Element Hider] Remaining stored: ${settings.hiddenElements.length}`);
+		trace.log(`Permanently removed: ${selector}`);
+		trace.log(`Remaining stored: ${settings.hiddenElements.length}`);
 	}
 }
 
@@ -140,7 +140,7 @@ function matchesStoredSelector(element: HTMLElement): boolean {
 				return true;
 			}
 		} catch (error) {
-			console.warn(`[Element Hider] Invalid selector: ${storedElement.selector}`, error);
+			trace.warn(`Invalid selector: ${storedElement.selector}`, error);
 		}
 	}
 	
@@ -154,14 +154,14 @@ function hideElementDirectly(element: HTMLElement): void {
 	element.classList.add("element-hider-hidden");
 	hiddenElements.add(element);
 	hiddenElementsArray.push(element);
-	console.log(`[Element Hider] Hidden element: ${element.tagName}${element.className ? '.' + element.className.split(' ')[0] : ''}`);
+	trace.log(`Hidden element: ${element.tagName}${element.className ? '.' + element.className.split(' ')[0] : ''}`);
 }
 
 // Hide the target element with animation
 function hideTargetElement(): void {
 	if (!targetElement) return;
 	
-	console.log(`[Element Hider] Hiding with animation: ${targetElement.tagName}${targetElement.className ? '.' + targetElement.className.split(' ')[0] : ''}`);
+	trace.log(`Hiding with animation: ${targetElement.tagName}${targetElement.className ? '.' + targetElement.className.split(' ')[0] : ''}`);
 	
 	// Add hiding animation class
 	targetElement.classList.add("element-hider-hiding");
@@ -186,7 +186,7 @@ function hideTargetElement(): void {
 
 // Unhide all elements permanently (remove from storage)
 function unhideAllElements(): void {
-	console.log(`[Element Hider] Permanently unhiding ${settings.hiddenElements.length} saved elements`);
+	trace.log(`Permanently unhiding ${settings.hiddenElements.length} saved elements`);
 	
 	// Show all currently hidden elements
 	hiddenElementsArray.forEach(element => {
@@ -205,19 +205,19 @@ function unhideAllElements(): void {
 function processAllElements(): void {
 	if (settings.hiddenElements.length === 0) return;
 	
-	console.log(`[Element Hider] Scanning document for ${settings.hiddenElements.length} stored selectors`);
+	trace.log(`Scanning document for ${settings.hiddenElements.length} stored selectors`);
 	let hiddenCount = 0;
 	
 	// Use querySelectorAll for each stored selector with validation
 	settings.hiddenElements.forEach((storedElement, index) => {
 		try {
-			console.log(`[Element Hider] Searching for: ${storedElement.selector}`);
+			trace.log(`Searching for: ${storedElement.selector}`);
 			const elements = document.querySelectorAll(storedElement.selector);
-			console.log(`[Element Hider] Found ${elements.length} matches for selector ${index + 1}`);
+			trace.log(`Found ${elements.length} matches for selector ${index + 1}`);
 			
 			// Limit to prevent over-hiding (safety check)
 			if (elements.length > 10) {
-				console.warn(`[Element Hider] Selector too broad (${elements.length} matches), skipping: ${storedElement.selector}`);
+				trace.warn(`Selector too broad (${elements.length} matches), skipping: ${storedElement.selector}`);
 				return;
 			}
 			
@@ -226,16 +226,16 @@ function processAllElements(): void {
 				if (!hiddenElements.has(htmlElement)) {
 					hideElementDirectly(htmlElement);
 					hiddenCount++;
-					console.log(`[Element Hider] Hid element ${elemIndex + 1}/${elements.length} for selector ${index + 1}`);
+					trace.log(`Hid element ${elemIndex + 1}/${elements.length} for selector ${index + 1}`);
 				}
 			});
 		} catch (error) {
-			console.warn(`[Element Hider] Invalid selector: ${storedElement.selector}`, error);
+			trace.warn(`Invalid selector: ${storedElement.selector}`, error);
 		}
 	});
 	
 	if (hiddenCount > 0) {
-		console.log(`[Element Hider] Total elements hidden: ${hiddenCount}`);
+		trace.log(`Total elements hidden: ${hiddenCount}`);
 	}
 }
 
@@ -278,20 +278,20 @@ function setupElementObserver(): void {
 		subtree: true
 	});
 	
-	console.log(`[Element Hider] Set up reactive element observer`);
+	trace.log(`Set up reactive element observer`);
 }
 
 // Global functions
 (window as any).showAllElementsFromSettings = unhideAllElements;
 (window as any).debugElementHider = () => {
-	console.log(`=== Element Hider Debug Info ===`);
-	console.log(`Stored elements: ${settings.hiddenElements.length}`);
-	console.log(`Currently hidden elements: ${hiddenElementsArray.length}`);
-	console.log(`Reactive hiding enabled: true`);
+	trace.log(`=== Element Hider Debug Info ===`);
+	trace.log(`Stored elements: ${settings.hiddenElements.length}`);
+	trace.log(`Currently hidden elements: ${hiddenElementsArray.length}`);
+	trace.log(`Reactive hiding enabled: true`);
 	settings.hiddenElements.forEach((element, index) => {
-		console.log(`${index + 1}. ${element.selector} (${element.tagName})`);
+		trace.log(`${index + 1}. ${element.selector} (${element.tagName})`);
 	});
-	console.log(`================================`);
+	trace.log(`================================`);
 };
 
 // Handle highlighting target element
@@ -346,11 +346,13 @@ document.addEventListener('contextmenu', (event: MouseEvent) => {
 	const eventX = event.clientX;
 	const eventY = event.clientY;
 	
+	// Prevent default immediately if we plan to handle it
+	event.preventDefault();
+	
 	// Wait to see if the built-in context menu appears
 	contextMenuTimeout = window.setTimeout(() => {
 		// If we're still waiting and no built-in menu appeared, show our custom menu
 		if (waitingForBuiltInMenu && currentContextElement) {
-			event.preventDefault();
 			showCustomMenu(eventX, eventY);
 		}
 		waitingForBuiltInMenu = false;
@@ -438,7 +440,7 @@ function showCustomMenu(x: number, y: number): void {
 	customMenu.style.left = `${finalX}px`;
 	customMenu.style.top = `${finalY}px`;
 	
-	console.log(`[Element Hider] Context menu opened for: ${currentContextElement?.tagName}`);
+	trace.log(`Context menu opened for: ${currentContextElement?.tagName}`);
 }
 
 // Close custom context menu
@@ -559,22 +561,20 @@ contextMenuObserver.observe(document.body, {
 	subtree: true
 });
 
-// Initialize plugin
+	// Initialize plugin
 function initializePlugin() {
-	console.log("[Element Hider] Initializing plugin...");
+	trace.log("Initializing plugin...");
 	
-	// Wait for DOM to be ready
-	setTimeout(() => {
-		console.log("[Element Hider] Starting element processing...");
-		
-		// Process existing elements
-		processAllElements();
-		
-		// Set up reactive observer for new elements
-		setupElementObserver();
-		
-		console.log("[Element Hider] Plugin fully initialized");
-	}, 1000);
+	// Process immediately when DOM is ready
+	trace.log("Starting element processing...");
+	
+	// Process existing elements
+	processAllElements();
+	
+	// Set up reactive observer for new elements
+	setupElementObserver();
+	
+	trace.log("Plugin fully initialized");
 }
 
 // Run initialization when DOM is ready
@@ -600,10 +600,10 @@ unloads.add(() => {
 	removeHighlight();
 	
 	// Clean up global functions
-	delete (window as any).showAllElementsFromSettings;
-	delete (window as any).debugElementHider;
+	(window as any).showAllElementsFromSettings = undefined;
+	(window as any).debugElementHider = undefined;
 	
-	console.log("[Element Hider] Plugin unloaded");
+	trace.log("Plugin unloaded");
 });
 
-console.log("[Element Hider] Plugin loaded - Right-click any element to hide it!"); 
+trace.log("Plugin loaded - Right-click any element to hide it!"); 

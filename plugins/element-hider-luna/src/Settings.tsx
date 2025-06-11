@@ -13,16 +13,5 @@ export const settings = await ReactiveStore.getPluginStorage("ElementHider", {
 });
 
 export const Settings = () => {
-	const [hiddenElementsCount, setHiddenElementsCount] = React.useState(settings.hiddenElements.length);
-	
-	// Update count when settings change
-	React.useEffect(() => {
-		const interval = setInterval(() => {
-			setHiddenElementsCount(settings.hiddenElements.length);
-		}, 1000);
-		
-		return () => clearInterval(interval);
-	}, []);
-	
 	return null;
 }; 
