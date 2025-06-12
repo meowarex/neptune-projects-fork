@@ -1,18 +1,20 @@
 import { ReactiveStore } from "@luna/core";
-import { LunaSettings, LunaNumberSetting, LunaSwitchSetting, LunaTextSetting } from "@luna/ui";
+import { LunaNumberSetting, LunaSettings, LunaSwitchSetting } from "@luna/ui";
 import React from "react";
-
+const isWindows = navigator.userAgent.includes("Windows"); // tidal changes it in reqs navigator supplies the default electron one
 export const settings = await ReactiveStore.getPluginStorage("AudioVisualizer", {
     barCount: 32,
     barColor: "#ffffff",
     barRounding: true,
-    customColors: [] as string[]
+    customColors: [] as string[],
+    spotifyAPI: isWindows
 });
 
 export const Settings = () => {
     const [barCount, setBarCount] = React.useState(settings.barCount);
     const [barColor, setBarColor] = React.useState(settings.barColor);
     const [barRounding, setBarRounding] = React.useState(settings.barRounding);
+    const [spotifyAPI, setSpotifyAPI] = React.useState(settings.spotifyAPI);
     const [showColorPicker, setShowColorPicker] = React.useState(false);
     const [isAnimatingIn, setIsAnimatingIn] = React.useState(false);
     const [shouldRender, setShouldRender] = React.useState(false);
@@ -87,11 +89,26 @@ export const Settings = () => {
     const allColors = [...colorPresets, ...customColors];
 
     return (
-        <LunaSettings>
+        <LunaSettings>            <LunaSwitchSetting
+                title="Spotify API"
+                desc="Use Spotify's audio analysis API instead of real-time audio data (Required for Windows)"
+                // @ts-expect-error no idea why this errosr wth
+                checked={spotifyAPI}
+                disabled={isWindows} // Disable on non-Windows platforms
+                // @ts-expect-error no idea why this errosr wth
+                onChange={(_, checked) => {
+                    setSpotifyAPI(checked);
+                    settings.spotifyAPI = checked;
+                    (window as any).updateAudioVisualizer?.();
+                }}
+            />
+
             <LunaSwitchSetting
                 title="Bar Roundness"
                 desc="Enable rounded corners on visualizer bars"
+                // @ts-expect-error no idea why this errosr wth
                 checked={barRounding}
+                // @ts-expect-error no idea why this errosr wth
                 onChange={(_, checked) => {
                     setBarRounding(checked);
                     settings.barRounding = checked;
