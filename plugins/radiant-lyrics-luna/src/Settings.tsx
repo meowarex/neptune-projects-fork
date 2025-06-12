@@ -6,6 +6,7 @@ export const settings = await ReactiveStore.getPluginStorage("RadiantLyrics", {
 	hideUIEnabled: true,
 	playerBarVisible: true,
 	lyricsGlowEnabled: true,
+	wordByWordGlowEnabled: false,
 	spinningCoverEverywhere: false,
 	performanceMode: false,
 	spinningArtEnabled: true,
@@ -20,6 +21,7 @@ export const Settings = () => {
 	const [hideUIEnabled, setHideUIEnabled] = React.useState(settings.hideUIEnabled);
 	const [playerBarVisible, setPlayerBarVisible] = React.useState(settings.playerBarVisible);
 	const [lyricsGlowEnabled, setLyricsGlowEnabled] = React.useState(settings.lyricsGlowEnabled);
+	const [wordByWordGlowEnabled, setWordByWordGlowEnabled] = React.useState(settings.wordByWordGlowEnabled);
 	const [spinningCoverEverywhere, setSpinningCoverEverywhere] = React.useState(settings.spinningCoverEverywhere);
 	const [performanceMode, setPerformanceMode] = React.useState(settings.performanceMode);
 	const [spinningArtEnabled, setSpinningArtEnabled] = React.useState(settings.spinningArtEnabled);
@@ -40,6 +42,18 @@ export const Settings = () => {
 					// Update styles immediately when setting changes
 					if ((window as any).updateRadiantLyricsStyles) {
 						(window as any).updateRadiantLyricsStyles();
+					}
+				}}
+			/>
+			<LunaSwitchSetting
+				title="Word by Word Glow | Experimental"
+				desc="Enable word-by-word glow effect"
+				checked={wordByWordGlowEnabled}
+				onChange={(_, checked: boolean) => {
+					setWordByWordGlowEnabled((settings.wordByWordGlowEnabled = checked));
+					// Update word tracking when setting changes
+					if ((window as any).updateWordByWordTracking) {
+						(window as any).updateWordByWordTracking();
 					}
 				}}
 			/>
